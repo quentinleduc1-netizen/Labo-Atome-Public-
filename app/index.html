@@ -523,6 +523,71 @@ html:not(.is-app) .app-only{display:none}
 .fc-blocs{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:2px;font-family:var(--f-mono);font-size:clamp(.45rem,1.4vw,.72rem)}
 .fc-blocs span{display:grid;place-items:center;aspect-ratio:1;color:#fff;font-weight:700;border-radius:2px}
 .fc-blocs .b-s{background:var(--sub-s)} .fc-blocs .b-p{background:var(--sub-p)} .fc-blocs .b-d{background:var(--sub-d)} .fc-blocs .b-f{background:var(--sub-f)}
+/* Chapitres */
+.chaps{display:flex;gap:8px;min-width:max-content}
+.chap{font:inherit;font-family:var(--f-display);font-weight:700;font-size:1rem;display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 16px 8px 14px;border:1.5px solid var(--line);border-left:5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;line-height:1.15;text-align:left}
+.chap small{font-family:var(--f-mono);font-weight:600;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.chap:hover{border-color:var(--accent2)} .chap[aria-selected="true"]{border-color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft)}
+.chap[aria-selected="true"] small{color:var(--accent)}
+.chap:focus-visible{outline:3px solid var(--accent2);outline-offset:-3px}
+/* Chapitre II */
+.situation{margin:0;font-family:var(--f-display);font-size:1.25rem;font-weight:600;line-height:1.35;text-wrap:balance}
+.eq-show{display:flex;flex-direction:column;gap:8px;font-size:.95rem} .eq-show p{margin:0}
+.fc-3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.fc-ico{width:100px;height:70px;display:block;margin-bottom:4px} .fc-ico.vdw-chain{width:100%;max-width:300px;height:auto}
+.fc-ico .ia{fill:var(--accent)} .fc-ico .ib{fill:var(--sub-p)} .fc-ico .ie{fill:var(--accent2)} .fc-ico .it{font-family:var(--f-mono);font-size:10px;font-weight:700;fill:#fff;text-anchor:middle}
+.fc-ico .iarr{fill:none;stroke:var(--accent2);stroke-width:2;marker-end:none} .fc-ico .idash{stroke:var(--accent2);stroke-width:2;stroke-dasharray:3 3;fill:none}
+.fc-ico .idip{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5} .fc-ico .idip+text,.fc-ico .idip~.it{fill:var(--ink)}
+.fc-ico .ibond{stroke:var(--muted);stroke-width:1.5} .fc-ico .met-bg{fill:var(--accent-soft)}
+.chain{fill:none;stroke-width:2.5} .chain.A{stroke:var(--accent)} .chain.B{stroke:var(--sub-p)}
+.hb-link{stroke:var(--accent2);stroke-width:2;stroke-dasharray:4 3;opacity:0;transition:opacity .9s} .hb-link.on,.go .hb-link{opacity:1}
+.chi-grid span{position:relative;flex-direction:column;line-height:1} .chi-grid span small{font-size:.6em;font-weight:400;opacity:.9} .chi-grid .nochi{background:var(--line);color:var(--muted)}
+.chi-scale{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted)} .chi-scale i{flex:1;height:8px;background:linear-gradient(90deg,hsl(215 65% 48%),hsl(108 65% 48%),hsl(0 65% 48%))}
+.chi-out{display:grid;grid-template-columns:1fr minmax(0,300px);gap:12px;align-items:center} @media (max-width:640px){.chi-out{grid-template-columns:1fr}}
+.chi-gauge{position:relative;margin:14px 0 22px;padding-top:6px}
+.cg-bar{display:flex;height:22px;border-radius:3px;overflow:hidden;font-size:.72rem;font-weight:600;color:#fff;text-align:center;line-height:22px}
+.cg-bar .z1{background:var(--accent2)} .cg-bar .z2{background:var(--sub-p)} .cg-bar .z3{flex:1;background:var(--sub-f)}
+.cg-pt{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-style:normal}
+.cg-pt::after{content:"";width:3px;height:30px;background:var(--ink)} .cg-pt b{font-family:var(--f-mono);font-size:.78rem;background:var(--surface);padding:0 4px;white-space:nowrap;transform:translateY(-14px)}
+.cg-ticks{position:relative;height:14px;font-family:var(--f-mono);font-size:.7rem;color:var(--muted)} .cg-ticks span{position:absolute;transform:translateX(-50%)} .cg-ticks span:first-child{transform:none}
+.pol-wrap{max-width:320px} .pol{width:100%;height:auto;display:block}
+.pol-bond{stroke:var(--muted);stroke-width:3} .pol-cloud{fill:var(--accent2);opacity:.3;transition:transform 1.4s ease} .pol.go .pol-cloud{transform:translateX(var(--sh))}
+.pol-atom.A{fill:var(--accent)} .pol-atom.B{fill:var(--sub-p)} .pol-sym{fill:#fff;font-family:var(--f-display);font-weight:800;font-size:17px;text-anchor:middle}
+.pol-d{font-family:var(--f-mono);font-weight:700;font-size:15px;text-anchor:middle;fill:var(--ink);opacity:0;transition:opacity .8s 1.1s} .pol.go .pol-d{opacity:1}
+.pol-cap{font-size:11px;text-anchor:middle;fill:var(--muted)}
+.met-wrap{display:flex;flex-direction:column;gap:8px} #metSvg{width:100%;max-width:420px;height:auto;display:block} .met-bg{fill:var(--accent-soft)}
+.met-ion{fill:var(--accent)} .met-plus{fill:#fff;font-weight:700;font-size:14px;text-anchor:middle;font-family:var(--f-mono)} .met-e{fill:var(--accent2)} #metSvg.on .met-e{fill:var(--sub-f)}
+#metMsg{font-size:.9rem;color:var(--muted)}
+.hb-wrap,.vdw-wrap,.en-wrap{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:16px;align-items:center} @media (max-width:640px){.hb-wrap,.vdw-wrap,.en-wrap{grid-template-columns:1fr}}
+#hbSvg,#vdwSvg{width:100%;height:auto;display:block;background:var(--surface);border:1px solid var(--line);border-radius:3px}
+.w-o{fill:var(--sub-f)} .w-c{fill:var(--ink)} .w-h{fill:var(--sub-p)} .w-t{fill:#fff;font-weight:800;font-size:13px;text-anchor:middle;font-family:var(--f-display)} .w-th{fill:#fff;font-weight:700;font-size:9px;text-anchor:middle}
+.w-dm{fill:var(--sub-f);font-family:var(--f-mono);font-size:10px;font-weight:700;text-anchor:middle} .w-dp{fill:var(--sub-p);font-family:var(--f-mono);font-size:9px;font-weight:700;text-anchor:middle}
+.hb-cap{font-size:10px;text-anchor:middle;fill:var(--muted)}
+.vdw-m{transform:translate(var(--x),var(--y)) rotate(var(--r0));transition:transform 1.6s ease} #vdwSvg.go .vdw-m{transform:translate(var(--x),var(--y)) rotate(var(--r1))}
+.vdw-m .idip{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5} .vdw-m .it{fill:var(--ink);font-family:var(--f-mono);font-size:10px;font-weight:700;text-anchor:middle}
+.vdw-links .hb-link{transition-delay:1.4s}
+.et-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px} .et-fig{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:.85rem;color:var(--muted)}
+.et-fig svg{width:100%;max-width:150px;aspect-ratio:1;background:var(--surface);border:1px solid var(--line);border-radius:3px} .et-fig.lg svg{max-width:200px}
+.et-p{fill:var(--accent)} .et-p.g2{fill:var(--sub-p)} .et-p.g3{fill:var(--accent2)} .et-p.g4{fill:var(--sub-f)} .et-joint{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:3 3}
+.ep{width:100%;max-width:420px;height:auto;display:block;background:var(--surface);border:1px solid var(--line);border-radius:3px}
+.ep-ax{stroke:var(--ink);stroke-width:1.5} .ep-axl{font-size:11px;fill:var(--muted)} .ep-curve{fill:none;stroke:var(--accent);stroke-width:2.5} .ep-curve.tot{stroke:var(--ink)}
+.ep-att{fill:none;stroke:var(--accent2);stroke-width:1.5;stroke-dasharray:5 3} .ep-rep{fill:none;stroke:var(--sub-f);stroke-width:1.5;stroke-dasharray:5 3}
+.ep-dash{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3} .ep-lab{font-family:var(--f-mono);font-size:11px;font-weight:700;text-anchor:middle;fill:var(--ink)} .ep-lab.att{fill:var(--accent2)} .ep-lab.rep{fill:var(--sub-f)}
+.pr-tab td,.pr-tab th{text-align:center;padding:3px} .pr-tab td:first-child,.pr-tab th:first-child{text-align:left}
+.pr-cell{font:inherit;width:100%;min-width:68px;padding:4px 2px;border:1.5px solid transparent;background:var(--bg);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:1.3rem;line-height:1;font-weight:700;border-radius:3px;color:var(--ink)}
+.pr-cell small{font-size:.68rem;font-weight:400;color:var(--muted)} .pr-cell:hover{border-color:var(--accent2)} .pr-cell.sel{border-color:var(--accent);background:var(--accent-soft)}
+.pr-cell.lv-e{color:var(--ok)} .pr-cell.lv-f{color:var(--sub-f)} .pr-cell.lv-m{color:var(--sub-p)} .pr-cell.lv-0{color:var(--muted)}
+.du-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px} .du-fig{margin:0;font-size:.85rem;color:var(--muted)} .du-fig svg{width:100%;max-width:240px;display:block;background:var(--surface);border:1px solid var(--line);border-radius:3px}
+.du-n{fill:var(--accent)} .du-arr{fill:none;stroke:var(--ink);stroke-width:2} .du-left,.du-right{transition:transform 1.5s ease}
+.du-crack{stroke:var(--sub-f);stroke-width:3;fill:none;stroke-dasharray:120;stroke-dashoffset:96;transition:stroke-dashoffset 1.5s ease}
+#duF.go .du-crack{stroke-dashoffset:0} #duF.go .du-left{transform:translateX(-10px)} #duF.go .du-right{transform:translateX(10px)}
+#duD.go .du-left{transform:translateX(-8px) skewX(-8deg)} #duD.go .du-right{transform:translateX(8px) skewX(8deg)} #duD.go .du-crack{stroke:var(--sub-p);stroke-dashoffset:90}
+.pm-wrap{display:flex;flex-direction:column;gap:8px} #pmSvg{width:100%;max-width:520px;height:auto;display:block;background:var(--surface);border:1px solid var(--line);border-radius:3px}
+.pm-u{transform:translate(var(--x),30px);transition:transform 1.5s ease} .pm-b{stroke:var(--ink);stroke-width:2} .pm-db{stroke:var(--sub-f);stroke-width:2;transition:opacity .8s}
+.pm-c{font-family:var(--f-display);font-weight:800;font-size:12px;text-anchor:middle;fill:var(--ink)} .pm-h{font-size:9px;text-anchor:middle;fill:var(--sub-p);font-weight:700}
+#pmSvg.go .pm-db{opacity:0} #pmSvg.go .pm-u{transform:translate(var(--xg),30px)} .pm-chain{stroke:var(--ink);stroke-width:2;opacity:0;transition:opacity .5s 1.3s} #pmSvg.go .pm-chain{opacity:1}
+.pm-node{fill:var(--sub-f)} .pm-link{stroke:var(--sub-f);stroke-width:2}
+#pmMsg{font-size:.9rem;color:var(--muted)}
 .qbx-wrap{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:var(--bg);border:1px solid var(--line);overflow-x:auto}
 .qbx-title{margin:0 0 2px;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .qbx{display:flex;align-items:flex-end;gap:14px;min-width:max-content}
@@ -564,10 +629,11 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · chapitre I, atomes et ions <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.18.0</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.19.0</span></p>
     </div>
   </header>
 
+  <div class="tabs-scroll"><nav class="chaps" id="chaps" role="tablist" aria-label="Chapitres"></nav></div>
   <div class="tabs-scroll"><nav class="tabs" id="tabs" role="tablist" aria-label="Exercices du cours"></nav></div>
   <div class="tabs-scroll"><nav class="subtabs" id="subtabs" role="tablist" aria-label="Jeux de l'exercice"></nav></div>
 
@@ -1148,6 +1214,10 @@ const SLIDES = {
   "masse-molaire":["c_iso","c_mole"], quantite:["c_mole"], pesee:["c_mole","c_pesee"],
   "sous-couche":["klech","c_quant","c_cases","video"], klechkowski:["klech","c_cases","video"], config:["klech","c_quant","c_cases","c_blocs","cation","video"],
   valence:["liaison","c_stab","c_pred"], formule:["liaison","c_stab","c_pred"], mecanique:["liaison","c_stab","c_pred"],
+  electroneg:["c2_familles","liaison","c2_chi"], famille:["c2_familles","c2_chi","c2_metal","c2_hydro","c2_vdw"],
+  etat:["c2_etats"], courbe:["c2_energie"], equilibre:["c2_energie"],
+  tendance:["c2_energie","c2_props"], ductile:["c2_props","c2_classes"],
+  classe:["c2_classes","c2_metaux","c2_ceram","c2_poly"], alliage:["c2_metaux"], polymere:["c2_poly"],
 };
 
 // Composés du jeu « Mécanique des liaisons » : [formule, A, B, nombre de B, électrons par liaison A–B, type]
@@ -1162,12 +1232,21 @@ function formulaOk(v, f){
   return kb.every(e=>a[e]===b[e]);
 }
 
-const SECTIONS = [
-  {id:"atome", tab:"Structure de l'atome", tools:true},
-  {id:"qte", tab:"Quantité de matière"},
-  {id:"quant", tab:"Nombres quantiques"},
-  {id:"config", tab:"Configuration électronique"},
+const CHAPTERS = [
+  {id:"ch1", num:"I", title:"Atomes et ions", sub:"chapitre I, atomes et ions"},
+  {id:"ch2", num:"II", title:"Liaisons et matériaux", sub:"chapitre II, liaisons interatomiques et classes de matériaux"},
 ];
+const SECTIONS = [
+  {id:"atome", ch:"ch1", tab:"Structure de l'atome", tools:true},
+  {id:"qte", ch:"ch1", tab:"Quantité de matière"},
+  {id:"quant", ch:"ch1", tab:"Nombres quantiques"},
+  {id:"config", ch:"ch1", tab:"Configuration électronique"},
+  {id:"liaisons", ch:"ch2", tab:"Types de liaisons", tools:true},
+  {id:"etats", ch:"ch2", tab:"États et énergie"},
+  {id:"proprietes", ch:"ch2", tab:"Propriétés"},
+  {id:"classes", ch:"ch2", tab:"Classes de matériaux"},
+];
+const chapOf = sid => CHAPTERS.find(c=>c.id===(SECTIONS.find(s=>s.id===sid)||SECTIONS[0]).ch);
 const TOOLS = [{id:"pt", tab:"Tableau périodique"},{id:"bilan", tab:"Bilan"}];
 
 // ---------- État ----------
@@ -1176,18 +1255,22 @@ const store = {
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 };
 const $ = id => document.getElementById(id);
-let state = {section: store.get("section","atome"), tabs: store.get("tabs",{}), game:null, cur:null, done:false, recent:[],
+let state = {section: store.get("section","atome"), tabs: store.get("tabs",{}), chap: store.get("chap",{}), game:null, cur:null, done:false, recent:[],
   sess:{ok:0,total:0,streak:0}, stats: store.get("stats",{})};
 const gameById = id => GAMES.find(g=>g.id===id);
 
 // ---------- Onglets ----------
 function renderSections(){
-  $("tabs").innerHTML = SECTIONS.map((s,i)=>`<button class="tab" role="tab" data-id="${s.id}" aria-selected="${state.section===s.id}">${s.tab}<small><span class="num">Exercice ${i+1}</span></small></button>`).join("");
+  const ch = chapOf(state.section);
+  $("chaps").innerHTML = CHAPTERS.map(c=>`<button class="chap" role="tab" data-id="${c.id}" aria-selected="${c.id===ch.id}"><small>Chapitre ${c.num}</small>${c.title}</button>`).join("");
+  $("chaps").querySelectorAll(".chap").forEach(b=>b.onclick=()=>{ const c = b.dataset.id; openSection(state.chap[c] || SECTIONS.find(s=>s.ch===c).id); });
+  $("chapSub").textContent = ch.sub;
+  $("tabs").innerHTML = SECTIONS.filter(s=>s.ch===ch.id).map((s,i)=>`<button class="tab" role="tab" data-id="${s.id}" aria-selected="${state.section===s.id}">${s.tab}<small><span class="num">Exercice ${i+1}</span></small></button>`).join("");
   $("tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>openSection(b.dataset.id));
 }
 function openSection(id){
   const s = SECTIONS.find(x=>x.id===id) || SECTIONS[0];
-  state.section = s.id; store.set("section", s.id); renderSections();
+  state.section = s.id; store.set("section", s.id); state.chap[s.ch] = s.id; store.set("chap", state.chap); renderSections();
   const items = GAMES.filter(g=>g.section===s.id).concat(s.tools?TOOLS:[]);
   let tab = state.tabs[s.id]; if(!items.some(t=>t.id===tab)) tab = items[0].id;
   openTab(tab);
@@ -1255,6 +1338,7 @@ function check(){
   methodTimers.forEach(clearTimeout); methodTimers = [];
   $("exp").innerHTML = `<div class="explain">${all?"<b>Parfait.</b> ":""}${g.explain(c, vals)}${!all && SLIDES[state.game] ? `<br><button type="button" class="linkbtn" id="seeSlides">${seeLbl}</button>` : ""}</div>`;
   document.querySelectorAll('#exp .qbx-wrap[data-play]').forEach(w=>playBoxes(w, 500, 380));
+  document.querySelectorAll('#exp [data-anim]').forEach(el=>later(()=>el.classList.add("go"), 400));
   if($("seeSlides")) $("seeSlides").onclick = ()=>openSlides(at);
   state.done = true; $("go").textContent = "Suivant";
   const s = state.sess; s.total++; if(all){s.ok++; s.streak++;} else s.streak = 0;
@@ -1280,7 +1364,7 @@ function renderSlides(){
   if($("slCustom").dataset.key === "video" && !(sl.open && list[Math.min(sl.i,list.length-1)] === "video")){ $("slCustom").innerHTML = ""; delete $("slCustom").dataset.key; }
   $("slBtn").setAttribute("aria-expanded", sl.open);
   $("slides").hidden = !sl.open || !list.length;
-  if(!sl.open || !list.length) return;
+  if(!sl.open || !list.length){ stopMethod(); delete $("slCustom").dataset.key; $("slCustom").innerHTML = ""; return; }
   sl.i = Math.min(sl.i, list.length-1);
   const n = list[sl.i];
   if($("slCustom").dataset.key !== n){ stopMethod(); $("slCustom").dataset.key = n; CUSTOM[n].build(); }
@@ -1310,7 +1394,7 @@ const GRP_WARN = {PO4:" (dans PO₄, P donne ses 5 électrons aux O : il vaut +5
 const GRP_NOTE = {C:"+4 dans CO₃²⁻", N:"+5 dans NO₃⁻ (mais −3 dans NH₄⁺)", P:"+5 dans PO₄³⁻", S:"+6 dans SO₄²⁻"};
 const REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 let methodTimers = [], balTimers = [];
-function stopMethod(){ methodTimers.forEach(clearTimeout); methodTimers = []; balTimers.forEach(clearTimeout); balTimers = []; }
+function stopMethod(){ methodTimers.forEach(clearTimeout); methodTimers = []; balTimers.forEach(clearTimeout); balTimers = []; if(typeof loopTimers!=="undefined"){ loopTimers.forEach(clearTimeout); loopTimers = []; } }
 const later = (fn,ms,arr=methodTimers) => arr.push(setTimeout(fn, REDUCE ? 0 : ms));
 const SUPD = {0:'⁰',1:'¹',2:'²',3:'³',4:'⁴',5:'⁵',6:'⁶',7:'⁷',8:'⁸',9:'⁹'}, SUBD = {0:'₀',1:'₁',2:'₂',3:'₃',4:'₄',5:'₅',6:'₆',7:'₇',8:'₈',9:'₉'};
 const ionUni = (sym,q) => sym.replace(/\d/g,d=>SUBD[d]) + (Math.abs(q)>1?SUPD[Math.abs(q)]:'') + (q>0?'⁺':'⁻');
@@ -2235,6 +2319,566 @@ function buildPredict(){
   }, 0);
 }
 
+// ======================= Chapitre II : liaisons interatomiques et classes de matériaux =======================
+// Électronégativité (échelle de Pauling)
+const CHI = {H:2.20,Li:0.98,Be:1.57,B:2.04,C:2.55,N:3.04,O:3.44,F:3.98,Na:0.93,Mg:1.31,Al:1.61,Si:1.90,P:2.19,S:2.58,Cl:3.16,K:0.82,Ca:1.00,
+  Sc:1.36,Ti:1.54,V:1.63,Cr:1.66,Mn:1.55,Fe:1.83,Co:1.88,Ni:1.91,Cu:1.90,Zn:1.65,Ga:1.81,Ge:2.01,As:2.18,Se:2.55,Br:2.96,Kr:3.00,
+  Rb:0.82,Sr:0.95,Y:1.22,Zr:1.33,Nb:1.6,Mo:2.16,Tc:1.9,Ru:2.2,Rh:2.28,Pd:2.20,Ag:1.93,Cd:1.69,In:1.78,Sn:1.96,Sb:2.05,Te:2.1,I:2.66,Xe:2.6,
+  Cs:0.79,Ba:0.89,La:1.1,Ce:1.12,Pr:1.13,Nd:1.14,Pm:1.13,Sm:1.17,Eu:1.2,Gd:1.2,Tb:1.2,Dy:1.22,Ho:1.23,Er:1.24,Tm:1.25,Yb:1.1,Lu:1.27,
+  Hf:1.3,Ta:1.5,W:2.36,Re:1.9,Os:2.2,Ir:2.2,Pt:2.28,Au:2.54,Hg:2.00,Tl:1.62,Pb:1.87,Bi:2.02,Po:2.0,At:2.2,Rn:2.2,Fr:0.7,Ra:0.9,
+  Ac:1.1,Th:1.3,Pa:1.5,U:1.38,Np:1.36,Pu:1.28,Am:1.13,Cm:1.28,Bk:1.3,Cf:1.3,Es:1.3,Fm:1.3,Md:1.3,No:1.3,Lr:1.3};
+const chiTxt = x => x.toFixed(2).replace(".",",");
+const bondClass = d => d<=0.4 ? "covalente non polarisée" : d<1.7 ? "covalente polarisée" : "ionique";
+const chiColor = x => { const t = Math.max(0, Math.min(1, (x-0.7)/3.3)); return `hsl(${Math.round(215-215*t)} 65% 48%)`; };
+let loopTimers = [];
+const loop = (fn, ms) => { const tick = ()=>{ fn(); loopTimers.push(setTimeout(tick, ms)); }; tick(); };
+
+// Deux atomes et leur nuage électronique : le nuage glisse vers le plus électronégatif
+function polarSVG(a, b, d){
+  const neg = CHI[a]>=CHI[b] ? "a" : "b", ionic = d>=1.7, shift = (ionic ? 56 : Math.min(d/1.7,1)*40)*(neg==="a"?-1:1);
+  const lab = side => d<=0.4 ? "" : (neg===side ? (ionic?"−":"δ−") : (ionic?"+":"δ+"));
+  const cap = d<=0.4 ? "nuage partagé équitablement" : ionic ? `les électrons passent sur ${neg==="a"?a:b} : deux ions` : `nuage attiré vers ${neg==="a"?a:b}`;
+  return `<svg class="pol" data-anim viewBox="0 0 260 124" style="--sh:${shift.toFixed(1)}px" role="img" aria-label="Liaison ${a}–${b}">
+    <line x1="70" y1="60" x2="190" y2="60" class="pol-bond"/>
+    <ellipse class="pol-cloud" cx="130" cy="60" rx="${ionic?30:58}" ry="26"/>
+    <circle cx="70" cy="60" r="24" class="pol-atom A"/><text x="70" y="66" class="pol-sym">${a}</text>
+    <circle cx="190" cy="60" r="24" class="pol-atom B"/><text x="190" y="66" class="pol-sym">${b}</text>
+    <text x="70" y="24" class="pol-d">${lab("a")}</text><text x="190" y="24" class="pol-d">${lab("b")}</text>
+    <text x="130" y="112" class="pol-cap">${cap}</text></svg>`;
+}
+const chiGauge = d => `<div class="chi-gauge"><div class="cg-bar"><span class="z1" style="width:${(0.4/3.3*100).toFixed(1)}%">non pol.</span><span class="z2" style="width:${(1.3/3.3*100).toFixed(1)}%">polarisée</span><span class="z3">ionique</span></div><i class="cg-pt" style="left:${(Math.min(d,3.3)/3.3*100).toFixed(1)}%"><b>Δχ = ${chiTxt(d)}</b></i><div class="cg-ticks"><span>0</span><span style="left:${(0.4/3.3*100).toFixed(1)}%">0,4</span><span style="left:${(1.7/3.3*100).toFixed(1)}%">1,7</span></div></div>`;
+
+const BOND_PAIRS = [["H","H"],["C","H"],["C","C"],["N","H"],["O","H"],["C","O"],["H","F"],["H","Cl"],["Na","Cl"],["K","F"],["Mg","O"],["Ca","Cl"],
+  ["Li","F"],["C","Cl"],["S","H"],["N","N"],["Si","O"],["Al","O"],["Cs","F"],["B","H"],["P","H"],["C","N"],["C","F"],["Al","Cl"],["Zn","S"],
+  ["Si","C"],["K","Cl"],["Cl","Cl"],["O","O"],["Na","F"],["Mg","Cl"],["Si","H"],["N","O"],["S","O"],["Ba","O"],["Rb","Br"],["Be","Cl"],["Ca","F"]];
+
+const BOND_TYPES = {
+  cov:{n:"covalente", f:"forte", how:"les deux atomes <b>partagent</b> un ou plusieurs doublets d'électrons pour compléter leur couche externe", ex:"H₂O, CH₄, N₂, diamant"},
+  ion:{n:"ionique", f:"forte", how:"un atome <b>donne</b> ses électrons à l'autre (Δχ ≥ 1,7) ; les ions + et − s'attirent", ex:"NaCl, MgO, CaF₂"},
+  met:{n:"métallique", f:"forte", how:"les électrons de valence sont <b>mis en commun par tout le morceau de métal</b> : un « gaz d'électrons » circule entre les ions", ex:"Fe, Cu, Al, laiton"},
+  hyd:{n:"hydrogène", f:"faible", how:"un H lié à un atome très électronégatif (O, N, F) porte un <b>δ+</b> et s'approche du <b>doublet non liant</b> d'une molécule voisine", ex:"eau liquide, HF, nylon"},
+  vdw:{n:"Van der Waals", f:"faible", how:"les pôles <b>δ+ et δ−</b> de molécules voisines s'attirent ; très faible, mais nombreuse dans les grosses molécules", ex:"acétone, CO₂ solide, polyéthylène"}};
+const BOND_CASES = [
+  ["Ce qui lie H et O à l'intérieur d'une molécule d'eau","cov"],["Ce qui lie les molécules d'eau entre elles dans l'eau liquide","hyd"],
+  ["Ce qui lie Na⁺ et Cl⁻ dans le sel de table","ion"],["Ce qui tient les atomes de cuivre ensemble dans un fil électrique","met"],
+  ["Ce qui lie entre elles les chaînes de polyéthylène (uniquement des C–H, aucun doublet non liant)","vdw"],
+  ["Ce qui lie entre elles les chaînes du nylon, grâce à leurs groupes N–H et C=O","hyd"],["Ce qui lie les deux atomes de la molécule N₂","cov"],
+  ["Ce qui lie Mg²⁺ et O²⁻ dans la magnésie MgO","ion"],["Ce qui lie les atomes de fer dans une poutre d'acier","met"],
+  ["Ce qui lie Si et O dans la silice SiO₂ (Δχ = 1,54)","cov"],["Ce qui lie les molécules d'acétone (des dipôles) entre elles","vdw"],
+  ["Ce qui lie les atomes de carbone dans le diamant","cov"],["Ce qui tient les atomes d'aluminium d'une canette ensemble","met"],
+  ["Ce qui lie Ca²⁺ et F⁻ dans la fluorine CaF₂","ion"],["Ce qui lie les molécules de CH₄ entre elles dans le méthane liquide","vdw"],
+  ["Ce qui lie H et F dans la molécule HF","cov"],["Ce qui lie les molécules de HF entre elles dans le liquide","hyd"],
+  ["Ce qui lie les molécules d'ammoniac NH₃ entre elles","hyd"],["Ce qui lie C et H dans le méthane CH₄","cov"],
+  ["Ce qui tient les atomes de cuivre et de zinc ensemble dans le laiton","met"],["Ce qui lie K⁺ et Br⁻ dans KBr","ion"],
+  ["Ce qui lie les molécules de CO₂ entre elles dans la neige carbonique","vdw"],["Ce qui lie les atomes de carbone le long d'une chaîne de polyéthylène","cov"],
+  ["Ce qui lie les molécules d'alcool (groupe O–H) entre elles","hyd"],["Ce qui lie les atomes d'or d'une bague","met"]];
+
+const STATES = ["gaz","liquide","solide amorphe","solide monocristallin","solide polycristallin"];
+const INTER = ["aucune ou très faible","lâche, mais les entités restent en contact","forte et rigide"];
+const STATE_CASES = [
+  ["De la vapeur d'eau : des molécules indépendantes qui se déplacent dans tout le volume disponible",0,0],
+  ["Du méthane à température ambiante : des molécules quasi indépendantes qui bougent de façon chaotique",0,0],
+  ["De l'eau à 20 °C : des molécules liées par des liaisons hydrogène mais qui restent mobiles ; elle prend la forme du récipient",1,1],
+  ["De l'huile : des molécules mobiles, liées entre elles par des liaisons faibles, parfaitement déformable",1,1],
+  ["Du verre : des atomes fortement liés, mais sans aucun ordre à longue distance",2,2],
+  ["Un gros cristal de sel : des ions rangés périodiquement dans les trois directions, en un seul bloc",3,2],
+  ["Un acier : une multitude de petits grains cristallins séparés par des joints de grains",4,2],
+  ["Une cellule photovoltaïque en silicium monocristallin : un seul bloc à arrangement périodique",3,2],
+  ["Un polymère amorphe : des chaînes figées, enchevêtrées sans ordre",2,2],
+  ["Un morceau de cuivre industriel : un assemblage de nombreux petits monocristaux",4,2],
+  ["L'air : un mélange de molécules N₂ et O₂ sans interaction notable",0,0],
+  ["Du mercure à 20 °C : des atomes mobiles qui restent en contact",1,1],
+  ["Un diamant naturel : un seul cristal, des atomes de carbone rangés périodiquement",3,2],
+  ["Du plâtre pris : un enchevêtrement de petits cristaux de gypse",4,2],
+  ["Une bouteille en verre : un solide rigide dont les atomes ne sont pas rangés périodiquement",2,2]];
+
+// Courbes d'énergie potentielle Ep(r) (modèle de Morse, pour les dessiner)
+const CURVE_TYPES = {cov:{n:"covalente ou ionique", D:1, r0:1.0, k:3.2, note:"rigide et moyennement compacte"}, met:{n:"métallique", D:0.6, r0:1.3, k:2.2, note:"moyennement rigide et compacte"}, weak:{n:"faible", D:0.25, r0:1.8, k:1.6, note:"peu rigide et peu compacte"}};
+const morse = (D,r0,k,r) => D*(Math.pow(1-Math.exp(-k*(r-r0)),2)-1);
+function curvesSVG(list, W=360, H=240){
+  const x0 = 34, y0 = 70, xs = (W-x0-10)/3.4, ys = (H-y0-30)/1.1;
+  const X = r => x0 + r*xs, Y = e => y0 - e*ys;
+  const paths = list.map(c=>{ let d=""; for(let r=0.45;r<=3.4;r+=0.02){ const e = Math.min(morse(c.D,c.r0,c.k,r), 0.55); d += (d?"L":"M")+X(r).toFixed(1)+" "+Y(e).toFixed(1)+" "; } return `<path class="ep-curve" style="stroke:${c.color}" d="${d}"/>`; }).join("");
+  const marks = list.map(c=>`<line class="ep-dash" x1="${X(c.r0).toFixed(1)}" y1="${y0}" x2="${X(c.r0).toFixed(1)}" y2="${Y(-c.D).toFixed(1)}"/><line class="ep-dash" x1="${x0}" y1="${Y(-c.D).toFixed(1)}" x2="${X(c.r0).toFixed(1)}" y2="${Y(-c.D).toFixed(1)}"/><text class="ep-lab" style="fill:${c.color}" x="${X(c.r0).toFixed(1)}" y="${y0-6}">${c.lab}</text>`).join("");
+  return `<svg class="ep" viewBox="0 0 ${W} ${H}" role="img" aria-label="Courbes d'énergie potentielle">
+    <line class="ep-ax" x1="${x0}" y1="${y0}" x2="${W-6}" y2="${y0}"/><line class="ep-ax" x1="${x0}" y1="${H-20}" x2="${x0}" y2="8"/>
+    <text class="ep-axl" x="${W-8}" y="${H-8}" text-anchor="end">r (distance entre atomes)</text><text class="ep-axl" x="${x0+6}" y="16">E<tspan font-size="8" dy="3">p</tspan></text>
+    ${marks}${paths}</svg>`;
+}
+
+// Propriétés selon le type de liaison : [covalente, ionique, métallique, faible] ; e = élevé, m = moyen, f = faible, 0 = nul
+const PROP_TAB = [
+  ["Module d'Young (résistance mécanique)",["e","e","e","f"],"Plus la liaison est forte, plus il faut tirer fort pour écarter les atomes : le matériau est rigide. Les liaisons faibles cèdent facilement."],
+  ["Température de fusion (résistance thermique)",["e","e","m","f"],"Fondre, c'est casser les liaisons par agitation thermique : il faut d'autant plus de chaleur que la liaison est forte."],
+  ["Dilatation thermique",["f","f","m","e"],"Un puits d'énergie étroit et profond (liaison forte) laisse peu d'espace aux atomes pour s'écarter quand ils vibrent : la dilatation est faible. Un puits large (liaison faible) se dilate beaucoup."],
+  ["Conductivité électrique",["0","0","e","0"],"Seuls les métaux ont des électrons délocalisés, libres de circuler. Dans une liaison covalente les électrons sont bloqués dans les doublets ; dans un solide ionique les ions ne bougent pas (≈ 0, sauf dopage)."],
+  ["Résistance à la corrosion",["m","m","f","e"],"Les métaux cèdent facilement leurs électrons : ils s'oxydent. Les matériaux à liaisons faibles (polymères) ne réagissent presque pas."],
+  ["Ductilité",["f","f","e","m"],"La liaison métallique n'est pas directionnelle : les plans d'atomes glissent (dislocations) sans casser. Les liaisons covalentes et ioniques sont directionnelles : le matériau casse net, il est fragile. Les chaînes d'un polymère peuvent glisser à chaud."]];
+const PROP_LVL = {e:"élevé(e)", m:"moyen(ne)", f:"faible", "0":"nul(le)"};
+const PROP_ARROW = {e:"↗", m:"→", f:"↘", "0":"0"};
+const BOND4 = ["covalente","ionique","métallique","faible"];
+
+const DUCT_WHY = ["liaison peu directionnelle : les dislocations se déplacent facilement","liaison forte et directionnelle : les dislocations sont bloquées, le matériau casse net",
+  "chaînes reliées par des liaisons faibles : elles peuvent glisser les unes sur les autres","réseau fortement réticulé : rien ne peut glisser"];
+const DUCT_CASES = [["acier doux",0,0],["cuivre",0,0],["aluminium",0,0],["or",0,0],["plomb",0,0],["laiton",0,0],
+  ["verre",1,1],["porcelaine",1,1],["alumine Al₂O₃",1,1],["diamant",1,1],["silice SiO₂",1,1],["béton",1,1],["sel NaCl",1,1],
+  ["polyéthylène (sac plastique)",0,2],["nylon",0,2],["PVC souple",0,2],["bakélite",1,3],["résine époxy durcie",1,3]];
+
+const CLASSES = ["métal ou alliage","verre ou céramique","polymère","composite","matériau naturel"];
+const CLASS_BOND = ["métallique","ionique et/ou covalente","covalente dans les chaînes + liaisons faibles entre elles","plusieurs classes associées"];
+const CLASS_CASES = [["acier",0,0],["fonte",0,0],["laiton",0,0],["bronze",0,0],["dural",0,0],["cuivre",0,0],["aluminium",0,0],["titane",0,0],
+  ["verre pyrex",1,1],["verre en cristal (SiO₂ + PbO)",1,1],["béton",1,1],["ciment",1,1],["brique",1,1],["porcelaine",1,1],["alumine Al₂O₃",1,1],
+  ["nitrure de silicium Si₃N₄",1,1],["carbure de silicium SiC",1,1],["zircone ZrO₂",1,1],["titanate de baryum BaTiO₃",1,1],["plâtre CaSO₄",1,1],
+  ["polyéthylène",2,2],["nylon (polyamide 6.6)",2,2],["caoutchouc",2,2],["bakélite",2,2],["PVC",2,2],["polystyrène",2,2],
+  ["béton armé (béton + tiges d'acier)",3,3],["pneu (élastomère + fils d'acier)",3,3],["fibre de verre + polyester",3,3],["béton + fibres de lin",3,3],["carbone + époxy",3,3],
+  ["bois",4,2],["laine",4,2],["coton",4,2],["cuir",4,2],["os",4,2],["toile d'araignée",4,2],["cheveux",4,2]];
+const CLASS_WHY = ["liaisons métalliques : électrons délocalisés, ductile, bon conducteur, sensible à la corrosion",
+  "liaisons fortes ioniques, covalentes ou iono-covalentes : dur, réfractaire, fragile, isolant",
+  "longues chaînes covalentes (macromolécules) reliées par des liaisons faibles (hydrogène, Van der Waals) : léger, sensible à la température",
+  "association de deux matériaux de classes différentes pour combiner leurs propriétés",
+  "d'origine animale ou végétale : chaînes carbonées covalentes et liaisons faibles, parfois proche des céramiques (os)"];
+
+const ALLOYS = [["acier","fer","carbone","< 2 %"],["fonte","fer","carbone","> 2 %"],["laiton","cuivre","zinc",null],["bronze","cuivre","étain",null],["dural","aluminium","cuivre et manganèse",null]];
+
+const POLY_TYPES = ["thermoplastique semi-cristallin","thermoplastique amorphe","élastomère thermoplastique","élastomère thermodurcissable","thermodurcissable"];
+const POLY_STRUCT = ["chaînes linéaires ou ramifiées, non reliées","chaînes reliées par quelques liaisons faibles","chaînes reliées par quelques liaisons fortes","réseau tridimensionnel fortement réticulé"];
+const POLY_HEAT = ["ramollit : les chaînes glissent et on peut le remettre en forme","brûle sans ramollir : les chaînes ne sont pas mobiles"];
+const POLY_CASES = [
+  ["Rigide, plutôt opaque, avec une température de fusion et une température de transition vitreuse ; des zones cristallines dans une matrice amorphe",0,0,0],
+  ["Souple, plutôt translucide, une température de transition vitreuse mais pas de température de fusion ; chaînes enchevêtrées sans ordre",1,0,0],
+  ["Extrêmement élastique, fragile, possède une température de transition vitreuse ; chaînes reliées par des points de réticulation faibles",2,1,0],
+  ["Extrêmement élastique, fragile, brûle sans fondre ; chaînes reliées par quelques liaisons fortes",3,2,1],
+  ["Dur, rigide, fragile, brûle sans fondre ; chaînes reliées en un réseau tridimensionnel dense",4,3,1],
+  ["Un sac en polyéthylène : des chaînes linéaires avec des zones cristallines, qui glissent quand on chauffe",0,0,0],
+  ["Le caoutchouc vulcanisé d'un pneu : chaînes reliées par des ponts de soufre (liaisons fortes), très élastique, ne fond pas",3,2,1],
+  ["Une résine époxy durcie : réseau 3D dense, dur et fragile, carbonise à la chaleur",4,3,1],
+  ["La bakélite d'une vieille prise électrique : dure, fragile, brûle sans fondre",4,3,1],
+  ["Le polystyrène transparent d'un boîtier : amorphe, se ramollit à chaud et se remoule",1,0,0],
+  ["Le nylon d'une corde : des zones cristallines, fond à chaud, rigide",0,0,0],
+  ["Une semelle en élastomère thermoplastique : très élastique, se ramollit à chaud et peut être refondue",2,1,0]];
+
+const CH2_GAMES = [
+  {id:"electroneg", section:"liaisons", tab:"Électronégativité", title:"Électronégativité et polarité",
+   desc:"À partir des électronégativités χ des deux atomes, calcule Δχ, classe la liaison et trouve vers quel atome les électrons sont attirés.",
+   q:"Quelle est la nature de cette liaison ?",
+   gen(){ const [a,b] = pickFresh(BOND_PAIRS, p=>p.join("-")); const d = Math.round(Math.abs(CHI[a]-CHI[b])*100)/100;
+     return {a,b,ca:CHI[a],cb:CHI[b],d,cls:bondClass(d),neg: CHI[a]===CHI[b]?null:(CHI[a]>CHI[b]?a:b)}; },
+   show: c => plate(`${c.a} – ${c.b}`, `${BY_SYM[c.a].n} et ${BY_SYM[c.b].n.toLowerCase()}`, `χ(${c.a}) = ${chiTxt(c.ca)} · χ(${c.b}) = ${chiTxt(c.cb)}`),
+   fields: c => [
+     F("dchi","Différence d'électronégativité Δχ", v=>isFinite(parseNum(v)) && Math.abs(parseNum(v)-c.d)<0.011, chiTxt(c.d)),
+     F("cls","Type de liaison", selOk(c.cls), c.cls, "select", ["covalente non polarisée","covalente polarisée","ionique"]),
+     F("neg","Atome qui attire le plus les électrons (pôle δ−)", selOk(c.neg||"aucun : partage équitable"), c.neg||"aucun : partage équitable", "select", [...new Set([c.a,c.b])].concat("aucun : partage équitable"))],
+   explain: c => `Δχ = |${chiTxt(c.ca)} − ${chiTxt(c.cb)}| = <b>${chiTxt(c.d)}</b>. ${c.d<=0.4 ? "Δχ ≤ 0,4 : les électrons sont partagés équitablement, la liaison est <b>covalente non polarisée</b>." : c.d<1.7 ? `0,4 < Δχ < 1,7 : les électrons restent partagés mais glissent vers <b>${c.neg}</b>, plus électronégatif, qui porte un δ− (l'autre un δ+). Liaison <b>covalente polarisée</b>.` : `Δχ ≥ 1,7 : <b>${c.neg}</b> attire tellement les électrons qu'il les prend : transfert, liaison <b>ionique</b> entre ${ionHTML(c.neg,-1)} et ${ionHTML(c.neg===c.a?c.b:c.a,1)}.`}${chiGauge(c.d)}<div class="pol-wrap">${polarSVG(c.a,c.b,c.d)}</div>`},
+
+  {id:"famille", section:"liaisons", tab:"Reconnaître la liaison", title:"Reconnaître la liaison",
+   desc:"Covalente, ionique, métallique, hydrogène ou Van der Waals ? À partir de la situation décrite, retrouve la liaison en jeu et sa force.",
+   q:"De quelle liaison s'agit-il ?",
+   gen(){ const [desc,k] = pickFresh(BOND_CASES, x=>x[0]); return {desc,k,...BOND_TYPES[k]}; },
+   show: c => ({wide:true, html:`<p class="situation">${c.desc}</p>`}),
+   fields: c => [
+     F("ty","Type de liaison", selOk(c.n), c.n, "select", Object.values(BOND_TYPES).map(t=>t.n)),
+     F("fo","Liaison forte ou faible ?", selOk(c.f), c.f, "select", ["forte","faible"])],
+   explain: c => `Liaison <b>${c.n}</b> (${c.f}) : ${c.how}. Exemples : ${c.ex}.${c.k==="hyd"||c.k==="vdw" ? " Les liaisons faibles agissent <b>entre</b> molécules ; les liaisons fortes <b>à l'intérieur</b> des molécules ou du solide." : ""}`},
+
+  {id:"etat", section:"etats", tab:"États de la matière", title:"États de la matière",
+   desc:"Gaz, liquide ou solide ? Et quel genre de solide ? Retrouve l'état à partir de la description et la force des interactions entre les entités.",
+   q:"Dans quel état est cette matière ?",
+   gen(){ const [desc,s,i] = pickFresh(STATE_CASES, x=>x[0]); return {desc,s,i}; },
+   show: c => ({wide:true, html:`<p class="situation">${c.desc}</p>`}),
+   fields: c => [F("st","État", selOk(STATES[c.s]), STATES[c.s], "select", STATES), F("in","Interaction entre les atomes ou molécules", selOk(INTER[c.i]), INTER[c.i], "select", INTER)],
+   explain: c => ["<b>Gaz</b> : entités quasi indépendantes, mouvement chaotique dans tout le volume.","<b>Liquide</b> : interaction lâche, les molécules restent proches mais mobiles : le liquide se déforme et prend la forme du récipient.",
+     "<b>Solide amorphe</b> : squelette rigide d'atomes fortement liés, mais <b>sans ordre</b> à longue distance (verre, polymère amorphe).","<b>Solide monocristallin</b> : un seul bloc avec un arrangement <b>périodique</b> dans les trois directions.",
+     "<b>Solide polycristallin</b> : un assemblage de nombreux petits monocristaux (grains) séparés par des joints de grains ; c'est le cas de presque tous les métaux."][c.s]},
+
+  {id:"courbe", section:"etats", tab:"Courbes d'énergie", title:"Lire une courbe d'énergie de liaison",
+   desc:"Trois courbes Ep(r) sont tracées. La profondeur du puits donne la force de la liaison (rigidité, température de fusion) ; la position r₀ du minimum donne la distance entre atomes (compacité).",
+   q:"Compare les trois liaisons",
+   gen(){ const keys = ["cov","met","weak"].sort(()=>Math.random()-0.5), cols = ["var(--accent)","var(--sub-p)","var(--accent2)"];
+     const cs = keys.map((k,i)=>({...CURVE_TYPES[k],ty:k,lab:"ABC"[i],color:cols[i], r0:CURVE_TYPES[k].r0*(0.95+Math.random()*0.1), D:CURVE_TYPES[k].D*(0.9+Math.random()*0.2)}));
+     const ask = rnd(cs); return {cs, ask}; },
+   show: c => ({wide:true, html:curvesSVG(c.cs)}),
+   fields: c => [
+     F("strong","Courbe de la liaison la plus forte (puits le plus profond)", selOk(c.cs.find(x=>x.ty==="cov").lab), c.cs.find(x=>x.ty==="cov").lab, "select", ["A","B","C"]),
+     F("far","Courbe où les atomes sont les plus éloignés (r₀ le plus grand)", selOk(c.cs.find(x=>x.ty==="weak").lab), c.cs.find(x=>x.ty==="weak").lab, "select", ["A","B","C"]),
+     F("ty",`Type de liaison de la courbe ${c.ask.lab}`, selOk(c.ask.n), c.ask.n, "select", Object.values(CURVE_TYPES).map(t=>t.n))],
+   explain: c => `La liaison est stable au <b>minimum</b> de la courbe : à gauche, la répulsion des nuages électroniques domine ; à droite, l'attraction. ${c.cs.map(x=>`Courbe <b style="color:${x.color}">${x.lab}</b> : liaison <b>${x.n}</b>, ${x.note}`).join(" · ")}. Puits profond et étroit = liaison forte, matériau rigide qui fond haut et se dilate peu. Puits large et peu profond = liaison faible, matériau mou, qui fond bas et se dilate beaucoup.`},
+
+  {id:"equilibre", section:"etats", tab:"Distance d'équilibre", title:"Distance d'équilibre r₀",
+   desc:"L'énergie potentielle entre deux ions s'écrit Ep(r) = −A/r + B/(n·rⁿ). Au minimum, la dérivée est nulle : retrouve r₀ et l'énergie de cohésion.",
+   q:"Trouve la position d'équilibre",
+   gen(){ const pairs=[["Na","Cl",1,1],["Mg","O",2,2],["K","Br",1,1],["Ca","O",2,2],["Li","F",1,1],["Ba","O",2,2],["Cs","Cl",1,1],["Na","F",1,1],["K","Cl",1,1],["Sr","O",2,2]];
+     const [a,b,z1,z2] = pickFresh(pairs, p=>p[0]+p[1]); const n = rnd([7,8,9,10]); const r0 = rnd([0.20,0.22,0.24,0.25,0.26,0.28,0.30,0.32]);
+     const A = 1.44*z1*z2, B = +(A*Math.pow(r0,n-1)).toPrecision(3); const r = Math.pow(B/A, 1/(n-1)), Ep = -A/r + B/(n*Math.pow(r,n));
+     return {a,b,z1,z2,n,A,B,r0:r,Ep}; },
+   show: c => ({wide:true, html:`<div class="eq-show"><p class="fc-formula">E<sub>p</sub>(r) = − <span class="fc-frac"><span>A</span><span>r</span></span> + <span class="fc-frac"><span>B</span><span>n · rⁿ</span></span></p>
+     <p>Ions ${ionHTML(c.a,c.z1)} et ${ionHTML(c.b,-c.z2)} : Z₁ = ${c.z1}, Z₂ = ${c.z2}. Avec A = Z₁ Z₂ e² / (4πε₀) et e² / (4πε₀) = 1,44 eV·nm.</p>
+     <p>n = ${c.n} · B = ${fmtN(c.B,3)} eV·nm<sup>${c.n}</sup></p></div>`}),
+   fields: c => [
+     F("A","A (en eV·nm)", v=>near(v,c.A,0.01), fmtN(c.A,3)),
+     F("r0","Distance d'équilibre r₀ (en nm)", v=>near(v,c.r0,0.02), fmtN(c.r0,3)),
+     F("Ep","Énergie de cohésion Ep(r₀) (en eV, négative)", v=>near(v,c.Ep,0.03), fmtN(c.Ep,3))],
+   explain: c => `A = ${c.z1} × ${c.z2} × 1,44 = <b>${fmtN(c.A,3)} eV·nm</b>. Au minimum, dE<sub>p</sub>/dr = A/r² − B/r<sup>n+1</sup> = 0, donc r<sub>0</sub><sup>n−1</sup> = B/A et <b>r₀ = (B/A)<sup>1/(n−1)</sup></b> = (${fmtN(c.B,3)} / ${fmtN(c.A,3)})<sup>1/${c.n-1}</sup> ≈ <b>${fmtN(c.r0,3)} nm</b>. Puis Ep(r₀) = −${fmtN(c.A,3)}/${fmtN(c.r0,3)} + ${fmtN(c.B,3)}/(${c.n} × ${fmtN(c.r0,3)}<sup>${c.n}</sup>) ≈ <b>${fmtN(c.Ep,3)} eV</b>. Astuce : Ep(r₀) = −(A/r₀)(1 − 1/n). Plus |Ep(r₀)| est grand, plus la liaison est forte.`},
+
+  {id:"tendance", section:"proprietes", tab:"Liaison → propriété", title:"De la liaison aux propriétés",
+   desc:"Pour un type de liaison et une propriété donnés, indique la tendance : élevée, moyenne, faible ou nulle. Puis explique-la.",
+   q:"Quelle est la tendance ?",
+   gen(){ const i = Math.floor(Math.random()*4), [p,v,why] = pickFresh(PROP_TAB, x=>x[0]); return {b:BOND4[i], p, v:v[i], why}; },
+   show: c => plate(`${c.b}`, `Liaison <b>${c.b}</b>`, `Propriété : <b>${c.p}</b>`),
+   fields: c => [F("lv","Tendance", selOk(PROP_LVL[c.v]), PROP_LVL[c.v], "select", Object.values(PROP_LVL))],
+   explain: c => `${c.p} ${c.b==="faible"?"pour un matériau à liaisons faibles":"pour une liaison "+c.b} : <b>${PROP_LVL[c.v]}</b> ${PROP_ARROW[c.v]}. ${c.why}`},
+
+  {id:"ductile", section:"proprietes", tab:"Fragile ou ductile", title:"Fragile ou ductile ?",
+   desc:"Un matériau ductile se déforme de façon irréversible (déformation plastique) avant de casser ; un matériau fragile casse net. Trouve le comportement et sa cause.",
+   q:"Comment se comporte ce matériau ?",
+   gen(){ const [m,d,w] = pickFresh(DUCT_CASES, x=>x[0]); return {m,d,w}; },
+   show: c => plate(c.m, "sous une traction"),
+   fields: c => [F("co","Comportement", selOk(c.d?"fragile":"ductile"), c.d?"fragile":"ductile", "select", ["ductile","fragile"]), F("wh","Pourquoi ?", selOk(DUCT_WHY[c.w]), DUCT_WHY[c.w], "select", DUCT_WHY)],
+   explain: c => `${c.m[0].toUpperCase()+c.m.slice(1)} est <b>${c.d?"fragile":"ductile"}</b> : ${DUCT_WHY[c.w]}. ${c.d ? "Une fissure se propage d'un coup : rupture sans déformation plastique." : "Le matériau s'allonge et s'amincit avant de rompre : déformation plastique."}`},
+
+  {id:"classe", section:"classes", tab:"Classer un matériau", title:"Classer un matériau",
+   desc:"Métal, céramique ou verre, polymère, composite ou matériau naturel ? Retrouve la classe du matériau et la liaison qui assure sa cohésion.",
+   q:"À quelle classe appartient ce matériau ?",
+   gen(){ const [m,k,b] = pickFresh(CLASS_CASES, x=>x[0]); return {m,k,b}; },
+   show: c => plate(c.m),
+   fields: c => [F("cl","Classe", selOk(CLASSES[c.k]), CLASSES[c.k], "select", CLASSES), F("bd","Liaison principale", selOk(CLASS_BOND[c.b]), CLASS_BOND[c.b], "select", CLASS_BOND)],
+   explain: c => `<b>${CLASSES[c.k][0].toUpperCase()+CLASSES[c.k].slice(1)}</b> : ${CLASS_WHY[c.k]}.`},
+
+  {id:"alliage", section:"classes", tab:"Alliages", title:"Les alliages du cours",
+   desc:"Acier, fonte, laiton, bronze, dural : retrouve la composition à partir du nom, ou le nom à partir de la composition.",
+   q:"Alliages",
+   gen(){ const [nm,base,add,c] = pickFresh(ALLOYS, x=>x[0]); return {nm,base,add,c,mode:Math.random()<0.5?"n":"c"}; },
+   show: c => c.mode==="n" ? plate(c.nm, "de quoi est-il fait ?") : plate(`${c.base} + ${c.add}${c.c?" ("+c.c+")":""}`, "quel est cet alliage ?"),
+   fields: c => c.mode==="n"
+     ? [F("ba","Métal de base", selOk(c.base), c.base, "select", ["fer","cuivre","aluminium"]), F("ad","Élément(s) ajouté(s)", selOk(c.add), c.add, "select", ["carbone","zinc","étain","cuivre et manganèse"])].concat(c.c ? [F("te","Teneur en carbone (en masse)", selOk(c.c), c.c, "select", ["< 2 %","> 2 %"])] : [])
+     : [F("nm","Nom de l'alliage", selOk(c.nm), c.nm, "select", ALLOYS.map(a=>a[0]))],
+   explain: c => `<b>${c.nm[0].toUpperCase()+c.nm.slice(1)}</b> = ${c.base} + ${c.add}${c.c?" avec "+c.c+" de carbone en masse":""}. ${c.nm==="acier"?"En dessous de 2 % de carbone l'alliage reste ductile et forgeable.":c.nm==="fonte"?"Au-delà de 2 % de carbone l'alliage devient plus dur mais fragile : on le coule plutôt qu'on ne le forge.":c.nm==="laiton"?"Le zinc rend le cuivre plus dur et moins cher (robinetterie, instruments).":c.nm==="bronze"?"L'étain durcit le cuivre : cloches, hélices, statues.":"Cuivre et manganèse durcissent l'aluminium tout en le gardant léger (aéronautique)."}`},
+
+  {id:"polymere", section:"classes", tab:"Polymères", title:"Quel polymère ?",
+   desc:"Thermoplastique, élastomère ou thermodurcissable ? À partir des propriétés, retrouve la famille du polymère, l'organisation de ses chaînes et son comportement à chaud.",
+   q:"Quel type de polymère ?",
+   gen(){ const [desc,t,s,h] = pickFresh(POLY_CASES, x=>x[0]); return {desc,t,s,h}; },
+   show: c => ({wide:true, html:`<p class="situation">${c.desc}</p>`}),
+   fields: c => [F("ty","Famille", selOk(POLY_TYPES[c.t]), POLY_TYPES[c.t], "select", POLY_TYPES), F("st","Organisation des chaînes", selOk(POLY_STRUCT[c.s]), POLY_STRUCT[c.s], "select", POLY_STRUCT), F("he","À chaud", selOk(POLY_HEAT[c.h]), POLY_HEAT[c.h], "select", POLY_HEAT)],
+   explain: c => `<b>${POLY_TYPES[c.t][0].toUpperCase()+POLY_TYPES[c.t].slice(1)}</b> : ${POLY_STRUCT[c.s]} ; à chaud il ${POLY_HEAT[c.h]}. ${c.t<=1 ? "Thermoplastique : les chaînes ne sont pas reliées entre elles, seules des liaisons faibles les tiennent ; la chaleur les libère." : c.t===2 ? "Élastomère thermoplastique : quelques points de réticulation faibles donnent l'élasticité, mais ils lâchent à chaud." : c.t===3 ? "Élastomère thermodurcissable : les ponts entre chaînes sont des liaisons fortes, le matériau reste élastique mais ne fond plus." : "Thermodurcissable : le réseau tridimensionnel bloque tout mouvement, le matériau est dur et fragile et se dégrade avant de fondre."}`},
+];
+GAMES.push(...CH2_GAMES);
+
+// ---------- Fiches du chapitre II ----------
+const mini = (cls, inner, vb="0 0 100 70") => `<svg class="fc-ico ${cls}" viewBox="${vb}" aria-hidden="true">${inner}</svg>`;
+function buildFamilles(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Pourquoi les atomes se lient-ils ?</h3>
+      <p class="m-lead">Un atome seul est rarement stable : il cherche la configuration du gaz noble le plus proche. Pour y arriver, il peut <b>partager</b> des électrons, en <b>transférer</b>, ou les mettre en commun avec tout un bloc. Dans tous les cas, c'est une <b>attraction électrostatique</b> entre charges + et − qui tient l'ensemble. Ces liaisons assurent la cohésion des molécules et des solides, et leur nature décide des propriétés de la matière.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Trois liaisons fortes</h3>
+      <div class="fc-cards fc-3">
+        <div class="fc-card pos">${mini("", `<circle cx="32" cy="35" r="16" class="ia"/><circle cx="68" cy="35" r="16" class="ib"/><circle cx="46" cy="35" r="3" class="ie"/><circle cx="54" cy="35" r="3" class="ie"/>`)}<b>Covalente</b><span>Partage d'un doublet (simple), deux (double) ou trois (triple). La plus résistante. Entre non-métaux, Δχ &lt; 1,7.</span><small>H₂O, CO₂, N₂, diamant</small></div>
+        <div class="fc-card pos">${mini("", `<circle cx="30" cy="35" r="13" class="ia"/><text x="30" y="40" class="it">+</text><circle cx="70" cy="35" r="18" class="ib"/><text x="70" y="40" class="it">−</text><path d="M40 20 Q50 8 60 18" class="iarr"/>`)}<b>Ionique</b><span>Transfert d'électrons du moins électronégatif vers le plus électronégatif (Δχ ≥ 1,7). Les ions + et − s'attirent.</span><small>NaCl, MgO, CaF₂</small></div>
+        <div class="fc-card pos">${mini("", `${[20,42,64,86].map(x=>[22,48].map(y=>`<circle cx="${x}" cy="${y}" r="7" class="ia"/>`).join("")).join("")}${[[31,35],[53,30],[75,40],[60,58],[40,14]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2.6" class="ie"/>`).join("")}`)}<b>Métallique</b><span>Les électrons externes des atomes métalliques sont mis en commun par tout l'échantillon : un gaz d'électrons libres, d'où la conduction électrique.</span><small>Fe, Cu, Al, Zn</small></div>
+      </div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> Deux liaisons faibles, entre molécules</h3>
+      <div class="fc-cards">
+        <div class="fc-card neg">${mini("", `<circle cx="26" cy="30" r="12" class="ib"/><circle cx="14" cy="46" r="6" class="ia"/><circle cx="40" cy="44" r="6" class="ia"/><circle cx="76" cy="30" r="12" class="ib"/><circle cx="64" cy="46" r="6" class="ia"/><circle cx="90" cy="44" r="6" class="ia"/><path d="M44 42 L66 34" class="idash"/>`)}<b>Hydrogène</b><span>Un H lié à O, N ou F porte un δ+ : il est attiré par le doublet non liant d'une molécule voisine. Plus forte que Van der Waals, mais 10 fois plus faible qu'une covalente.</span><small>eau liquide, glace, nylon, ADN</small></div>
+        <div class="fc-card neg">${mini("", `<ellipse cx="30" cy="25" rx="22" ry="10" class="idip"/><text x="14" y="29" class="it">δ+</text><text x="42" y="29" class="it">δ−</text><ellipse cx="70" cy="50" rx="22" ry="10" class="idip"/><text x="54" y="54" class="it">δ+</text><text x="82" y="54" class="it">δ−</text><path d="M48 30 L56 44" class="idash"/>`)}<b>Van der Waals</b><span>Attraction entre les pôles δ+ et δ− de molécules voisines. La plus faible, mais très nombreuse dans les polymères, elle finit par assurer la cohésion.</span><small>acétone, CO₂ solide, polyéthylène</small></div>
+      </div>
+      <p class="m-rule"><b>Forte</b> = à l'intérieur d'une molécule ou d'un cristal (covalente, ionique, métallique). <b>Faible</b> = entre molécules (hydrogène, Van der Waals). Fondre un solide moléculaire, c'est casser des liaisons faibles ; fondre un métal ou une céramique, c'est casser des liaisons fortes : il faut bien plus de chaleur.</p>
+    </div>`;
+}
+
+let chiPair = ["H","Cl"];
+function buildChi(){
+  const opts = sel => PT.filter(e=>CHI[e.s]).map(e=>`<option value="${e.s}" ${e.s===sel?"selected":""}>${e.s} · ${e.n} (${chiTxt(CHI[e.s])})</option>`).join("");
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> L'électronégativité χ : qui attire le plus les électrons ?</h3>
+      <p class="m-lead">Chaque élément a une <b>électronégativité</b> : sa capacité à attirer vers lui les électrons d'une liaison. Elle <b>augmente de gauche à droite</b> et <b>de bas en haut</b> dans le tableau ; le fluor est le champion (3,98), le césium et le francium les plus faibles. Les gaz nobles ne forment presque pas de liaisons : leur valeur n'a guère de sens.</p>
+      <div class="fc-blocs chi-grid">${PT.map(e=>{const [r,c] = posOf(e.Z); return CHI[e.s] ? `<span style="grid-row:${r};grid-column:${c};background:${chiColor(CHI[e.s])}" title="${e.n} : χ = ${chiTxt(CHI[e.s])}">${e.s}<small>${chiTxt(CHI[e.s])}</small></span>` : `<span class="nochi" style="grid-row:${r};grid-column:${c}" title="${e.n}">${e.s}</span>`;}).join("")}</div>
+      <div class="chi-scale"><span>faible (0,7)</span><i></i><span>forte (4,0)</span></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Δχ classe la liaison : choisis deux atomes</h3>
+      <div class="m-pick"><label>Atome 1 <select id="chiA">${opts(chiPair[0])}</select></label><label>Atome 2 <select id="chiB">${opts(chiPair[1])}</select></label></div>
+      <div class="chi-out"><div id="chiTxt" class="fc-calc"></div><div class="pol-wrap" id="chiSvg"></div></div>
+      <p class="m-rule">Une liaison covalente <b>polarisée</b> crée des pôles δ+ et δ− : c'est la source des liaisons faibles entre molécules. La polarité d'une molécule entière dépend aussi de sa <b>forme</b> et de ses <b>doublets non liants</b> : CO₂ est linéaire, ses deux dipôles s'annulent ; H₂O est coudée, elle est polaire.</p>
+    </div>`;
+  const run = ()=>{
+    stopMethod(); chiPair = [$("chiA").value, $("chiB").value]; const [a,b] = chiPair, d = Math.round(Math.abs(CHI[a]-CHI[b])*100)/100;
+    $("chiTxt").innerHTML = `<p>Δχ = |${chiTxt(CHI[a])} − ${chiTxt(CHI[b])}| = <b>${chiTxt(d)}</b> → liaison <b>${bondClass(d)}</b>${d>0.4&&d<1.7?` ; ${CHI[a]>CHI[b]?a:b} porte le δ−`:d>=1.7?` ; ${CHI[a]>CHI[b]?a:b} devient l'anion`:""}.</p>${chiGauge(d)}`;
+    $("chiSvg").innerHTML = polarSVG(a,b,d); later(()=>$("chiSvg").querySelector("svg").classList.add("go"), 300);
+  };
+  $("chiA").onchange = run; $("chiB").onchange = run; run();
+}
+
+function buildMetal(){
+  const W = 320, H = 150, ions = [], els = [];
+  for(let i=0;i<7;i++) for(let j=0;j<3;j++) ions.push([35+i*42, 30+j*45]);
+  for(let k=0;k<12;k++) els.push({x:20+Math.random()*(W-40), y:15+Math.random()*(H-30), vx:(Math.random()-0.5)*3, vy:(Math.random()-0.5)*3});
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> La liaison métallique : un gaz d'électrons</h3>
+      <p class="m-lead">Dans un métal, les électrons de la couche externe sont peu retenus (Z élevé, électrons loin du noyau). Ils quittent leur atome et circulent librement dans tout le morceau : les ions positifs restent fixes, baignés dans ce <b>gaz d'électrons</b> qui les colle ensemble. Comme la liaison n'a pas de direction privilégiée, les plans d'atomes peuvent glisser : le métal est <b>ductile</b>.</p>
+      <div class="met-wrap"><svg id="metSvg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gaz d'électrons dans un métal"><rect x="4" y="4" width="${W-8}" height="${H-8}" rx="40" class="met-bg"/>${ions.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="13" class="met-ion"/><text x="${x}" y="${y+4}" class="met-plus">+</text>`).join("")}${els.map((e,i)=>`<circle id="me${i}" cx="${e.x.toFixed(1)}" cy="${e.y.toFixed(1)}" r="4" class="met-e"/>`).join("")}</svg>
+      <div class="m-pick"><button type="button" class="btn small" id="metBtn">⚡ Brancher une pile</button><span id="metMsg">Sans tension, les électrons bougent dans tous les sens : pas de courant.</span></div></div>
+    </div>`;
+  let field = false;
+  $("metBtn").onclick = ()=>{ field = !field; $("metBtn").textContent = field ? "Débrancher" : "⚡ Brancher une pile"; $("metMsg").textContent = field ? "Avec une tension, le gaz d'électrons dérive dans un sens : c'est le courant électrique. Voilà pourquoi les métaux conduisent." : "Sans tension, les électrons bougent dans tous les sens : pas de courant."; $("metSvg").classList.toggle("on", field); };
+  loop(()=>{ els.forEach((e,i)=>{ e.vx += (Math.random()-0.5)*1.2 + (field?0.25:0); e.vy += (Math.random()-0.5)*1.2; const sp = Math.hypot(e.vx,e.vy); if(sp>3.5){ e.vx *= 3.5/sp; e.vy *= 3.5/sp; }
+    e.x += e.vx; e.y += e.vy; if(e.x<14){ e.x = field ? W-14 : 14; if(!field) e.vx = Math.abs(e.vx); } if(e.x>W-14){ e.x = field ? 14 : W-14; if(!field) e.vx = -Math.abs(e.vx); } if(e.y<12){ e.y=12; e.vy=Math.abs(e.vy);} if(e.y>H-12){ e.y=H-12; e.vy=-Math.abs(e.vy); }
+    const c = $("me"+i); if(c){ c.setAttribute("cx", e.x.toFixed(1)); c.setAttribute("cy", e.y.toFixed(1)); } }); }, 50);
+}
+
+const waterSVG = (x,y,rot) => `<g class="h2o" transform="translate(${x} ${y}) rotate(${rot})"><circle cx="0" cy="0" r="14" class="w-o"/><text x="0" y="4" class="w-t">O</text><text x="0" y="-19" class="w-dm">δ−</text><circle cx="-16" cy="14" r="8" class="w-h"/><text x="-16" y="17" class="w-th">H</text><text x="-26" y="30" class="w-dp">δ+</text><circle cx="16" cy="14" r="8" class="w-h"/><text x="16" y="17" class="w-th">H</text><text x="26" y="30" class="w-dp">δ+</text></g>`;
+function buildHbond(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> La liaison hydrogène : un pont entre molécules</h3>
+      <p class="m-lead">Dans l'eau, la liaison O–H est très polarisée (Δχ = 1,24) : l'oxygène garde les électrons, chaque H se retrouve presque « nu », avec un <b>δ+</b>. De son côté, l'oxygène porte deux <b>doublets non liants</b> (δ−). Le H d'une molécule vient se coller au doublet de la voisine : c'est la <b>liaison hydrogène</b>. Elle explique que l'eau soit liquide à 20 °C alors que des molécules aussi petites devraient être un gaz.</p>
+      <div class="m-chips" id="hbList"><button type="button" class="chip" data-k="w">Eau H₂O</button><button type="button" class="chip" data-k="m">Méthane CH₄</button></div>
+      <div class="hb-wrap"><svg id="hbSvg" viewBox="0 0 320 190" role="img" aria-label="Liaisons hydrogène"></svg><div class="m-story" id="hbStory"></div></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Trois conditions</h3>
+      <ul class="fc-list"><li>un <b>H lié à un atome très électronégatif</b> (O, N, F) : le H porte un δ+ franc ;</li><li>un <b>doublet non liant</b> sur l'atome voisin pour accueillir ce H ;</li><li>une <b>forme de molécule</b> qui ne compense pas les dipôles.</li></ul>
+      <p class="m-rule">C'est pour cela que le <b>nylon</b> (groupes N–H et C=O) est si résistant : ses chaînes sont cousues entre elles par des liaisons hydrogène.</p>
+    </div>`;
+  const show = k => {
+    stopMethod(); $("hbList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.k===k));
+    if(k==="w"){
+      const M = [[70,60,20],[200,50,-15],[120,140,170],[250,140,200]], links = [];
+      const hp = ([x,y,r],sx) => { const a = r*Math.PI/180; return [x + sx*16*Math.cos(a) - 14*Math.sin(a), y + sx*16*Math.sin(a) + 14*Math.cos(a)]; };
+      M.forEach((m,i)=>[-1,1].forEach(sx=>{ const [hx,hy] = hp(m,sx); let best = null;
+        M.forEach((o,j)=>{ if(j===i) return; const d = Math.hypot(o[0]-hx,o[1]-hy); if(d<100 && (!best || d<best.d)) best = {d,o}; });
+        if(best) links.push(`<line class="hb-link" x1="${hx.toFixed(1)}" y1="${hy.toFixed(1)}" x2="${best.o[0]}" y2="${best.o[1]}"/>`); }));
+      $("hbSvg").innerHTML = M.map(m=>waterSVG(...m)).join("") + links.slice(0,4).join("") + `<text class="hb-cap" x="160" y="182">liaisons hydrogène (pointillés) : H δ+ ··· doublet de O δ−</text>`;
+      $("hbStory").innerHTML = `<p class="st1">Chaque molécule d'eau peut donner <b>2</b> liaisons hydrogène (ses deux H) et en recevoir <b>2</b> (ses deux doublets) : un réseau mobile mais cohérent, le liquide.</p><p class="st2">Dans la glace, ce réseau devient régulier et plus aéré : la glace flotte.</p>`;
+      later(()=>{ $("hbSvg").classList.add("go"); $("hbStory").classList.add("s2"); }, 600);
+    } else {
+      const ch4 = (x,y) => `<g transform="translate(${x} ${y})"><circle cx="0" cy="0" r="13" class="w-c"/><text x="0" y="4" class="w-t">C</text>${[0,90,180,270].map(a=>`<circle cx="${(22*Math.cos(a*Math.PI/180)).toFixed(1)}" cy="${(22*Math.sin(a*Math.PI/180)).toFixed(1)}" r="7" class="w-h"/>`).join("")}</g>`;
+      $("hbSvg").innerHTML = ch4(70,60) + ch4(200,55) + ch4(125,140) + ch4(255,140) + `<text class="hb-cap" x="160" y="182">pas de liaison hydrogène : le méthane est un gaz à 20 °C</text>`;
+      $("hbStory").innerHTML = `<p class="st1">Dans CH₄, Δχ(C–H) = 0,35 : la liaison n'est pas polarisée, le H ne porte pas de δ+. Le carbone a utilisé <b>tous</b> ses électrons dans des liaisons : aucun doublet non liant. Et la forme symétrique annule les dipôles.</p><p class="st2">Résultat : seules de faibles liaisons de Van der Waals subsistent, CH₄ bout à −161 °C.</p>`;
+      later(()=>$("hbStory").classList.add("s2"), 600);
+    }
+  };
+  $("hbList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>show(b.dataset.k)); show("w");
+}
+
+function buildVdw(){
+  const dip = (x,y,rot,i) => `<g class="vdw-m" id="vd${i}" style="--r0:${rot}deg;--r1:${y>100?180:0}deg;--x:${x}px;--y:${y}px"><ellipse cx="0" cy="0" rx="34" ry="13" class="idip"/><text x="-18" y="4" class="it">δ+</text><text x="18" y="4" class="it">δ−</text></g>`;
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Van der Waals : des dipôles qui s'attirent</h3>
+      <p class="m-lead">Une molécule polarisée est un petit <b>dipôle</b> : un côté δ+, un côté δ−. Deux dipôles voisins se tournent pour mettre un δ+ en face d'un δ− et s'attirent faiblement. Cette attraction, c'est la liaison de <b>Van der Waals</b>, la plus faible de toutes : quelques centièmes d'eV, contre plusieurs eV pour une covalente.</p>
+      <div class="vdw-wrap"><svg id="vdwSvg" viewBox="0 0 320 170" role="img" aria-label="Dipôles de Van der Waals">${[[60,45,-35],[150,40,60],[245,50,-70],[70,125,110],[165,130,-20],[255,125,40]].map(([x,y,r],i)=>dip(x,y,r,i)).join("")}<g class="vdw-links">${[[94,45,116,40],[184,40,211,50],[104,125,131,130],[199,130,221,125],[60,58,70,112],[150,53,165,117],[245,63,255,112]].map(([a,b,c,d])=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" class="hb-link"/>`).join("")}</g></svg>
+      <div class="m-pick"><button type="button" class="btn small" id="vdwBtn">▶ Laisser les molécules s'orienter</button></div></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Faible, mais en nombre</h3>
+      <p class="m-lead">Dans une grosse molécule comme une chaîne de <b>polymère</b>, chaque maillon apporte sa petite attraction. Des milliers de liaisons de Van der Waals le long de deux chaînes finissent par donner une cohésion réelle : c'est ce qui tient un sac en polyéthylène à température ambiante. Mais il suffit de chauffer un peu pour les défaire : les chaînes glissent, le plastique ramollit.</p>
+      ${mini("vdw-chain", `<path d="M5 20 q10 -12 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" class="chain A"/><path d="M5 50 q10 -12 20 0 t20 0 t20 0 t20 0 t20 0 t20 0" class="chain B"/>${[15,35,55,75,95,115].map(x=>`<line x1="${x}" y1="24" x2="${x}" y2="46" class="hb-link on"/>`).join("")}`, "0 0 130 70")}
+    </div>`;
+  $("vdwBtn").onclick = ()=>{ $("vdwSvg").classList.add("go"); };
+}
+
+const ETAT_INFO = {gaz:"Gaz : entités libres, mouvement chaotique, pas de forme ni de volume propre.", liq:"Liquide : les molécules restent en contact (liaisons faibles) mais glissent les unes sur les autres : volume propre, pas de forme propre.",
+  amorphe:"Solide amorphe : atomes fortement liés mais désordonnés, comme un liquide figé (verre, polymère amorphe).", mono:"Monocristal : un seul réseau périodique dans tout le bloc.", poly:"Polycristal : des grains cristallins d'orientations différentes, séparés par des joints de grains (métaux, céramiques frittées)."};
+function buildEtats(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Gaz, liquide, solide : une question de liaisons</h3>
+      <p class="m-lead">Plus les interactions entre les entités sont fortes par rapport à l'agitation thermique, plus la matière est condensée et ordonnée.</p>
+      <div class="et-grid">
+        <figure class="et-fig"><svg id="etG" viewBox="0 0 120 120"></svg><figcaption><b>Gaz</b><br>aucune interaction</figcaption></figure>
+        <figure class="et-fig"><svg id="etL" viewBox="0 0 120 120"></svg><figcaption><b>Liquide</b><br>interaction lâche</figcaption></figure>
+        <figure class="et-fig"><svg id="etS" viewBox="0 0 120 120"></svg><figcaption><b>Solide</b><br>squelette rigide</figcaption></figure>
+      </div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Trois sortes de solides</h3>
+      <div class="m-chips" id="etList"><button type="button" class="chip" data-k="amorphe">Amorphe</button><button type="button" class="chip" data-k="mono">Monocristallin</button><button type="button" class="chip" data-k="poly">Polycristallin</button></div>
+      <div class="fc-row"><figure class="et-fig lg"><svg id="etX" viewBox="0 0 160 160"></svg></figure><p class="m-lead" id="etTxt"></p></div>
+    </div>`;
+  const dot = (x,y,cls="") => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" class="et-p ${cls}"/>`;
+  // gaz : 9 particules libres · liquide : 24 serrées qui glissent · solide : réseau qui vibre
+  const gas = [...Array(9)].map(()=>({x:10+Math.random()*100, y:10+Math.random()*100, vx:(Math.random()-0.5)*4, vy:(Math.random()-0.5)*4}));
+  const liq = []; for(let i=0;i<5;i++) for(let j=0;j<5;j++) liq.push({x:18+i*21+(j%2)*6, y:22+j*20, dx:0, dy:0});
+  const sol = []; for(let i=0;i<5;i++) for(let j=0;j<5;j++) sol.push({x:18+i*21, y:18+j*21});
+  const svgG = $("etG"), svgL = $("etL"), svgS = $("etS"); let t = 0;
+  loop(()=>{ t++;
+    gas.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<8||p.x>112) p.vx*=-1; if(p.y<8||p.y>112) p.vy*=-1; });
+    liq.forEach(p=>{ p.dx += (Math.random()-0.5)*1.5; p.dy += (Math.random()-0.5)*1.5; p.dx *= 0.9; p.dy *= 0.9; p.x += p.dx*0.3; p.y += p.dy*0.3; if(p.x<10) p.x=10; if(p.x>110) p.x=110; if(p.y<14) p.y=14; if(p.y>110) p.y=110; });
+    svgG.innerHTML = gas.map(p=>dot(p.x,p.y)).join(""); svgL.innerHTML = liq.map(p=>dot(p.x,p.y)).join("");
+    svgS.innerHTML = sol.map(p=>dot(p.x+Math.sin(t*0.6+p.y)*1.2, p.y+Math.cos(t*0.5+p.x)*1.2)).join("");
+  }, 70);
+  const draw = k => {
+    $("etList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.k===k)); $("etTxt").innerHTML = ETAT_INFO[k]; let s = "";
+    if(k==="mono"){ for(let i=0;i<7;i++) for(let j=0;j<7;j++) s += dot(16+i*21.5, 16+j*21.5); }
+    else if(k==="amorphe"){ let pts=[]; for(let n=0;n<60 && pts.length<34;n++){ const x=12+Math.random()*136, y=12+Math.random()*136; if(pts.every(q=>Math.hypot(q[0]-x,q[1]-y)>17)) pts.push([x,y]); } s = pts.map(([x,y])=>dot(x,y)).join(""); }
+    else { const grains = [[0,0,70,80,0,"g1"],[70,0,160,70,25,"g2"],[0,80,90,160,-20,"g3"],[90,70,160,160,45,"g4"]];
+      grains.forEach(([x0,y0,x1,y1,ang,cls])=>{ const cx=(x0+x1)/2, cy=(y0+y1)/2, ca=Math.cos(ang*Math.PI/180), sa=Math.sin(ang*Math.PI/180);
+        for(let i=-6;i<=6;i++) for(let j=-6;j<=6;j++){ const x = cx + (i*16*ca - j*16*sa), y = cy + (i*16*sa + j*16*ca); if(x>x0+7&&x<x1-7&&y>y0+7&&y<y1-7) s += dot(x,y,cls); } });
+      s += `<path d="M70 0 L70 80 L0 80 M70 70 L160 70 M90 70 L90 160" class="et-joint"/>`; }
+    $("etX").innerHTML = s;
+  };
+  $("etList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>draw(b.dataset.k)); draw("poly");
+}
+
+function buildEnergie(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Deux forces en compétition</h3>
+      <p class="m-lead">Quand deux atomes s'approchent, leurs charges interagissent. Les noyaux attirent le nuage de l'autre (<b>attraction</b>, portée longue, en −A/r). Quand les nuages se recouvrent, ils se repoussent violemment (<b>répulsion</b>, portée courte, en +B/(n·rⁿ) avec n entre 7 et 10). L'énergie totale a un <b>minimum</b> : c'est la distance d'équilibre <b>r₀</b>, où la liaison est stable.</p>
+      <p class="fc-formula">E<sub>p</sub>(r) = − <span class="fc-frac"><span>Z₁ Z₂ e²</span><span>4π ε₀ r</span></span> + <span class="fc-frac"><span>B</span><span>n rⁿ</span></span></p>
+      <div class="m-pick"><label>Liaison <select id="enType"><option value="cov">covalente ou ionique</option><option value="met">métallique</option><option value="weak">faible</option></select></label>
+        <label>n = <output id="enNv">8</output> <input type="range" id="enN" min="7" max="10" value="8"></label>
+        <label><input type="checkbox" id="enParts" checked> montrer attraction et répulsion</label></div>
+      <div class="en-wrap"><div id="enSvg"></div><div class="m-story" id="enTxt"></div></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Lire la courbe</h3>
+      <ul class="fc-list"><li><b>Profondeur du puits</b> = énergie à fournir pour séparer les atomes : liaison forte → matériau rigide (module d'Young élevé), température de fusion haute.</li><li><b>Position r₀</b> = distance entre atomes : petit r₀ → matériau compact et dense.</li><li><b>Largeur du puits</b> : étroit → les atomes vibrent sans s'écarter, faible dilatation ; large → forte dilatation.</li></ul>
+      <div id="enAll"></div>
+    </div>`;
+  const run = ()=>{
+    const k = $("enType").value || "cov", n = +$("enN").value, T = CURVE_TYPES[k]; $("enNv").value = n;
+    const A = T.D*T.r0*n/(n-1), B = A*Math.pow(T.r0,n-1);   // choisis pour que le minimum soit en r0 avec la profondeur D
+    const W=360,H=250,x0=34,y0=90,xs=(W-x0-10)/3.4,ys=(H-y0-30)/1.1, X=r=>x0+r*xs, Y=e=>y0-Math.max(-1.1,Math.min(e,0.75))*ys;
+    const path = (f,cls) => { let d=""; for(let r=0.3;r<=3.4;r+=0.02){ d += (d?"L":"M")+X(r).toFixed(1)+" "+Y(f(r)).toFixed(1)+" "; } return `<path class="${cls}" d="${d}"/>`; };
+    const parts = $("enParts").checked;
+    $("enSvg").innerHTML = `<svg class="ep" viewBox="0 0 ${W} ${H}"><line class="ep-ax" x1="${x0}" y1="${y0}" x2="${W-6}" y2="${y0}"/><line class="ep-ax" x1="${x0}" y1="${H-10}" x2="${x0}" y2="8"/>
+      <text class="ep-axl" x="${W-8}" y="${y0-8}" text-anchor="end">r</text><text class="ep-axl" x="${x0+6}" y="16">E<tspan font-size="8" dy="3">p</tspan></text>
+      ${parts ? path(r=>-A/r,"ep-att")+path(r=>B/(n*Math.pow(r,n)),"ep-rep") : ""}${path(r=>-A/r+B/(n*Math.pow(r,n)),"ep-curve tot")}
+      <line class="ep-dash" x1="${X(T.r0).toFixed(1)}" y1="${y0}" x2="${X(T.r0).toFixed(1)}" y2="${Y(-T.D).toFixed(1)}"/><line class="ep-dash" x1="${x0}" y1="${Y(-T.D).toFixed(1)}" x2="${X(T.r0).toFixed(1)}" y2="${Y(-T.D).toFixed(1)}"/>
+      <text class="ep-lab" x="${X(T.r0).toFixed(1)}" y="${y0-6}">r₀</text><text class="ep-lab" x="${x0+4}" y="${(Y(-T.D)+12).toFixed(1)}" text-anchor="start">E₀</text>
+      ${parts?`<text class="ep-lab att" x="${X(2.6).toFixed(1)}" y="${(Y(-A/2.6)+14).toFixed(1)}">attraction −A/r</text><text class="ep-lab rep" x="${X(1.1).toFixed(1)}" y="${Y(0.6).toFixed(1)}" text-anchor="start">répulsion +B/(n rⁿ)</text>`:""}</svg>`;
+    $("enTxt").innerHTML = `<p class="st1">Liaison <b>${T.n}</b> : ${T.note}. Profondeur du puits <b>E₀</b> ${k==="cov"?"grande":k==="met"?"moyenne":"petite"}, distance r₀ ${k==="cov"?"courte":k==="met"?"moyenne":"longue"}.</p><p class="st1">Avec n = ${n}, la répulsion ${n>=9?"monte très vite : le puits est raide et étroit côté gauche":"est un peu plus douce : le puits s'élargit"}. À gauche de r₀, les atomes se repoussent ; à droite, ils s'attirent : ils reviennent toujours vers r₀, comme un ressort.</p>`;
+  };
+  $("enType").onchange = run; $("enN").oninput = run; $("enParts").onchange = run; run();
+  const all = ["cov","met","weak"].map((k,i)=>({...CURVE_TYPES[k], lab:["cov.","mét.","faible"][i], color:["var(--accent)","var(--sub-p)","var(--accent2)"][i]}));
+  $("enAll").innerHTML = curvesSVG(all) + `<p class="m-lead">Les trois familles comparées : la liaison covalente ou ionique a le puits le plus profond et le plus raide ; la liaison faible, le plus plat et le plus éloigné.</p>`;
+}
+
+function buildProps(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Le type de liaison dicte les propriétés</h3>
+      <p class="m-lead">Clique sur une case pour comprendre la tendance.</p>
+      <div class="tbl-wrap"><table class="fc-tab pr-tab"><thead><tr><th>Propriété</th>${BOND4.map(b=>`<th>${b[0].toUpperCase()+b.slice(1)}</th>`).join("")}</tr></thead><tbody>
+      ${PROP_TAB.map(([p,v],i)=>`<tr><td>${p}</td>${v.map((x,j)=>`<td><button type="button" class="pr-cell lv-${x}" data-i="${i}" data-j="${j}">${PROP_ARROW[x]}<small>${PROP_LVL[x]}</small></button></td>`).join("")}</tr>`).join("")}
+      </tbody></table></div>
+      <p class="m-rule" id="prWhy">Choisis une case.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Fragile ou ductile ?</h3>
+      <p class="m-lead">La <b>ductilité</b> est la capacité à se déformer de façon <b>irréversible</b> (déformation plastique) sans casser. Un matériau <b>fragile</b> casse net dès qu'une fissure démarre. Lance la traction sur les deux éprouvettes :</p>
+      <div class="m-pick"><button type="button" class="btn small" id="duBtn">▶ Tirer</button></div>
+      <div class="du-grid">
+        <figure class="du-fig"><svg id="duF" viewBox="0 0 160 130">${latticeSVG(true)}</svg><figcaption><b>Fragile</b> (céramique, verre) : la liaison directionnelle bloque les dislocations, la fissure se propage.</figcaption></figure>
+        <figure class="du-fig"><svg id="duD" viewBox="0 0 160 130">${latticeSVG(false)}</svg><figcaption><b>Ductile</b> (métal) : les plans d'atomes glissent, l'entaille s'arrondit, la pièce s'allonge.</figcaption></figure>
+      </div>
+    </div>`;
+  $("slCustom").querySelectorAll(".pr-cell").forEach(b=>b.onclick=()=>{ $("slCustom").querySelectorAll(".pr-cell").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); const [p,v,why] = PROP_TAB[+b.dataset.i]; $("prWhy").innerHTML = `<b>${p}</b>, liaison ${BOND4[+b.dataset.j]} : ${PROP_LVL[v[+b.dataset.j]]}. ${why}`; });
+  $("duBtn").onclick = ()=>{ $("duF").classList.toggle("go"); $("duD").classList.toggle("go"); };
+}
+function latticeSVG(fragile){
+  const L = (cls, x1,y1,x2,y2) => `<line class="${cls}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+  let g = `<g class="du-left">`; for(let i=0;i<=3;i++) for(let j=0;j<=4;j++){ g += `<circle cx="${20+i*18}" cy="${30+j*18}" r="3" class="du-n"/>`; } g += "</g>";
+  let d = `<g class="du-right">`; for(let i=0;i<=3;i++) for(let j=0;j<=4;j++){ d += `<circle cx="${86+i*18}" cy="${30+j*18}" r="3" class="du-n"/>`; } d += "</g>";
+  return `<path class="du-arr" d="M60 10 l-14 0 m3 -4 l-3 4 l3 4"/><path class="du-arr" d="M100 10 l14 0 m-3 -4 l3 4 l-3 4"/>${g}${d}<path class="du-crack${fragile?" f":" d"}" d="M80 26 L80 ${fragile?110:50}"/>`;
+}
+
+function buildClasses(){
+  const metal = mini("cl-ico", `<ellipse cx="50" cy="35" rx="46" ry="26" class="met-bg"/>${[12,30,48,66,84].map(x=>[25,45].map(y=>`<circle cx="${x+(y>30?9:0)}" cy="${y}" r="6" class="ia"/>`).join("")).join("")}`);
+  const ceram = mini("cl-ico", `${[[20,20],[50,15],[80,20],[35,40],[65,40],[20,60],[50,55],[80,60]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" class="ia"/>`).join("")}${[[20,20,50,15],[50,15,80,20],[20,20,35,40],[50,15,35,40],[50,15,65,40],[80,20,65,40],[35,40,20,60],[35,40,50,55],[65,40,50,55],[65,40,80,60]].map(([a,b,c,d])=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" class="ibond"/>`).join("")}`);
+  const poly = mini("cl-ico", `<path d="M6 30 q12 -22 24 -4 t20 8 t16 -14 t14 10 t16 -8" class="chain A"/><path d="M4 55 q14 -18 26 -2 t18 6 t18 -16 t14 12 t16 -6" class="chain B"/>${[30,56,80].map(x=>`<line x1="${x}" y1="32" x2="${x}" y2="50" class="hb-link on"/>`).join("")}`);
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Trois grandes classes, trois types de liaisons</h3>
+      <div class="fc-cards fc-3">
+        <div class="fc-card pos">${metal}<b>Métaux et alliages</b><span>Liaison <b>métallique</b>. Cristallins, souvent compacts (CFC, HC). Ductiles, tenaces, bons conducteurs, mais sensibles à la corrosion et à la fatigue.</span><small>fer, cuivre, acier, laiton, bronze, dural</small></div>
+        <div class="fc-card">${ceram}<b>Verres et céramiques</b><span>Liaisons <b>ioniques, covalentes ou iono-covalentes</b>. Cristallines (céramiques) ou amorphes (verres). Dures, réfractaires, résistantes à l'usure et à la corrosion, mais fragiles.</span><small>SiO₂, Al₂O₃, SiC, ZrO₂, béton, porcelaine</small></div>
+        <div class="fc-card neg">${poly}<b>Polymères</b><span>Longues chaînes <b>covalentes</b> (macromolécules) reliées par des liaisons <b>faibles</b> (hydrogène, Van der Waals). Légers, isolants, sensibles à la température.</span><small>polyéthylène, nylon, caoutchouc, époxy</small></div>
+      </div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Les autres familles se ramènent aux trois premières</h3>
+      <div class="fc-cards fc-3">
+        <div class="fc-card"><b>Composites</b><span>Deux matériaux de classes différentes associés pour cumuler leurs qualités.</span><small>béton armé (béton + acier), pneu (élastomère + acier), fibre de verre + polyester, carbone + époxy</small></div>
+        <div class="fc-card"><b>Matériaux naturels</b><span>D'origine animale ou végétale : chaînes carbonées covalentes et liaisons faibles, parfois proches des céramiques.</span><small>bois, laine, coton, cuir, os, toile d'araignée</small></div>
+        <div class="fc-card"><b>Nanomatériaux</b><span>À l'échelle du nanomètre, la surface domine le volume : propriétés nouvelles (ex. rendement des cellules photovoltaïques).</span><small>nanoparticules, nanotubes</small></div>
+      </div>
+    </div>`;
+}
+
+function buildMetaux(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Métaux et alliages : pourquoi ils se déforment sans casser</h3>
+      <p class="m-lead">Le gaz d'électrons colle les ions sans direction privilégiée. Les atomes s'empilent de façon <b>compacte</b> (cubique à faces centrées, hexagonal compact) et un plan d'atomes peut <b>glisser</b> sur son voisin : les défauts appelés <b>dislocations</b> se déplacent facilement. D'où un métal <b>ductile</b> (se met en forme), <b>tenace</b> (résiste à la fissuration), <b>isotrope</b> (mêmes propriétés dans toutes les directions) et <b>bon conducteur</b>. Revers : il s'<b>oxyde</b> (il cède volontiers ses électrons) et sa plasticité le rend sensible à la <b>fatigue</b>.</p>
+      <p class="m-rule">Les traitements thermomécaniques (trempe, recuit, écrouissage…) modifient la taille des grains et la mobilité des dislocations : on règle ainsi la résistance mécanique d'un même alliage.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Les alliages à connaître</h3>
+      <table class="fc-tab"><thead><tr><th>Alliage</th><th>Base</th><th>Ajout</th><th>Pour quoi faire</th></tr></thead><tbody>
+        <tr><td><b>Acier</b></td><td>fer</td><td>carbone <b>&lt; 2 %</b> (en masse)</td><td>résistant et ductile : poutres, carrosseries, outils</td></tr>
+        <tr><td><b>Fonte</b></td><td>fer</td><td>carbone <b>&gt; 2 %</b></td><td>dure, se coule bien, mais fragile : radiateurs, blocs moteur</td></tr>
+        <tr><td><b>Laiton</b></td><td>cuivre</td><td>zinc</td><td>plus dur que le cuivre, doré : robinetterie, instruments</td></tr>
+        <tr><td><b>Bronze</b></td><td>cuivre</td><td>étain</td><td>dur, résiste à l'usure et à la corrosion : cloches, hélices</td></tr>
+        <tr><td><b>Dural</b></td><td>aluminium</td><td>cuivre, manganèse</td><td>léger et résistant : aéronautique</td></tr>
+      </tbody></table>
+    </div>`;
+}
+
+function buildCeram(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Verres et céramiques : durs, réfractaires… et fragiles</h3>
+      <p class="m-lead">Leurs liaisons sont <b>fortes et directionnelles</b> (ioniques, covalentes ou un mélange iono-covalent). Les dislocations ne peuvent presque pas bouger : pas de déformation plastique, le matériau est <b>fragile</b> et <b>peu tenace</b>. En échange : <b>très haute température de fusion</b>, grande <b>dureté</b>, excellente <b>résistance à l'usure et à la corrosion</b>, et isolation électrique. Une céramique est cristalline ; un <b>verre</b> est la version amorphe, obtenue en figeant la silice fondue (vers 1 500 °C) avant qu'elle ne cristallise.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Exemples</h3>
+      <div class="fc-cards fc-3">
+        <div class="fc-card"><b>Verres</b><span>à base de silice SiO₂</span><small>pyrex (SiO₂ + B₂O₃ + Na₂O + Al₂O₃) · cristal (SiO₂ + PbO) · fibre de verre (SiO₂ + Al₂O₃ + CaO)</small></div>
+        <div class="fc-card"><b>Céramiques traditionnelles</b><span>argiles et liants cuits</span><small>bétons et ciments (CaO, SiO₂) · calcaire CaCO₃ · brique, poterie, porcelaine · plâtre CaSO₄</small></div>
+        <div class="fc-card"><b>Céramiques techniques</b><span>composés purs aux propriétés ciblées</span><small>alumine Al₂O₃ · nitrure de silicium Si₃N₄ · carbure de silicium SiC · zircone ZrO₂ · titanate de baryum BaTiO₃ · pérovskite CaTiO₃</small></div>
+      </div>
+    </div>`;
+}
+
+function buildPolymeres(){
+  const unit = (x,i) => `<g class="pm-u" id="pm${i}" style="--x:${x}px;--xg:${40+i*42}px"><line x1="-14" y1="0" x2="14" y2="0" class="pm-b"/><line class="pm-db" x1="-14" y1="-4" x2="14" y2="-4"/><text x="-14" y="5" class="pm-c">C</text><text x="14" y="5" class="pm-c">C</text><text x="-14" y="-14" class="pm-h">H</text><text x="-14" y="22" class="pm-h">H</text><text x="14" y="-14" class="pm-h">H</text><text x="14" y="22" class="pm-h">H</text></g>`;
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Du monomère au polymère</h3>
+      <p class="m-lead">Un <b>monomère</b> est une petite molécule qui possède une double liaison (ou une fonction réactive). En l'ouvrant, chaque molécule se lie à ses deux voisines par des liaisons <b>covalentes</b> : on obtient une <b>macromolécule</b>, chaîne de milliers de maillons. L'éthylène C₂H₄ donne ainsi le <b>polyéthylène</b>.</p>
+      <div class="pm-wrap"><svg id="pmSvg" viewBox="0 0 360 60"><line class="pm-chain" x1="26" y1="30" x2="264" y2="30"/>${[0,1,2,3,4,5].map(i=>unit(30+i*60,i)).join("")}</svg>
+      <div class="m-pick"><button type="button" class="btn small" id="pmBtn">▶ Polymériser</button><span id="pmMsg">6 molécules d'éthylène, chacune avec sa double liaison C=C.</span></div></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Comment les chaînes sont arrangées</h3>
+      <div class="m-chips" id="pmList">${["linéaire","ramifié","réticulé faiblement","réticulé fortement"].map((k,i)=>`<button type="button" class="chip" data-i="${i}">${k[0].toUpperCase()+k.slice(1)}</button>`).join("")}</div>
+      <div class="fc-row"><figure class="et-fig lg"><svg id="pmX" viewBox="0 0 160 120"></svg></figure><p class="m-lead" id="pmTxt"></p></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> Deux grandes familles</h3>
+      <div class="fc-cards">
+        <div class="fc-card pos"><b>Thermoplastiques</b><span>Chaînes non reliées : à chaud elles <b>glissent</b>, le matériau ramollit et se remet en forme (recyclable). <b>Semi-cristallin</b> : rigide, plutôt opaque, a une T de fusion (polyéthylène, nylon). <b>Amorphe</b> : souple, plutôt translucide, pas de T de fusion (polystyrène).</span></div>
+        <div class="fc-card neg"><b>Thermodurcissables</b><span>Chaînes reliées par des <b>liaisons fortes</b> en un réseau 3D : les molécules ne bougent plus. À chaud, ça <b>brûle sans fondre</b>. Fortement réticulé : dur, rigide, fragile (bakélite, époxy). Faiblement réticulé par liaisons fortes : <b>élastomère</b> très élastique (caoutchouc vulcanisé).</span></div>
+      </div>
+      <p class="m-rule">Les <b>élastomères thermoplastiques</b> sont entre les deux : quelques points de réticulation <b>faibles</b> donnent l'élasticité, mais ils lâchent à chaud et le matériau se refond.</p>
+    </div>`;
+  $("pmBtn").onclick = ()=>{ const on = $("pmSvg").classList.toggle("go"); $("pmMsg").textContent = on ? "Les doubles liaisons s'ouvrent : chaque carbone se lie au voisin. Une seule chaîne –CH₂–CH₂–… : le polyéthylène." : "6 molécules d'éthylène, chacune avec sa double liaison C=C."; };
+  const PM = [["Chaînes <b>linéaires</b>, indépendantes : elles peuvent se ranger en zones cristallines (semi-cristallin) ou rester enchevêtrées (amorphe). Thermoplastique.", `<path d="M10 30 q20 -25 40 0 t40 0 t40 0 t40 0" class="chain A"/><path d="M10 60 q20 25 40 0 t40 0 t40 0 t40 0" class="chain A"/><path d="M10 95 q20 -25 40 0 t40 0 t40 0 t40 0" class="chain A"/>`],
+    ["Chaînes <b>ramifiées</b> : des branches sur la chaîne principale gênent le rangement, le polymère est plutôt amorphe. Thermoplastique.", `<path d="M10 40 q20 -25 40 0 t40 0 t40 0 t40 0" class="chain A"/><path d="M45 30 q10 -20 25 -22" class="chain A"/><path d="M95 42 q5 25 25 30" class="chain A"/><path d="M10 90 q20 -25 40 0 t40 0 t40 0 t40 0" class="chain A"/><path d="M130 85 q10 -25 25 -30" class="chain A"/>`],
+    ["Chaînes reliées par <b>quelques nœuds</b> (réticulation faible). Nœuds faibles → élastomère thermoplastique ; nœuds forts → élastomère thermodurcissable : très élastique, ne fond pas.", `<path d="M10 30 q20 -25 40 0 t40 0 t40 0 t40 0" class="chain A"/><path d="M10 65 q20 25 40 0 t40 0 t40 0 t40 0" class="chain A"/><path d="M10 100 q20 -25 40 0 t40 0 t40 0 t40 0" class="chain A"/><circle cx="50" cy="48" r="4" class="pm-node"/><circle cx="130" cy="82" r="4" class="pm-node"/><line x1="50" y1="30" x2="50" y2="65" class="pm-link"/><line x1="130" y1="65" x2="130" y2="100" class="pm-link"/>`],
+    ["Réseau <b>fortement réticulé</b> : des liaisons fortes partout entre les chaînes, un seul bloc tridimensionnel. Thermodurcissable : dur, rigide, fragile, brûle sans fondre.", `<path d="M10 25 q20 -20 40 0 t40 0 t40 0 t40 0" class="chain A"/><path d="M10 60 q20 20 40 0 t40 0 t40 0 t40 0" class="chain A"/><path d="M10 95 q20 -20 40 0 t40 0 t40 0 t40 0" class="chain A"/>${[30,70,110,150].map(x=>`<line x1="${x}" y1="25" x2="${x}" y2="60" class="pm-link"/><line x1="${x-20}" y1="60" x2="${x-20}" y2="95" class="pm-link"/><circle cx="${x}" cy="42" r="3.5" class="pm-node"/><circle cx="${x-20}" cy="78" r="3.5" class="pm-node"/>`).join("")}`]];
+  const draw = i => { $("pmList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", +b.dataset.i===i)); $("pmTxt").innerHTML = PM[i][0]; $("pmX").innerHTML = PM[i][1]; };
+  $("pmList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>draw(+b.dataset.i)); draw(0);
+}
+
 const CUSTOM = {
   methode: {title:"<b>Méthode</b> · trouver la charge des ions", label:"Méthode", thumb:"Na⁺ Cl⁻", build: buildMethod},
   poly:    {title:"<b>Charge d'un groupement d'atomes</b> · CO₃, SO₄, NO₃…", label:"Groupements", thumb:"CO₃²⁻", build: buildPoly},
@@ -2253,6 +2897,18 @@ const CUSTOM = {
   c_blocs: {title:"<b>Blocs s, p, d, f</b> · le tableau et les sous-couches", label:"Blocs", thumb:"s p d f", build: buildBlocs},
   c_stab:  {title:"<b>Stabilité et valence</b> · électrons célibataires", label:"Valence", thumb:"C*", build: buildStab},
   c_pred:  {title:"<b>Prévoir la formule</b> · apparier les célibataires", label:"Prévoir", thumb:"NH₃", build: buildPredict},
+  c2_familles:{title:"<b>Les familles de liaisons</b> · fortes et faibles", label:"Familles", thumb:"3 + 2", build: buildFamilles},
+  c2_chi:    {title:"<b>Électronégativité</b> · Δχ et polarité de la liaison", label:"Électronégativité", thumb:"Δχ", build: buildChi},
+  c2_metal:  {title:"<b>Liaison métallique</b> · le gaz d'électrons", label:"Métallique", thumb:"e⁻ e⁻", build: buildMetal},
+  c2_hydro:  {title:"<b>Liaison hydrogène</b> · H δ+ et doublet non liant", label:"Hydrogène", thumb:"O–H···O", build: buildHbond},
+  c2_vdw:    {title:"<b>Van der Waals</b> · des dipôles qui s'attirent", label:"Van der Waals", thumb:"δ+ δ−", build: buildVdw},
+  c2_etats:  {title:"<b>États de la matière</b> · gaz, liquide, solide", label:"États", thumb:"⋯ ≈ ▦", build: buildEtats},
+  c2_energie:{title:"<b>Énergie de liaison</b> · attraction, répulsion, r₀", label:"Courbe Ep(r)", thumb:"Ep(r)", build: buildEnergie},
+  c2_props:  {title:"<b>Liaison et propriétés</b> · rigidité, fusion, conduction, ductilité", label:"Propriétés", thumb:"↗ ↘", build: buildProps},
+  c2_classes:{title:"<b>Classes de matériaux</b> · métaux, céramiques, polymères", label:"Classes", thumb:"3 classes", build: buildClasses},
+  c2_metaux: {title:"<b>Métaux et alliages</b> · ductiles, conducteurs", label:"Métaux", thumb:"Fe+C", build: buildMetaux},
+  c2_ceram:  {title:"<b>Verres et céramiques</b> · durs et fragiles", label:"Céramiques", thumb:"SiO₂", build: buildCeram},
+  c2_poly:   {title:"<b>Polymères</b> · chaînes, thermoplastiques, thermodurcissables", label:"Polymères", thumb:"–CH₂–", build: buildPolymeres},
   video:   {title:"<b>Vidéo</b> · les nombres quantiques et la configuration électronique", label:"Vidéo", thumb:"▶", build: buildVideo},
 };
 
@@ -2262,7 +2918,7 @@ function renderBilan(){
   const all = Object.values(state.stats).reduce((a,s)=>({ok:a.ok+s.ok,total:a.total+s.total,best:Math.max(a.best,s.best)}),{ok:0,total:0,best:0});
   $("totals").innerHTML = [[all.total,"Exercices faits"],[all.total?Math.round(100*all.ok/all.total)+" %":"–","Réussite"],[all.best,"Meilleure série"]]
     .map(([v,l])=>`<div class="total"><b>${v}</b><span>${l}</span></div>`).join("");
-  $("bilanRows").innerHTML = SECTIONS.map((sec,i)=>`<tr class="sec"><td colspan="4">Exercice ${i+1} · ${sec.tab}</td></tr>` +
+  $("bilanRows").innerHTML = SECTIONS.map((sec,i)=>`<tr class="sec"><td colspan="4">Chapitre ${chapOf(sec.id).num} · Exercice ${SECTIONS.filter(x=>x.ch===sec.ch).indexOf(sec)+1} · ${sec.tab}</td></tr>` +
     GAMES.filter(g=>g.section===sec.id).map(g=>{
       const s = state.stats[g.id]||{ok:0,total:0,best:0}, p = s.total?Math.round(100*s.ok/s.total):0;
       return `<tr><td>${g.title}</td><td class="n">${s.total}</td><td class="n">${s.total?p+" %":"–"}<span class="bar"><i style="width:${p}%"></i></span></td><td class="n">${s.best}</td></tr>`;
@@ -2333,7 +2989,7 @@ function selectCell(gridId, detailId, Z){
     const hide = detailId==="ptDetail2" && state.game==="config";
     const cfg = hide ? `<span class="pt-hide">masquée pendant le jeu « Configuration électronique », c'est à toi de la trouver</span>`
       : `${cfgColor(c)}${sh?` <span class="pt-short">soit ${sh}</span>`:""}${EXC[e.Z]?` <span class="pt-exc">exception à Klechkowski</span>`:""}`;
-    $(detailId).innerHTML = `<b>${e.s}</b> · ${e.n} · Z = ${e.Z} · M = ${String(e.M).replace(".",",")} g/mol · ${f.toLowerCase()} · ions courants : ${ions}<div class="pt-cfg">Configuration : ${cfg}</div>${GRP_NOTE[e.s] ? `<div class="pt-grp"><b>Attention :</b> ${e.s==="C" ? "le carbone ne forme pas d'ion seul, mais" : `seul, ${e.s} forme ${ionHTML(e.s,CHARGES[e.s][0])}, mais`} dans un groupement avec de l'oxygène il donne ses électrons : <b>${GRP_NOTE[e.s]}</b>.</div>` : ""}`;
+    $(detailId).innerHTML = `<b>${e.s}</b> · ${e.n} · Z = ${e.Z} · M = ${String(e.M).replace(".",",")} g/mol${CHI[e.s]?` · χ = ${chiTxt(CHI[e.s])}`:""} · ${f.toLowerCase()} · ions courants : ${ions}<div class="pt-cfg">Configuration : ${cfg}</div>${GRP_NOTE[e.s] ? `<div class="pt-grp"><b>Attention :</b> ${e.s==="C" ? "le carbone ne forme pas d'ion seul, mais" : `seul, ${e.s} forme ${ionHTML(e.s,CHARGES[e.s][0])}, mais`} dans un groupement avec de l'oxygène il donne ses électrons : <b>${GRP_NOTE[e.s]}</b>.</div>` : ""}`;
 }
 // Recherche : nom (sans accents), symbole ou numéro atomique
 function findElements(q){

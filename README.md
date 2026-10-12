@@ -1,16 +1,26 @@
 # Labo Atomes
 
-Application d'entraînement pour le chapitre I du cours de sciences des matériaux (atomes et ions). Chaque exercice est tiré au hasard et corrigé immédiatement, avec la méthode du cours.
+Application d'entraînement pour le cours de sciences des matériaux : chapitre I (atomes et ions) et chapitre II (liaisons interatomiques et classes de matériaux). Chaque exercice est tiré au hasard et corrigé immédiatement, avec la méthode du cours.
 
 ## Exercices
-Un onglet par partie du cours, chacun avec ses jeux :
+Un sélecteur de chapitre, puis un onglet par partie du cours, chacun avec ses jeux.
+
+Chapitre I :
 
 1. **Structure de l'atome** : fiche de l'atome (notation ᴬ_Z X, isotopes), notation inverse, ions (degré d'oxydation, cation/anion), composés ioniques (nom, puis équation de dissociation à compléter : nombre d’ions et charges, Na₂SO₄ ⇒ 2 Na⁺ + SO₄²⁻). On y trouve aussi le tableau périodique et le bilan.
 2. **Quantité de matière** : masse molaire, n = m / M, pesée des précurseurs pour une synthèse.
 3. **Nombres quantiques** : couches et sous-couches (n, l, mₗ, 2n²), ordre de remplissage (n + l, Klechkowski), configuration électronique d'atomes et d'ions.
 4. **Configuration électronique** : électrons de valence et célibataires, ion stable, formule d'un composé à partir des valences (Al + O ⇒ Al₂O₃), mécanique des liaisons (à partir des cases quantiques : covalente ou ionique, électrons mis en jeu, formule). Diapo animée « Comment les atomes se lient » (partage d'électrons ou transfert, avec les cases quantiques).
 
-Le tableau périodique (118 éléments, familles, masses molaires, charges usuelles des ions, nom et masse molaire dans chaque case, charge dans les groupements oxygénés CO₃ NO₃ PO₄ SO₄, configuration électronique au clic, recherche par nom, symbole ou Z, impression A4 paysage dans l’application) s'affiche dans chaque jeu. Les jeux « Ions » et « Composés ioniques » commencent par une diapo « Méthode » animée (perte/gain d'électrons, équilibre des charges) ; les jeux de « Nombres quantiques » par une diapo animée de la règle de Klechkowski, et se terminent par une vidéo YouTube sur les nombres quantiques (`VIDEO`). Le jeu « Configuration électronique » a aussi une diapo animée pour les cations des métaux de transition (le 4s part avant le 3d) ; une réponse où les électrons de l'ion ont été placés comme pour un atome neutre reçoit une correction dédiée, et le lien après une erreur ouvre la fiche utile (`slideAt`). Les sous-couches s, p, d, f ont chacune leur couleur. Le bouton « Revoir le cours » ouvre les fiches de cours liées au jeu (associées dans `SLIDES`, construites dans `CUSTOM`) ; après une erreur, un lien y mène directement. Ces fiches sont rédigées pour l'appli et interactives (atome, isotopes, ions, dissociation, mole, pesée, nombres quantiques, cases quantiques, blocs, valence, prévision de formule) : aucune diapo du cours d'origine n'est incluse. Le score et les records sont conservés entre deux lancements.
+Chapitre II :
+1. **Types de liaisons** : électronégativité et polarité (Δχ, covalente non polarisée / polarisée / ionique, atome δ−), reconnaître la liaison (covalente, ionique, métallique, hydrogène, Van der Waals ; forte ou faible).
+2. **États et énergie** : états de la matière (gaz, liquide, solide amorphe / mono / polycristallin), lecture de courbes Ep(r), distance d'équilibre r₀ à partir de Ep(r) = −A/r + B/(n·rⁿ).
+3. **Propriétés** : de la liaison aux propriétés (module d'Young, fusion, dilatation, conductivité, corrosion, ductilité), fragile ou ductile.
+4. **Classes de matériaux** : classer un matériau (métal, céramique ou verre, polymère, composite, naturel), alliages (acier, fonte, laiton, bronze, dural), polymères (thermoplastiques, élastomères, thermodurcissables).
+
+Fiches animées du chapitre II : familles de liaisons, électronégativité (tableau coloré, Δχ et nuage électronique), gaz d'électrons de la liaison métallique (avec ou sans tension), liaisons hydrogène (eau / méthane), dipôles de Van der Waals, états de la matière (particules animées, types de solides), courbe d'énergie Ep(r) interactive (attraction, répulsion, n), tableau liaison → propriétés avec animation fragile / ductile, classes de matériaux, métaux et alliages, verres et céramiques, polymères (polymérisation animée, arrangement des chaînes).
+
+Le tableau périodique (118 éléments, familles, masses molaires, charges usuelles des ions, nom et masse molaire dans chaque case, charge dans les groupements oxygénés CO₃ NO₃ PO₄ SO₄, configuration électronique et électronégativité au clic, recherche par nom, symbole ou Z, impression A4 paysage dans l’application) s'affiche dans chaque jeu. Les jeux « Ions » et « Composés ioniques » commencent par une diapo « Méthode » animée (perte/gain d'électrons, équilibre des charges) ; les jeux de « Nombres quantiques » par une diapo animée de la règle de Klechkowski, et se terminent par une vidéo YouTube sur les nombres quantiques (`VIDEO`). Le jeu « Configuration électronique » a aussi une diapo animée pour les cations des métaux de transition (le 4s part avant le 3d) ; une réponse où les électrons de l'ion ont été placés comme pour un atome neutre reçoit une correction dédiée, et le lien après une erreur ouvre la fiche utile (`slideAt`). Les sous-couches s, p, d, f ont chacune leur couleur. Le bouton « Revoir le cours » ouvre les fiches de cours liées au jeu (associées dans `SLIDES`, construites dans `CUSTOM`) ; après une erreur, un lien y mène directement. Ces fiches sont rédigées pour l'appli et interactives (atome, isotopes, ions, dissociation, mole, pesée, nombres quantiques, cases quantiques, blocs, valence, prévision de formule) : aucune diapo du cours d'origine n'est incluse. Le score et les records sont conservés entre deux lancements.
 
 ## Télécharger
 Onglet **Releases** du dépôt :
