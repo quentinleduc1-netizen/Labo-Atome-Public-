@@ -1,0 +1,2436 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Labo Atomes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout : en-tête avec maille cubique faces centrées animée, barre d'onglets à facettes (habitus hexagonal),
+   panneau de jeu dont la carte de l'élément est taillée comme un cristal ; fond = réseau cristallin en pointillés */
+:root{
+  --bg:#f1f2f6; --surface:#ffffff; --ink:#1b1730; --muted:#605a78; --line:#dad6e7;
+  --accent:#5a3fa6; --accent-soft:#ece7f8; --accent2:#1d7f80; --lattice:#d3cee3;
+  --ok:#2b7a3d; --ok-soft:#e2f2e6; --bad:#b83a2c; --bad-soft:#fae6e2;
+  --f-display:"Saira","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --fam-alc:#e0663a;--fam-ter:#e8a838;--fam-tr:#7d93ab;--fam-post:#4fa587;--fam-mld:#a17cc0;--fam-nm:#3f8fd0;--fam-hal:#d4579a;--fam-gn:#26aebb;--fam-lan:#c99257;--fam-act:#b8706a;
+  --oct:polygon(14% 0,86% 0,100% 14%,100% 86%,86% 100%,14% 100%,0 86%,0 14%);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12101c; --surface:#1c1929; --ink:#ece9f6; --muted:#a39dbd; --line:#302a46;
+  --accent:#a68bf5; --accent-soft:#2a2347; --accent2:#4fc9bd; --lattice:#29233d;
+  --ok:#6fcf86; --ok-soft:#173326; --bad:#f08273; --bad-soft:#3a1d1a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12101c; --surface:#1c1929; --ink:#ece9f6; --muted:#a39dbd; --line:#302a46;
+  --accent:#a68bf5; --accent-soft:#2a2347; --accent2:#4fc9bd; --lattice:#29233d;
+  --ok:#6fcf86; --ok-soft:#173326; --bad:#f08273; --bad-soft:#3a1d1a; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  background-color:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-inline:16px;padding-block:20px 48px;
+  background-image:radial-gradient(circle,var(--lattice) 1.4px,transparent 1.8px),radial-gradient(circle,var(--lattice) 1.4px,transparent 1.8px);
+  background-size:28px 48px;background-position:0 0,14px 24px;
+}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+
+/* En-tête */
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+#cell{width:76px;height:76px;flex:none}
+.top h1{font-family:var(--f-display);font-weight:800;font-size:2rem;margin:0;line-height:1;letter-spacing:.01em}
+.top h1 span{color:var(--accent)}
+.top p{margin:4px 0 0;color:var(--muted);font-size:.95rem}
+.top .miller{font-family:var(--f-mono);color:var(--accent2);font-size:.85rem}
+
+/* Onglets à facettes */
+.tabs-scroll{overflow-x:auto;padding-bottom:4px;margin-inline:-4px;padding-inline:4px}
+.tabs{display:flex;gap:6px;min-width:max-content}
+.tab{
+  font:inherit;font-family:var(--f-display);font-weight:600;font-size:.98rem;letter-spacing:.01em;
+  border:none;cursor:pointer;color:var(--ink);background:var(--surface);
+  padding:10px 26px;clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,14px 100%,0 50%);
+  display:flex;flex-direction:column;align-items:center;line-height:1.15;
+  box-shadow:inset 0 0 0 1.5px var(--line);
+}
+.tab small{font-family:var(--f-body);font-weight:400;font-size:.72rem;color:var(--muted)}
+.tab:hover:not(:disabled):not([aria-selected="true"]){background:var(--accent-soft)}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--surface);box-shadow:none}
+.tab[aria-selected="true"] small{color:var(--accent-soft)}
+.tab:disabled{cursor:not-allowed;opacity:.55}
+.tab.tool{color:var(--accent2)}
+.tab.tool[aria-selected="true"]{background:var(--accent2);color:var(--surface)}
+.tab:focus-visible{outline:3px solid var(--accent2);outline-offset:-3px}
+.sep{width:1px;background:var(--line);margin-inline:6px}
+
+/* Panneaux */
+.panel{display:flex;flex-direction:column;gap:16px}
+.panel-head{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;justify-content:space-between}
+.panel-head h2{font-family:var(--f-display);font-weight:700;margin:0;font-size:1.35rem}
+.panel-head p{margin:0;color:var(--muted);font-size:.92rem;max-width:60ch}
+.opts{display:flex;flex-wrap:wrap;gap:14px;align-items:center;color:var(--muted);font-size:.93rem}
+.opts label{display:flex;gap:6px;align-items:center}
+select{font:inherit;padding:4px 8px;border-radius:4px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+
+.board{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:24px;display:grid;grid-template-columns:220px 1fr;gap:28px;align-items:start;position:relative}
+.board::before{content:"";position:absolute;top:-1px;right:-1px;width:22px;height:22px;background:var(--bg);clip-path:polygon(0 0,100% 0,100% 100%);border-left:1px solid var(--line)}
+@media (max-width:640px){.board{grid-template-columns:1fr;padding:18px}}
+
+/* Carte de l'élément taillée en octogone */
+.tile{max-width:220px;width:100%;aspect-ratio:1;margin:0 auto;padding:2px;background:var(--accent);clip-path:var(--oct)}
+.tile-in{width:100%;height:100%;clip-path:var(--oct);background:var(--bg);display:grid;place-items:center;position:relative;
+  background-image:linear-gradient(135deg,transparent 49.6%,var(--line) 50%,transparent 50.4%),linear-gradient(45deg,transparent 49.6%,var(--line) 50%,transparent 50.4%)}
+.nota{display:flex;align-items:center;gap:6px;background:var(--bg);padding:4px 10px;border-radius:4px}
+.nums{display:flex;flex-direction:column;align-items:flex-end;font-family:var(--f-mono);font-weight:600;font-size:1.5rem;line-height:1.85;color:var(--accent)}
+.sym{font-family:var(--f-display);font-weight:800;font-size:5rem;line-height:1}
+.tile .tag{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);font-weight:700}
+.facts{display:flex;flex-direction:column;gap:6px;font-size:1.05rem;background:var(--bg);padding:10px 14px;border-radius:4px}
+.facts strong{font-family:var(--f-mono);color:var(--accent)}
+
+form{display:flex;flex-direction:column;gap:10px;min-width:0}
+.q{font-family:var(--f-display);font-weight:700;font-size:1.15rem;margin:0 0 4px}
+.row{display:grid;grid-template-columns:minmax(150px,1fr) 140px auto;gap:10px;align-items:center}
+@media (max-width:420px){.row{grid-template-columns:1fr 110px}.row .fb{grid-column:1/-1}}
+.row label{font-weight:700}
+.row input{font:inherit;font-family:var(--f-mono);padding:8px 10px;border-radius:3px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.row input.ok{border-color:var(--ok);background:var(--ok-soft)}
+.row input.ko{border-color:var(--bad);background:var(--bad-soft)}
+.fb{font-size:.9rem;color:var(--muted)}
+.fb.ko{color:var(--bad)} .fb.ok{color:var(--ok)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.btn{font:inherit;font-family:var(--f-display);font-weight:700;letter-spacing:.02em;padding:10px 22px;border:none;background:var(--accent);color:var(--surface);cursor:pointer;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+.btn.small{padding:6px 14px;font-size:.88rem}
+.btn.danger{background:var(--bad-soft);color:var(--bad)}
+.explain{border-left:4px solid var(--accent2);background:var(--bg);padding:10px 14px;font-size:.95rem}
+.explain code{font-family:var(--f-mono)}
+
+/* Bandeau de score */
+.score{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:8px 12px;display:flex;flex-direction:column}
+.stat b{font-family:var(--f-mono);font-size:1.25rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hint{font-size:.85rem;color:var(--muted);margin:0}
+kbd{font-family:var(--f-mono);font-size:.8rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:3px;padding:0 5px;background:var(--surface)}
+
+/* Tableau périodique */
+.ptable{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.pt-detail{font-size:1rem;color:var(--muted);font-variant-numeric:tabular-nums;min-height:1.5em}
+.pt-detail b{color:var(--ink);font-family:var(--f-display)}
+.pt-scroll{overflow-x:auto;padding-bottom:4px;container-type:inline-size}
+/* Tableau élargi au-delà de la colonne de l'appli */
+.ptable{width:min(1400px, calc(100vw - 48px));margin-left:calc(50% - min(700px, 50vw - 24px))}
+.pt{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:3px;min-width:960px}
+.cell{font:inherit;aspect-ratio:.8;gap:1px;overflow:hidden;border:1px solid var(--line);border-top:4px solid var(--fam);background:var(--bg);color:var(--ink);border-radius:2px;padding:1px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;line-height:1.1}
+.cell:hover{background:var(--accent-soft)}
+.cell .z{font-family:var(--f-mono);font-size:clamp(.5rem,.9cqi,.72rem);color:var(--muted)}
+.cell .s{font-family:var(--f-display);font-weight:700;font-size:clamp(.85rem,1.75cqi,1.45rem);line-height:1}
+.cell .nm{font-size:clamp(.42rem,.66cqi,.62rem);color:var(--muted);max-width:100%;overflow-wrap:anywhere;text-align:center;line-height:1.05}
+.cell .ma{font-family:var(--f-mono);font-size:clamp(.42rem,.64cqi,.6rem);color:var(--ink);opacity:.8;line-height:1}
+.cell .og{font-family:var(--f-mono);font-size:clamp(.42rem,.7cqi,.62rem);font-weight:700;color:var(--sub-p);white-space:nowrap;line-height:1}
+.pt.no-q .cell .og{display:none}
+@container (max-width:1150px){.cell{gap:0;padding:0 1px}.cell .s{line-height:.92}.cell .nm{line-height:1}}
+.cell.sel{outline:2px solid var(--accent);outline-offset:1px;background:var(--accent-soft)}
+.pt .ph{font-size:clamp(.5rem,.8cqi,.7rem);color:var(--muted);display:grid;place-items:center;border:1px dashed var(--line);border-radius:2px;text-align:center}
+.pt .spacer{height:8px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend i{width:10px;height:10px;border-radius:2px;background:var(--fam)}
+
+/* Bilan */
+.totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.total{background:var(--surface);border:1px solid var(--line);padding:14px 16px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%);display:flex;flex-direction:column}
+.total b{font-family:var(--f-mono);font-size:1.7rem;font-variant-numeric:tabular-nums;color:var(--accent)}
+.total span{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:4px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+td.n{font-family:var(--f-mono);text-align:right} th.n{text-align:right}
+tr:last-child td{border-bottom:none}
+.bar{display:inline-block;width:70px;height:6px;background:var(--line);vertical-align:middle;margin-left:8px}
+.bar i{display:block;height:100%;background:var(--accent2)}
+.reset{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
+/* Sous-onglets (dans un exercice) */
+#sec-atome{display:flex;flex-direction:column;gap:16px}
+.subtabs{display:flex;gap:2px;border-bottom:2px solid var(--line);min-width:max-content}
+.stab{font:inherit;font-family:var(--f-display);font-weight:600;font-size:.95rem;background:none;border:none;padding:8px 14px;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.stab:hover:not(:disabled){color:var(--ink)}
+.stab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.stab.tool[aria-selected="true"]{color:var(--accent2);border-bottom-color:var(--accent2)}
+.stab:disabled{opacity:.5;cursor:not-allowed}
+.stab:focus-visible{outline:3px solid var(--accent2);outline-offset:-3px}
+.tab .num{font-family:var(--f-mono);font-size:.7rem;opacity:.8}
+/* Exercice en préparation */
+.soon-card{background:var(--surface);border:1.5px dashed var(--line);padding:24px;display:flex;flex-direction:column;gap:10px;max-width:640px}
+.soon-card h2{font-family:var(--f-display);margin:0;font-size:1.35rem}
+.soon-card p{margin:0;color:var(--muted)}
+.soon-card ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.soon-card li{font-family:var(--f-mono);font-size:.92rem}
+.badge{align-self:flex-start;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;background:var(--accent-soft);color:var(--accent);font-weight:700}
+
+/* Plaque d'affichage (formules, ions, sous-couches) */
+.plate{width:100%;padding:2px;background:var(--accent);clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px),0 16px)}
+.plate-in{min-height:170px;background:var(--bg);clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px),0 16px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;text-align:center}
+.big{font-family:var(--f-display);font-weight:800;line-height:1.15;overflow-wrap:anywhere;max-width:100%}
+.big sub,.big sup{font-size:.55em;line-height:0}
+.big .cap{font-size:.4em;font-weight:500;vertical-align:middle}
+.cap{font-size:.88rem;color:var(--muted)}
+.data{font-family:var(--f-mono);font-size:.74rem;color:var(--accent2);line-height:1.55}
+.row.wide{grid-template-columns:1fr;gap:6px}
+.row select{font:inherit;padding:8px 10px;border-radius:3px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.row select.ok{border-color:var(--ok);background:var(--ok-soft)} .row select.ko{border-color:var(--bad);background:var(--bad-soft)}
+.row select:disabled{opacity:1;color:var(--ink)}
+.fb sup,.explain sup{font-size:.72em} .explain sub{font-size:.72em}
+.explain{line-height:1.7}
+tr.sec td{font-family:var(--f-display);font-weight:700;background:var(--bg);color:var(--accent);font-size:.9rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Diapos du cours */
+.slides{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0;scroll-margin-top:12px}
+.sl-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.sl-title{font-family:var(--f-display);font-weight:600}
+.sl-title span{color:var(--muted);font-weight:400;font-family:var(--f-body);font-size:.9rem}
+.sl-nav{display:flex;gap:6px}
+.sl-nav .btn:disabled{opacity:.4;cursor:default}
+.thumbs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.thumbs button{flex:none;width:112px;padding:0;border:2px solid var(--line);border-radius:3px;background:var(--bg);cursor:pointer;position:relative}
+.thumbs button[aria-current="true"]{border-color:var(--accent)}
+.thumbs img{width:100%;height:auto;aspect-ratio:1333/750;display:block}
+.thumbs span{position:absolute;right:3px;bottom:3px;font-family:var(--f-mono);font-size:.68rem;background:var(--surface);color:var(--ink);padding:0 4px;border-radius:2px}
+.linkbtn{font:inherit;font-weight:700;background:none;border:none;padding:0;margin-top:4px;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* Charges des ions dans le tableau périodique */
+.cell .q{font-family:var(--f-mono);font-size:clamp(.48rem,.85cqi,.7rem);line-height:1;font-weight:600;min-height:1em}
+.cell .q.pos{color:var(--accent)} .cell .q.neg{color:var(--accent2)} .cell .q.zero,.cell .q.mix{color:var(--muted)}
+.pt.no-q .cell .q{display:none}
+.q-toggle{display:flex;align-items:center;gap:6px;flex-basis:100%;margin-top:4px}
+.q-toggle b{font-weight:700} .q-toggle .oxo{color:var(--sub-p)} .q-toggle .mass{color:var(--ink);font-weight:500} .q-toggle .pos{color:var(--accent)} .q-toggle .neg{color:var(--accent2)} .q-toggle .zero{color:var(--muted)}
+/* Diapo « Méthode » interactive */
+.method{display:flex;flex-direction:column;gap:14px;background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:16px}
+.m-step{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--line);padding:14px 16px;border-radius:3px}
+.m-step h3{font-family:var(--f-display);font-size:1.05rem;margin:0;display:flex;align-items:center;gap:10px;text-wrap:balance}
+.m-num{flex:none;width:26px;height:26px;display:grid;place-items:center;background:var(--accent);color:var(--surface);font-family:var(--f-mono);font-size:.85rem;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
+.m-lead{margin:0;color:var(--muted);font-size:.93rem;max-width:70ch}
+.m-lead b{color:var(--ink)}
+.m-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-family:var(--f-display);font-weight:700;min-width:44px;padding:6px 10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;border-radius:3px}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.m-atom{display:grid;grid-template-columns:minmax(0,280px) 1fr;gap:18px;align-items:center}
+@media (max-width:640px){.m-atom{grid-template-columns:1fr}}
+#mSvg{width:100%;max-width:280px;height:auto;margin:0 auto;display:block}
+#mSvg .ring{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:4 4}
+#mSvg .ring.outer{stroke:var(--muted)}
+#mSvg .nuc{fill:var(--accent)}
+#mSvg .nuc-t{fill:var(--surface);font-family:var(--f-display);font-weight:800;font-size:15px;text-anchor:middle}
+#mSvg .nuc-z{fill:var(--surface);font-family:var(--f-mono);font-size:9px;text-anchor:middle;opacity:.85}
+#mSvg .ion-t{fill:var(--accent);font-family:var(--f-display);font-weight:800;font-size:20px;text-anchor:middle}
+#mSvg .e{fill:var(--muted);transition:transform 1s ease,opacity 1s ease,fill .4s}
+#mSvg.hl .e.ext{fill:var(--accent2)}
+#mSvg .e.new{opacity:0;transform:translate(var(--dx),var(--dy))}
+#mSvg.go .e.new{opacity:1;transform:none}
+#mSvg.go .e.leave{opacity:0;transform:translate(var(--dx),var(--dy))}
+.m-story{display:flex;flex-direction:column;gap:8px;font-size:.98rem}
+.m-story p{margin:0}
+.m-story .st2,.m-story .st3{opacity:.12;transition:opacity .6s}
+.m-story.s2 .st2,.m-story.s3 .st3{opacity:1}
+.big-ion{font-family:var(--f-display);font-size:1.4em;color:var(--accent)}
+.m-rule{font-size:.9rem;padding:8px 12px;border-left:4px solid var(--accent2);background:var(--bg)}
+.m-pick{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;color:var(--muted);font-size:.93rem}
+.m-pick label{display:flex;gap:6px;align-items:center}
+.m-balance{display:flex;flex-direction:column;gap:8px;overflow-x:auto;padding-bottom:4px}
+.m-row{display:flex;align-items:center;gap:10px;min-width:max-content}
+.m-lab{width:84px;flex:none;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.m-track{display:flex;gap:4px}
+.m-ion{flex:none;width:calc(var(--w)*40px + (var(--w) - 1)*0px);display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 4px;border:1.5px solid;opacity:0;transform:translateY(10px);transition:opacity .45s,transform .45s}
+.m-ion.in{opacity:1;transform:none}
+.m-ion.pos{border-color:var(--accent);background:var(--accent-soft)} .m-ion.neg{border-color:var(--accent2);background:var(--bg)}
+.m-ion b{font-family:var(--f-display);font-size:.95rem;white-space:nowrap}
+.m-ion i{display:flex;gap:2px;font-style:normal}
+.m-ion em{font-style:normal;width:16px;height:16px;display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:.8rem;border-radius:50%;color:var(--surface)}
+.m-ion.pos em{background:var(--accent)} .m-ion.neg em{background:var(--accent2)}
+.m-sum{font-family:var(--f-mono);font-weight:700;font-size:1.05rem}
+.m-res{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;opacity:0;transition:opacity .5s;padding-top:6px;border-top:1px dashed var(--line)}
+.m-balance.done .m-res{opacity:1}
+.m-res b{font-family:var(--f-display);font-size:1.6rem;color:var(--accent)}
+.m-res span{color:var(--muted);font-family:var(--f-mono);font-size:.9rem}
+.m-poly{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.m-card{display:flex;flex-direction:column;align-items:center;padding:8px;border:1.5px solid;background:var(--bg)}
+.m-card.pos{border-color:var(--accent)} .m-card.neg{border-color:var(--accent2)}
+.m-card b{font-family:var(--f-display);font-size:1.25rem} .m-card span{font-size:.82rem;color:var(--muted)}
+.m-video{position:relative;width:100%;aspect-ratio:16/9;background:#000;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.m-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* Diapo « Cations 3d » : cases quantiques du 4s et du 3d */
+.cx-wrap{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-end}
+.cx-core{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1.5px dashed var(--line);font-family:var(--f-display)}
+.cx-core small,.cx-sub small{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);font-weight:400}
+.cx-sub{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 8px;border-radius:3px;transition:background .4s}
+.cx-sub b{font-family:var(--f-display);font-size:1.05rem}
+.cx-sub.outer{background:var(--accent-soft)}
+.cx-orbs{display:flex;gap:3px}
+.cx-o{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1.5px solid currentColor;background:var(--surface);font-size:1.1rem}
+.cx-e{font-style:normal;width:13px;text-align:center;transition:transform .5s,opacity .5s,color .25s}
+.cx-e.hl{color:var(--sub-f)} .cx-e.out{opacity:0;transform:translateY(-22px)}
+.explain .trap{display:block;margin-top:8px;padding:8px 12px;border-left:4px solid var(--sub-f);background:var(--bg)}
+@media (prefers-reduced-motion:reduce){.cx-e,.cx-sub{transition:none}}
+.th-method{display:flex!important;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1333/750;gap:2px;color:var(--accent)}
+.th-method b{font-family:var(--f-display);font-size:.95rem} .th-method small{font-size:.7rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){#mSvg .e,.m-ion,.m-res,.m-story .st2,.m-story .st3{transition:none}}
+
+/* Sous-couches s, p, d, f : une couleur chacune */
+:root{--sub-s:#5a3fa6;--sub-p:#d08a1c;--sub-d:#1d7f80;--sub-f:#c2477f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--sub-s:#a68bf5;--sub-p:#f0b04a;--sub-d:#4fc9bd;--sub-f:#ec7fb0}}
+:root[data-theme="dark"]{--sub-s:#a68bf5;--sub-p:#f0b04a;--sub-d:#4fc9bd;--sub-f:#ec7fb0}
+.sc-s{color:var(--sub-s);font-weight:700} .sc-p{color:var(--sub-p);font-weight:700} .sc-d{color:var(--sub-d);font-weight:700} .sc-f{color:var(--sub-f);font-weight:700}
+.grp{white-space:nowrap;margin-right:6px} .grp small{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);border:1px solid var(--line);padding:0 4px;border-radius:2px;margin-right:2px}
+.cfgline{font-family:var(--f-mono);font-size:.92rem}
+#mSvg .e.es{fill:var(--sub-s)} #mSvg .e.ep{fill:var(--sub-p)}
+#mSvg.hl .e.ext{fill:revert-layer;stroke:var(--ink);stroke-width:2.2}
+#mSvg.hl .e.ext.es{fill:var(--sub-s)} #mSvg.hl .e.ext.ep{fill:var(--sub-p)}
+#mSvg .ring-t{fill:var(--muted);font-family:var(--f-mono);font-size:11px;font-weight:600}
+.m-key{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;font-size:.78rem;color:var(--muted);margin-top:4px}
+.m-key span{display:flex;align-items:center;gap:4px}
+.m-key i{width:10px;height:10px;border-radius:50%} .m-key .ks{background:var(--sub-s)} .m-key .kp{background:var(--sub-p)}
+/* Diapo Klechkowski */
+.k-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.k-l{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1.5px solid;background:var(--bg)}
+.k-l b:first-child{font-family:var(--f-display);font-size:1.6rem;line-height:1;width:22px;text-align:center}
+.k-l span{font-size:.85rem;color:var(--muted)} .k-l span b{color:var(--ink)}
+.k-l.k-s{border-color:var(--sub-s)} .k-l.k-s>b{color:var(--sub-s)}
+.k-l.k-p{border-color:var(--sub-p)} .k-l.k-p>b{color:var(--sub-p)}
+.k-l.k-d{border-color:var(--sub-d)} .k-l.k-d>b{color:var(--sub-d)}
+.k-l.k-f{border-color:var(--sub-f)} .k-l.k-f>b{color:var(--sub-f)}
+.k-wrap{display:grid;grid-template-columns:minmax(0,360px) 1fr;gap:18px;align-items:start}
+@media (max-width:640px){.k-wrap{grid-template-columns:1fr}}
+#kSvg{width:100%;max-width:360px;height:auto;display:block;margin:0 auto}
+#kSvg .k-row{fill:var(--muted);font-family:var(--f-mono);font-size:12px}
+#kSvg .k-head{font-family:var(--f-display);font-weight:800;font-size:15px;text-anchor:middle}
+#kSvg .k-head.k-s{fill:var(--sub-s)} #kSvg .k-head.k-p{fill:var(--sub-p)} #kSvg .k-head.k-d{fill:var(--sub-d)} #kSvg .k-head.k-f{fill:var(--sub-f)}
+#kSvg .k-cell rect{fill:var(--bg);stroke:var(--line);stroke-width:1.5;transition:fill .3s,stroke .3s}
+#kSvg .k-cell text{font-family:var(--f-display);font-weight:700;font-size:15px;text-anchor:middle;fill:var(--ink)}
+#kSvg .k-cell .k-n{font-size:10px;font-family:var(--f-mono)}
+#kSvg .k-s.on rect,#kSvg .k-s.part rect{stroke:var(--sub-s)} #kSvg .k-p.on rect,#kSvg .k-p.part rect{stroke:var(--sub-p)}
+#kSvg .k-d.on rect,#kSvg .k-d.part rect{stroke:var(--sub-d)} #kSvg .k-f.on rect,#kSvg .k-f.part rect{stroke:var(--sub-f)}
+#kSvg .k-cell.on rect{stroke-width:2.5;fill:var(--accent-soft)}
+#kSvg .k-cell.part rect{stroke-width:2.5;stroke-dasharray:4 3}
+#kSvg .k-cell.now rect{fill:var(--surface);stroke-width:3.5}
+#kSvg .k-arrow{stroke:var(--bad);stroke-width:2.5;opacity:.28;transition:opacity .3s}
+#kSvg .k-arrow.lit{opacity:1}
+#kSvg .k-headp{fill:var(--bad)}
+.k-out{display:flex;flex-direction:column;gap:10px}
+.k-count{font-size:.95rem;color:var(--muted)} .k-count b{font-family:var(--f-mono);font-size:1.4rem;color:var(--ink)}
+.k-cfg{font-family:var(--f-mono);font-size:1.05rem;line-height:2;min-height:2em;overflow-wrap:anywhere;padding:8px 12px;background:var(--bg);border:1px solid var(--line)}
+.k-msg{margin:0;font-size:.92rem}
+@media (prefers-reduced-motion:reduce){#kSvg .k-cell rect,#kSvg .k-arrow{transition:none}}
+
+#kSvg .k-cap{font-family:var(--f-mono);font-size:9px;text-anchor:middle;font-weight:600}
+#kSvg .k-cap.k-s{fill:var(--sub-s)} #kSvg .k-cap.k-p{fill:var(--sub-p)} #kSvg .k-cap.k-d{fill:var(--sub-d)} #kSvg .k-cap.k-f{fill:var(--sub-f)}
+#kSvg .k-cell .k-fill{font-family:var(--f-mono);font-weight:500;font-size:9px;fill:var(--muted)}
+#kSvg .k-cell .k-fill.full{fill:var(--ok);font-weight:600} #kSvg .k-cell .k-fill.half{fill:var(--sub-p);font-weight:600}
+
+.pt-cfg{margin-top:4px;font-family:var(--f-mono);font-size:.92rem;color:var(--ink);line-height:1.8;overflow-wrap:anywhere}
+.pt-cfg sup{font-size:.7em}
+.pt-short{color:var(--muted);margin-left:6px} .pt-short sup{font-size:.7em}
+.pt-exc{font-family:var(--f-body);font-size:.75rem;color:var(--bad);border:1px solid var(--bad);padding:0 6px;margin-left:6px;white-space:nowrap}
+.pt-hide{font-family:var(--f-body);font-size:.85rem;color:var(--muted);font-style:italic}
+
+.m-card code{font-family:var(--f-mono);font-size:.72rem;color:var(--ink);text-align:center;margin-top:4px;line-height:1.35}
+
+/* Diapo « Charge d'un groupement d'atomes » */
+.p-rules{display:grid;gap:8px}
+.p-rule{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;background:var(--bg);border:1px solid var(--line)}
+.p-rule .m-num{color:var(--surface);font-size:.85rem}
+.p-rule>div{display:flex;flex-direction:column;gap:2px} .p-rule span{font-size:.9rem;color:var(--muted)} .p-rule span b{color:var(--ink)}
+.p-rule .pos,.p-where .pos em,.p-atom.pos em,.p-line .pos{color:var(--accent)} .p-rule .neg,.p-where .neg em,.p-atom.neg em,.p-line .neg{color:var(--accent2)}
+.p-where{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.88rem;color:var(--muted)}
+.p-mini{display:flex;flex-direction:column;align-items:center;width:52px;padding:4px 0;border:1px solid var(--line);border-top:4px solid;background:var(--bg)}
+.p-mini.pos{border-top-color:var(--accent)} .p-mini.neg{border-top-color:var(--accent2)}
+.p-mini b{font-family:var(--f-display);color:var(--ink);font-size:1rem} .p-mini em{font-style:normal;font-family:var(--f-mono);font-weight:700;font-size:.8rem} .p-mini small{font-size:.62rem}
+.p-stage{display:flex;flex-direction:column;gap:12px;min-height:220px}
+.p-line{margin:0;font-family:var(--f-mono);font-size:1rem}
+.p-line sub{font-size:.7em}
+.p-atoms{display:flex;flex-wrap:wrap;gap:10px}
+.p-atom{width:58px;height:58px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid;background:var(--bg);opacity:0;transform:scale(.6);transition:opacity .35s,transform .35s}
+.p-atom.pos{border-color:var(--accent)} .p-atom.neg{border-color:var(--accent2)}
+.p-atom.in{opacity:1;transform:none}
+.p-atom b{font-family:var(--f-display);font-size:1.15rem;line-height:1} .p-atom em{font-style:normal;font-family:var(--f-mono);font-weight:700;font-size:.85rem}
+.p-why{display:flex;flex-direction:column;gap:2px;font-size:.92rem;color:var(--muted)} .p-why b{color:var(--ink)}
+.p-res{display:flex;align-items:baseline;gap:14px;padding-top:8px;border-top:1px dashed var(--line)}
+.p-res b{font-family:var(--f-display);font-size:2.2rem;color:var(--accent)} .p-res span{color:var(--muted)}
+.p-stage .p1,.p-stage .p2,.p-stage .p3,.p-stage .p4{opacity:0;transition:opacity .5s}
+.p-stage.s1 .p1,.p-stage.s2 .p2,.p-stage.s3 .p3,.p-stage.s4 .p4{opacity:1}
+@media (prefers-reduced-motion:reduce){.p-atom,.p-stage .p1,.p-stage .p2,.p-stage .p3,.p-stage .p4{transition:none}}
+
+/* Diapo « Combien d'ions dans la formule ? » */
+.r-stage,.x-stage{display:flex;flex-direction:column;gap:10px;min-height:200px}
+.r-formula{font-family:var(--f-display);font-weight:800;font-size:3rem;line-height:1.3;display:flex;flex-wrap:wrap;align-items:baseline}
+.r-part{padding:0 4px;border-bottom:4px solid transparent;transition:background .4s,border-color .4s}
+.r-part sub{font-size:.5em}
+.r-part .inner{color:var(--muted)}
+.r-part .outer{color:var(--ink);transition:color .4s}
+.r-part .outer.ghost{opacity:0;transition:opacity .4s}
+.r-stage.s1 .r-cat{background:var(--accent-soft);border-color:var(--accent)} .r-stage.s1 .r-cat .outer{color:var(--accent)} .r-stage.s1 .r-cat .ghost{opacity:.45}
+.r-stage.s2 .r-an{background:var(--bg);border-color:var(--accent2)} .r-stage.s2 .r-an .outer{color:var(--accent2)} .r-stage.s2 .r-an .ghost{opacity:.45}
+.r-legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.78rem;color:var(--muted)}
+.r-legend span{display:flex;align-items:center;gap:5px}
+.r-legend i{width:12px;height:4px} .r-legend .lg-cat{background:var(--accent)} .r-legend .lg-an{background:var(--accent2)}
+.r-legend .lg-out{font-family:var(--f-display);color:var(--ink)} .r-legend .lg-in{font-family:var(--f-display);color:var(--muted);font-weight:400}
+.r-step,.x-step{margin:0;opacity:.1;transition:opacity .5s}
+.r-step sub,.x-step sub,.r-step sup,.x-step sup{font-size:.72em}
+.r-stage.s1 .r1,.r-stage.s2 .r2,.r-stage.s3 .r3,.x-stage.s1 .x1,.x-stage.s2 .x2,.x-stage.s3 .x3{opacity:1}
+.x-stage{position:relative}
+.x-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.x-lines line{stroke-width:2;stroke-dasharray:6 5;opacity:0;transition:opacity .5s}
+.x-lines line.pos{stroke:var(--accent)} .x-lines line.neg{stroke:var(--accent2)}
+.x-stage.go .x-lines line{opacity:.8}
+.x-top{display:flex;gap:80px;padding-left:96px;font-family:var(--f-display);font-weight:800;font-size:2.6rem;line-height:1.5}
+.x-ion sub{font-size:.5em} .x-ion sup{font-size:.5em}
+.x-ion.pos sup{color:var(--accent)} .x-ion.neg sup{color:var(--accent2)}
+.x-q{display:inline-block;outline:2px solid currentColor;outline-offset:1px;border-radius:2px;padding:0 2px}
+.x-raw{display:flex;align-items:baseline;gap:16px;margin-top:26px}
+.x-lab{width:80px;flex:none;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.x-f{font-family:var(--f-display);font-weight:800;font-size:2.6rem;display:flex;gap:80px}
+.x-ion,.x-p{min-width:2.2em}
+.x-f sub{font-size:.5em}
+.x-f .slot{display:inline-block;min-width:.7em;color:var(--ink)}
+.x-f .slot.one{opacity:.35;text-decoration:line-through}
+.x-trav{position:absolute;transform-origin:center;translate:-50% -50%;font-family:var(--f-display);font-weight:800;font-size:1.3rem;padding:0 6px;border-radius:3px;color:var(--surface);transition:transform 1.3s cubic-bezier(.5,0,.3,1);z-index:2}
+.x-trav.pos{background:var(--accent)} .x-trav.neg{background:var(--accent2)}
+.x-step .pos{color:var(--accent)} .x-step .neg{color:var(--accent2)}
+@media (max-width:640px){.r-formula{font-size:2.2rem}.x-top{gap:40px;padding-left:0;font-size:2rem}.x-f{font-size:2rem;gap:40px}.x-lab{display:none}.x-raw{gap:0}}
+@media (prefers-reduced-motion:reduce){.r-part,.r-step,.x-step,.x-lines line,.r-part .outer,.r-part .outer.ghost{transition:none}.x-trav{transition:none}}
+
+/* Recherche dans le tableau périodique */
+.pt-find{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.pt-search{font:inherit;flex:1 1 260px;max-width:420px;padding:8px 12px;border:1.5px solid var(--line);border-radius:3px;background:var(--bg);color:var(--ink)}
+.pt-search:focus{border-color:var(--accent2);outline:none}
+.pt-count{font-size:.85rem;color:var(--muted)}
+.pt.searching .cell.dim{opacity:.18}
+.pt.searching .cell.hit{outline:2px solid var(--accent2);outline-offset:1px;background:var(--accent-soft)}
+.cell{transition:opacity .2s}
+
+.pt-grp{margin-top:6px;padding:6px 10px;border-left:4px solid var(--sub-p);background:var(--bg);font-size:.9rem}
+.pt-grp sup{font-size:.72em}
+
+/* Équation à trous */
+.eq-tpl{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:var(--f-display);font-weight:700;font-size:1.6rem;padding:10px 12px;background:var(--bg);border:1px solid var(--line)}
+.eq-tpl sub{font-size:.55em;vertical-align:sub;line-height:0}
+.eq-f{white-space:nowrap}
+.eq-tpl sup{vertical-align:super;font-size:1rem;line-height:0}
+.eq-arrow,.eq-plus{color:var(--muted);font-weight:500;margin:0 4px}
+.eq-tpl input{font:inherit;font-family:var(--f-mono);font-weight:600;text-align:center;border:1.5px dashed var(--accent);border-radius:3px;background:var(--surface);color:var(--ink);padding:2px 0}
+.eq-tpl input.eq-n{width:2.4em;font-size:1.1rem}
+.eq-tpl input.eq-q{width:2.8em;font-size:.85rem;border-color:var(--accent2);transform:translateY(-.35em)}
+.eq-tpl input.ok{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+.eq-tpl input.ko{border-style:solid;border-color:var(--bad);background:var(--bad-soft)}
+.eq-help{font-size:.8rem;color:var(--muted)}
+
+.app-ver{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);border:1px solid var(--line);padding:0 6px;border-radius:2px;margin-left:6px;white-space:nowrap}
+
+/* Impression du tableau périodique */
+.pt-print-title{display:none}
+#printZone{display:none}
+.pt-print-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:.8rem;color:var(--muted)}
+html:not(.is-app) .app-only{display:none}
+@page{size:A4 landscape;margin:7mm}
+@media print{
+  :root,:root:not([data-theme="light"]),:root[data-theme="dark"]{
+    --bg:#ffffff;--surface:#ffffff;--ink:#111111;--muted:#555555;--line:#bdbdbd;--accent:#4a2f96;--accent-soft:#ffffff;--accent2:#126b6c;
+    --sub-p:#b06f00;color-scheme:light}
+  html.print-pt body{background:#fff!important;background-image:none!important;padding:0!important}
+  html.print-pt body > *:not(#printZone){display:none!important}
+  html.print-pt #printZone{display:block}
+  html.print-pt .ptable.printing{width:100%!important;margin:0!important;border:none;padding:0;gap:6px;display:flex!important}
+  html.print-pt .ptable.printing .pt-find, html.print-pt .ptable.printing .pt-detail, html.print-pt .ptable.printing .pt-print-bar, html.print-pt .ptable.printing .q-toggle input{display:none!important}
+  html.print-pt .ptable.printing .pt-print-title{display:flex;justify-content:space-between;align-items:baseline;margin:0;font-family:var(--f-display);font-size:16pt}
+  html.print-pt .pt-print-title small{font-size:9pt;color:var(--muted);font-weight:400}
+  html.print-pt .pt-scroll{overflow:visible}
+  html.print-pt .pt{min-width:0;gap:2px}
+  html.print-pt .cell{aspect-ratio:.86;border-left-color:#bdbdbd;border-right-color:#bdbdbd;border-bottom-color:#bdbdbd;border-top:5px solid var(--fam)!important;outline:none!important;background:#fff!important;opacity:1!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html.print-pt .q-toggle{font-size:0} html.print-pt .q-toggle b{font-size:8pt}
+  html.print-pt .legend{font-size:8pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html.print-pt .legend i{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* Diapo « Comment les atomes se lient » */
+.lb-kinds{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
+.lb-kinds>div{padding:8px 12px;background:var(--bg);border:1px solid var(--line);font-size:.92rem}
+.m-chips .chip small{display:block;font-family:var(--f-body);font-weight:400;font-size:.66rem;opacity:.75}
+.lb-stage{display:grid;grid-template-columns:minmax(0,600px) minmax(240px,1fr);gap:16px;align-items:center}
+@media (max-width:860px){.lb-stage{grid-template-columns:1fr}}
+#lbSvg{width:100%;height:auto;display:block}
+#lbSvg .lb-core{stroke-width:2} #lbSvg .lb-core.c1{fill:var(--accent);stroke:var(--accent)} #lbSvg .lb-core.c2{fill:var(--sub-p);stroke:var(--sub-p)}
+#lbSvg text{font-family:var(--f-display);font-weight:800;font-size:19px;text-anchor:middle;fill:var(--surface)}
+#lbSvg .lb-p{transition:transform 1.2s cubic-bezier(.5,0,.3,1)}
+#lbSvg .lb-e{transition:transform 1.2s cubic-bezier(.5,0,.3,1),r .3s,filter .3s;stroke:var(--surface);stroke-width:1.5}
+#lbSvg .lb-e.e1{fill:var(--accent)} #lbSvg .lb-e.e2{fill:var(--sub-p)}
+#lbSvg.hl .lb-e.single{r:8;stroke:var(--ink);stroke-width:2}
+#lbSvg .lb-e.jump{transition:transform 1.3s cubic-bezier(.6,-0.3,.4,1.3)}
+#lbSvg .lb-bond{fill:var(--accent-soft);stroke:var(--ok);stroke-width:2;stroke-dasharray:4 3;opacity:0;transition:opacity .6s}
+#lbSvg.done .lb-bond{opacity:1}
+#lbSvg .lb-q{font-size:18px;opacity:0;transition:opacity .5s;text-anchor:start} #lbSvg .lb-q.pos{fill:var(--accent)} #lbSvg .lb-q.neg{fill:var(--sub-p)}
+#lbSvg.done .lb-q{opacity:1}
+.m-story .st4{opacity:.12;transition:opacity .6s} .m-story.s4 .st4{opacity:1}
+.lb-key{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
+.lb-key i{width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:8px} .lb-key .k1{background:var(--accent)} .lb-key .k2{background:var(--sub-p)}
+@media (prefers-reduced-motion:reduce){#lbSvg .lb-p,#lbSvg .lb-e,#lbSvg .lb-bond,#lbSvg .lb-q{transition:none}}
+
+/* Cases quantiques */
+/* Fiches de cours */
+.fc-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.fc-card{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border:1.5px solid var(--line);background:var(--bg);border-radius:3px}
+.fc-card.pos{border-color:var(--accent)} .fc-card.neg{border-color:var(--accent2)}
+.fc-card b{font-family:var(--f-display);font-size:1.05rem} .fc-card span{font-size:.92rem} .fc-card small{font-family:var(--f-mono);font-size:.78rem;color:var(--muted)}
+.fc-row{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+.fc-row .m-lead{flex:1 1 260px}
+.fc-list{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px;font-size:.95rem}
+.fc-row .fc-list{flex:1 1 240px}
+.fc-list.num{list-style:decimal}
+.fc-scale li{padding:2px 0}
+.fc-nuc{display:inline-flex;align-items:center;gap:2px;font-family:var(--f-display)}
+.fc-nuc .fc-az{display:inline-flex;flex-direction:column;align-items:flex-end;line-height:1;font-family:var(--f-mono);font-size:.8rem}
+.fc-nuc .fc-az sup,.fc-nuc .fc-az sub{vertical-align:baseline;font-size:inherit;line-height:1.15;position:static;display:block;top:auto;bottom:auto}
+.fc-nuc b{font-size:1.4rem}
+.fc-nuc.lg .fc-az{font-size:1.05rem} .fc-nuc.lg b{font-size:3rem;line-height:1}
+.fc-bohr{margin:0;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px}
+.fc-bohr svg{width:170px;height:170px;max-width:100%}
+.fc-bohr figcaption{font-size:.82rem;color:var(--muted);text-align:center}
+.fc-bohr .ring{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:4 4} .fc-bohr .ring.outer{stroke:var(--muted)}
+.fc-bohr .nuc{fill:var(--accent)} .fc-bohr .e{fill:var(--sub-s)} .fc-bohr .e.ext{fill:var(--sub-p)}
+.fc-bohr .nuc-t{fill:var(--surface);font-family:var(--f-display);font-weight:800;font-size:13px;text-anchor:middle}
+.fc-bohr .nuc-z{fill:var(--surface);font-family:var(--f-mono);font-size:7.5px;text-anchor:middle}
+.fc-bohr .ring-t{fill:var(--muted);font-family:var(--f-mono);font-size:10px;font-weight:600}
+.fc-iso{display:flex;flex-wrap:wrap;gap:10px}
+.fc-isocard{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px;border:1px solid var(--line);background:var(--bg);border-radius:3px;min-width:150px;font-size:.9rem}
+.fc-isocard span{color:var(--muted);font-family:var(--f-mono);font-size:.8rem}
+.fc-formula{margin:0;padding:10px 14px;border:1.5px solid var(--accent);background:var(--accent-soft);font-family:var(--f-mono);font-size:.95rem;overflow-x:auto;align-self:flex-start;max-width:100%}
+.fc-formula.big{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-family:var(--f-display)}
+.fc-formula small{font-family:var(--f-body);font-size:.8rem;color:var(--muted)}
+.fc-frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15}
+.fc-frac span:first-child{border-bottom:2px solid currentColor;padding:0 6px}
+.fc-calc{display:flex;flex-direction:column;gap:6px;font-size:.95rem;overflow-x:auto}
+.fc-calc p{margin:0}
+.fc-eq{font-family:var(--f-display);font-size:1.5rem;font-weight:700;color:var(--accent)}
+.fc-tab{border-collapse:collapse;font-size:.9rem;display:block;overflow-x:auto;max-width:100%}
+.fc-tab th,.fc-tab td{border:1px solid var(--line);padding:5px 8px;text-align:left}
+.fc-tab th{background:var(--bg);font-weight:600}
+.fc-cell{display:flex;flex-direction:column;align-items:center;width:96px;padding:6px;border:1.5px solid var(--line);border-top:5px solid var(--fam-tr);background:var(--surface);font-size:.8rem;line-height:1.25}
+.fc-cell .z{align-self:flex-start;font-family:var(--f-mono)} .fc-cell .s{font-family:var(--f-display);font-size:1.6rem;font-weight:800}
+.fc-cell .ma{font-family:var(--f-mono)} .fc-cell .q{font-family:var(--f-mono);font-weight:700;color:var(--accent)}
+.fc-mini{display:inline-flex;gap:3px;vertical-align:middle}
+.fc-mini .qb{min-width:24px;height:22px;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid currentColor;font-size:.85rem}
+.fc-blocs{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:2px;font-family:var(--f-mono);font-size:clamp(.45rem,1.4vw,.72rem)}
+.fc-blocs span{display:grid;place-items:center;aspect-ratio:1;color:#fff;font-weight:700;border-radius:2px}
+.fc-blocs .b-s{background:var(--sub-s)} .fc-blocs .b-p{background:var(--sub-p)} .fc-blocs .b-d{background:var(--sub-d)} .fc-blocs .b-f{background:var(--sub-f)}
+.qbx-wrap{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:var(--bg);border:1px solid var(--line);overflow-x:auto}
+.qbx-title{margin:0 0 2px;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.qbx{display:flex;align-items:flex-end;gap:14px;min-width:max-content}
+.qbx-s{font-family:var(--f-display);font-size:1.5rem;width:2.2em;line-height:1} .qbx.rA .qbx-s{color:var(--accent)} .qbx.rB .qbx-s{color:var(--sub-p)}
+.qbx-core{font-family:var(--f-mono);font-size:.85rem;color:var(--muted);padding-bottom:16px}
+.qbx-sub{display:flex;flex-direction:column;align-items:center;gap:2px}
+.qbx-sub small{font-family:var(--f-mono);font-size:.75rem;font-weight:700}
+.qbx-row{display:flex;gap:4px}
+.qb{width:30px;height:30px;border-bottom:2px solid var(--ink);display:flex;align-items:center;justify-content:center;gap:1px;font-size:1.15rem;font-weight:700;line-height:1}
+.qb .ar{font-style:normal;width:11px;text-align:center;transition:opacity .6s,transform .6s}
+.qb .ar.rA{color:var(--accent)} .qb .ar.rB{color:var(--sub-p)}
+.qbx-wrap .ar.inc{opacity:0;transform:translateY(-14px)} .qbx-wrap.go .ar.inc{opacity:1;transform:none}
+.qbx-wrap.go .ar.out{opacity:.18;text-decoration:line-through}
+.meca-plate{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:6px}
+.meca-plate .qbx-s{font-size:1.7rem}
+
+.board.wide{grid-template-columns:1fr}
+.wide-show{background:var(--bg);border:1.5px solid var(--accent);padding:12px 14px;overflow-x:auto;min-width:0}
+
+.qbx-wrap{position:relative}
+.qbx-wrap .qb{transition:box-shadow .4s,background .4s}
+.qbx-wrap.hl .qb.sgl{background:var(--accent-soft);box-shadow:0 0 0 2px var(--sub-p) inset}
+.qbx-wrap.anim .ar.inc{opacity:0;transform:none}
+.qbx-wrap.anim .ar.inc.landed{opacity:1}
+.qbx-wrap .ar.lending{transform:scale(1.35);text-shadow:0 0 6px currentColor}
+.qbx-wrap.anim .ar.out.gone{opacity:.18;text-decoration:line-through}
+.qbx-wrap.anim .ar.out:not(.gone){opacity:1;text-decoration:none}
+.qfly{position:absolute;font-style:normal;font-size:1.25rem;font-weight:800;line-height:1;width:11px;text-align:center;z-index:3;pointer-events:none;transition:transform .85s cubic-bezier(.5,0,.3,1);text-shadow:0 0 8px currentColor}
+.qfly.rA{color:var(--accent)} .qfly.rB{color:var(--sub-p)}
+@media (prefers-reduced-motion:reduce){.qfly{transition:none}}
+
+.vl-rows{display:flex;flex-direction:column;gap:2px;margin:6px 0;padding:6px 10px;background:var(--surface);border:1px solid var(--line);font-family:var(--f-mono);font-size:.9rem}
+.vl-row.val{background:var(--accent-soft);border-left:3px solid var(--accent);padding-left:6px;margin-left:-9px}
+.case-tip{color:var(--sub-p);font-size:.78rem;display:block;line-height:1.2}
+</style>
+</head><body>
+<div class="wrap">
+  <header class="top">
+    <canvas id="cell" aria-hidden="true"></canvas>
+    <div>
+      <h1>Labo <span>Atomes</span></h1>
+      <p>Sciences des matériaux · chapitre I, atomes et ions <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.18.0</span></p>
+    </div>
+  </header>
+
+  <div class="tabs-scroll"><nav class="tabs" id="tabs" role="tablist" aria-label="Exercices du cours"></nav></div>
+  <div class="tabs-scroll"><nav class="subtabs" id="subtabs" role="tablist" aria-label="Jeux de l'exercice"></nav></div>
+
+  <section class="panel" id="panel-game" role="tabpanel" hidden>
+    <div class="panel-head"><h2 id="gameTitle"></h2><p id="gameDesc"></p></div>
+    <div class="opts">
+      <label for="level" data-opt="level">Éléments
+        <select id="level">
+          <option value="1">Z de 1 à 20</option>
+          <option value="2">Z de 1 à 36</option>
+          <option value="3" selected>Tous (jusqu'à l'uranium)</option>
+        </select>
+      </label>
+      <label for="iso" data-opt="iso"><input type="checkbox" id="iso" checked> Inclure des isotopes (²H, ¹⁴C, ²³⁵U…)</label>
+      <button type="button" class="btn ghost small" id="slBtn" aria-expanded="false" aria-controls="slides">Revoir le cours</button>
+      <button type="button" class="btn ghost small" id="ptBtn" aria-expanded="false" aria-controls="ptInline">Afficher le tableau périodique</button>
+    </div>
+    <section class="slides" id="slides" hidden>
+      <div class="sl-head">
+        <span class="sl-title" id="slTitle"></span>
+        <div class="sl-nav">
+          <button type="button" class="btn ghost small" id="slPrev" aria-label="Diapo précédente">←</button>
+          <button type="button" class="btn ghost small" id="slNext" aria-label="Diapo suivante">→</button>
+        </div>
+      </div>
+      <div class="method" id="slCustom"></div>
+      <div class="thumbs" id="slThumbs"></div>
+    </section>
+    <section class="board" id="board" aria-live="polite"></section>
+    <section class="ptable" id="ptInline" hidden>
+      <h2 class="pt-print-title">Tableau périodique des éléments <small>Labo Atomes</small></h2>
+      <div class="pt-find"><input type="search" class="pt-search" id="ptSearch2" autocomplete="off" spellcheck="false" placeholder="Rechercher un élément : nom, symbole ou Z (ex. fer, Fe, 26)" aria-label="Rechercher un élément"><span class="pt-count" id="ptCount2" aria-live="polite"></span></div>
+      <span class="pt-detail" id="ptDetail2">Clique sur une case pour voir le nom, la masse molaire et la configuration électronique de l'élément.</span>
+      <div class="pt-scroll"><div class="pt" id="pt2"></div></div>
+      <div class="legend" id="legend2"></div>
+      <div class="pt-print-bar app-only"><button type="button" class="btn ghost small pt-print" data-pt="2">Imprimer le tableau (A4 paysage)</button><span>Ouvre la fenêtre d'impression : choisis ton imprimante ou « Enregistrer en PDF ».</span></div>
+    </section>
+    <div class="score" id="score"></div>
+    <p class="hint">Astuce : <kbd>Entrée</kbd> pour valider, puis <kbd>Entrée</kbd> pour l'exercice suivant. Les décimales s'écrivent avec une virgule ou un point ; les puissances de 10 en <kbd>2,5e-3</kbd> ou <kbd>2,5×10^-3</kbd>.</p>
+  </section>
+
+  <section class="panel" id="panel-pt" role="tabpanel" hidden>
+    <div class="panel-head"><h2>Tableau périodique</h2><p>Les 118 éléments, colorés par famille. Clique sur une case pour voir son nom, sa masse molaire et sa configuration électronique.</p></div>
+    <section class="ptable" id="ptMain">
+      <h2 class="pt-print-title">Tableau périodique des éléments <small>Labo Atomes</small></h2>
+      <div class="pt-find"><input type="search" class="pt-search" id="ptSearch1" autocomplete="off" spellcheck="false" placeholder="Rechercher un élément : nom, symbole ou Z (ex. fer, Fe, 26)" aria-label="Rechercher un élément"><span class="pt-count" id="ptCount1" aria-live="polite"></span></div>
+      <span class="pt-detail" id="ptDetail1">Clique sur une case pour voir le nom, la masse molaire et la configuration électronique de l'élément.</span>
+      <div class="pt-scroll"><div class="pt" id="pt1"></div></div>
+      <div class="legend" id="legend1"></div>
+      <div class="pt-print-bar app-only"><button type="button" class="btn ghost small pt-print" data-pt="1">Imprimer le tableau (A4 paysage)</button><span>Ouvre la fenêtre d'impression : choisis ton imprimante ou « Enregistrer en PDF ».</span></div>
+    </section>
+  </section>
+
+  <section class="panel" id="panel-bilan" role="tabpanel" hidden>
+    <div class="panel-head"><h2>Bilan</h2><p>Tes résultats sur tous les exercices, conservés d'une séance à l'autre.</p></div>
+    <div class="totals" id="totals"></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Jeu</th><th class="n">Exercices</th><th class="n">Réussite</th><th class="n">Record de série</th></tr></thead><tbody id="bilanRows"></tbody></table></div>
+    <div class="reset" id="reset"></div>
+  </section>
+</div>
+
+<script>
+/*LOGIC*/
+// ---------- Tableau périodique : symbole, nom, masse molaire (g/mol) ----------
+const PT_RAW = "H:Hydrogène:1.008,He:Hélium:4.003,Li:Lithium:6.94,Be:Béryllium:9.012,B:Bore:10.81,C:Carbone:12.011,N:Azote:14.007,O:Oxygène:15.999,F:Fluor:18.998,Ne:Néon:20.180,"+
+"Na:Sodium:22.990,Mg:Magnésium:24.305,Al:Aluminium:26.982,Si:Silicium:28.085,P:Phosphore:30.974,S:Soufre:32.06,Cl:Chlore:35.45,Ar:Argon:39.948,K:Potassium:39.098,Ca:Calcium:40.078,"+
+"Sc:Scandium:44.956,Ti:Titane:47.867,V:Vanadium:50.942,Cr:Chrome:51.996,Mn:Manganèse:54.938,Fe:Fer:55.845,Co:Cobalt:58.933,Ni:Nickel:58.693,Cu:Cuivre:63.546,Zn:Zinc:65.38,"+
+"Ga:Gallium:69.723,Ge:Germanium:72.630,As:Arsenic:74.922,Se:Sélénium:78.971,Br:Brome:79.904,Kr:Krypton:83.798,Rb:Rubidium:85.468,Sr:Strontium:87.62,Y:Yttrium:88.906,Zr:Zirconium:91.224,"+
+"Nb:Niobium:92.906,Mo:Molybdène:95.95,Tc:Technétium:98,Ru:Ruthénium:101.07,Rh:Rhodium:102.906,Pd:Palladium:106.42,Ag:Argent:107.868,Cd:Cadmium:112.414,In:Indium:114.818,Sn:Étain:118.710,"+
+"Sb:Antimoine:121.760,Te:Tellure:127.60,I:Iode:126.904,Xe:Xénon:131.293,Cs:Césium:132.905,Ba:Baryum:137.327,La:Lanthane:138.905,Ce:Cérium:140.116,Pr:Praséodyme:140.908,Nd:Néodyme:144.242,"+
+"Pm:Prométhium:145,Sm:Samarium:150.36,Eu:Europium:151.964,Gd:Gadolinium:157.25,Tb:Terbium:158.925,Dy:Dysprosium:162.500,Ho:Holmium:164.930,Er:Erbium:167.259,Tm:Thulium:168.934,Yb:Ytterbium:173.045,"+
+"Lu:Lutécium:174.967,Hf:Hafnium:178.49,Ta:Tantale:180.948,W:Tungstène:183.84,Re:Rhénium:186.207,Os:Osmium:190.23,Ir:Iridium:192.217,Pt:Platine:195.084,Au:Or:196.967,Hg:Mercure:200.592,"+
+"Tl:Thallium:204.38,Pb:Plomb:207.2,Bi:Bismuth:208.980,Po:Polonium:209,At:Astate:210,Rn:Radon:222,Fr:Francium:223,Ra:Radium:226,Ac:Actinium:227,Th:Thorium:232.038,"+
+"Pa:Protactinium:231.036,U:Uranium:238.029,Np:Neptunium:237,Pu:Plutonium:244,Am:Américium:243,Cm:Curium:247,Bk:Berkélium:247,Cf:Californium:251,Es:Einsteinium:252,Fm:Fermium:257,"+
+"Md:Mendélévium:258,No:Nobélium:259,Lr:Lawrencium:266,Rf:Rutherfordium:267,Db:Dubnium:268,Sg:Seaborgium:269,Bh:Bohrium:270,Hs:Hassium:269,Mt:Meitnérium:278,Ds:Darmstadtium:281,"+
+"Rg:Roentgenium:282,Cn:Copernicium:285,Nh:Nihonium:286,Fl:Flérovium:289,Mc:Moscovium:290,Lv:Livermorium:293,Ts:Tennesse:294,Og:Oganesson:294";
+const PT = PT_RAW.split(",").map((x,i)=>{const [s,n,m]=x.split(":");return {Z:i+1,s,n,M:+m};});
+const BY_SYM = Object.fromEntries(PT.map(e=>[e.s,e]));
+
+// Atomes pour les jeux de notation : [Z, A le plus courant, autres isotopes]
+const EL = [[1,1,[2,3]],[2,4,[3]],[3,7,[6]],[4,9,[]],[5,11,[10]],[6,12,[13,14]],[7,14,[15]],[8,16,[17,18]],[9,19,[]],[10,20,[22]],
+[11,23,[]],[12,24,[25,26]],[13,27,[]],[14,28,[29,30]],[15,31,[32]],[16,32,[34]],[17,35,[37]],[18,40,[36]],[19,39,[40,41]],[20,40,[44]],
+[21,45,[]],[22,48,[46]],[23,51,[]],[24,52,[]],[25,55,[]],[26,56,[54,57]],[27,59,[60]],[28,58,[60]],[29,63,[65]],[30,64,[66]],
+[31,69,[71]],[32,74,[72]],[33,75,[]],[34,80,[78]],[35,79,[81]],[36,84,[]],[37,85,[87]],[38,88,[90]],[39,89,[]],[40,90,[]],
+[47,107,[109]],[48,114,[]],[50,120,[118]],[51,121,[123]],[53,127,[131]],[54,132,[]],[55,133,[137]],[56,138,[]],[74,184,[]],
+[78,195,[]],[79,197,[]],[80,202,[]],[82,208,[206]],[92,238,[235]]].map(([Z,A,iso])=>({...PT[Z-1],A,iso}));
+const ISO_NAMES = {"H2":"deutérium","H3":"tritium"};
+
+// ---------- Outils ----------
+const norm = s => String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[’`]/g,"'").replace(/\s+/g," ").trim().toLowerCase();
+const rnd = a => a[Math.floor(Math.random()*a.length)];
+const gcd = (a,b) => b ? gcd(b, a%b) : Math.abs(a);
+const SUPMAP = {"⁰":"0","¹":"1","²":"2","³":"3","⁴":"4","⁵":"5","⁶":"6","⁷":"7","⁸":"8","⁹":"9","⁺":"+","⁻":"-"};
+const SUBMAP = {"₀":"0","₁":"1","₂":"2","₃":"3","₄":"4","₅":"5","₆":"6","₇":"7","₈":"8","₉":"9"};
+const deSub = s => String(s).replace(/[₀-₉]/g, c=>SUBMAP[c]);
+// Les exposants Unicode deviennent "^…" pour ne pas les confondre avec des chiffres normaux
+const deSup = s => String(s).replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]+/g, m=>"^"+[...m].map(c=>SUPMAP[c]).join(""));
+function parseNum(s){
+  let t = deSup(deSub(s)).replace(/\s/g,"").replace(/−/g,"-").replace(/,/g,".");
+  t = t.replace(/(?:×|x|\*|\.)?10\^(-?\d+)/i, "e$1");
+  if(!/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(t)) return NaN;
+  return Number(t);
+}
+const isInt = (v,x) => String(v).trim()!=="" && parseNum(v)===x;
+const near = (v,x,tol=0.01) => { const y=parseNum(v); return isFinite(y) && Math.abs(y-x) <= tol*Math.abs(x) + 1e-12; };
+function fmtN(x, sig=4){
+  if(x===0) return "0";
+  const a = Math.abs(x);
+  if(a>=1e-3 && a<1e6) return String(+x.toPrecision(sig)).replace(".",",");
+  const [m,e] = x.toExponential(sig-1).split("e");
+  return `${String(+m).replace(".",",")}×10<sup>${+e}</sup>`;
+}
+const ROMAN = ["0","I","II","III","IV","V","VI","VII","VIII"];
+const doStr = q => (q>0?"+":"−")+ROMAN[Math.abs(q)];
+function parseDO(s){
+  const t = String(s).replace(/\s/g,"").replace(/−/g,"-").toUpperCase();
+  const sign = t.includes("-") ? -1 : t.includes("+") ? 1 : 0;
+  const body = t.replace(/[+-]/g,"");
+  let v = /^\d+$/.test(body) ? +body : ROMAN.indexOf(body);
+  return sign && v>0 ? sign*v : NaN;
+}
+// Formule chimique → HTML avec indices (Cu10,4 → Cu<sub>10,4</sub>)
+const fmtF = f => f.replace(/(\d+(?:[.,]\d+)?)/g, (m)=>`<sub>${m.replace(".",",")}</sub>`);
+const chg = q => (Math.abs(q)>1?Math.abs(q):"")+(q>0?"+":"−");
+const ionHTML = (sym,q) => `${fmtF(sym)}<sup>${chg(q)}</sup>`;
+const deEl = n => (/^[aeiouyéè]/i.test(n) ? "d’" : "de ") + n; // « de fer », « d’argon »
+// Formule → {élément: nombre}, avec parenthèses et indices décimaux
+function parseFormula(f){
+  const s = deSub(String(f)).replace(/\s/g,"").replace(/,/g,".");
+  let i = 0;
+  function group(){
+    const out = {};
+    while(i < s.length){
+      let part;
+      if(s[i]==="("){ i++; part = group(); if(s[i]!==")") throw 0; i++; }
+      else if(s[i]===")") break;
+      else { const m = /^[A-Z][a-z]?/.exec(s.slice(i)); if(!m || !BY_SYM[m[0]]) throw 0; part = {[m[0]]:1}; i += m[0].length; }
+      const n = /^\d+(\.\d+)?/.exec(s.slice(i)); let k = 1;
+      if(n){ k = +n[0]; i += n[0].length; }
+      for(const e in part) out[e] = (out[e]||0) + part[e]*k;
+    }
+    return out;
+  }
+  try { const r = group(); return (i===s.length && Object.keys(r).length) ? r : null; } catch(e){ return null; }
+}
+const molarMass = f => Object.entries(parseFormula(f)).reduce((a,[e,k])=>a+k*BY_SYM[e].M,0);
+const fmtCount = k => String(+k.toFixed(3)).replace(".",",");
+function massDetail(f){
+  const c = parseFormula(f);
+  const terms = Object.entries(c).map(([e,k])=>`${k===1?"":fmtCount(k)+" × "}M(${e})`).join(" + ");
+  const nums = Object.entries(c).map(([e,k])=>`${k===1?"":fmtCount(k)+" × "}${fmtN(BY_SYM[e].M,6)}`).join(" + ");
+  return `M = ${terms} = ${nums} = <b>${fmtN(molarMass(f),6)} g/mol</b>`;
+}
+
+// ---------- Ions et composés ioniques ----------
+const ION_ONE = [["Li",1],["Na",1],["K",1],["Ag",1],["Cu",1],["H",1],["Mg",2],["Ca",2],["Ba",2],["Zn",2],["Fe",2],["Cu",2],["Pb",2],["Sn",2],
+  ["Fe",3],["Al",3],["Cr",3],["Sn",4],["F",-1],["Cl",-1],["Br",-1],["I",-1],["O",-2],["S",-2],["N",-3],["P",-3]];
+const CATIONS = [["Na",1,"sodium"],["K",1,"potassium"],["Li",1,"lithium"],["Ag",1,"argent"],["NH4",1,"ammonium"],
+  ["Mg",2,"magnésium"],["Ca",2,"calcium"],["Ba",2,"baryum"],["Zn",2,"zinc"],["Al",3,"aluminium"]];
+const ANIONS = [["Cl",1,"chlorure"],["F",1,"fluorure"],["Br",1,"bromure"],["I",1,"iodure"],["OH",1,"hydroxyde"],["NO3",1,"nitrate"],
+  ["O",2,"oxyde"],["S",2,"sulfure"],["SO4",2,"sulfate"],["CO3",2,"carbonate"],["PO4",3,"phosphate"]];
+const ANION_NAME = {F:"fluorure",Cl:"chlorure",Br:"bromure",I:"iodure",O:"oxyde",S:"sulfure",N:"nitrure",P:"phosphure"};
+const SKIP = new Set(["NH4|O","NH4|OH","Al|CO3"]);
+const isPoly = s => /\d/.test(s) || s==="OH";
+function makeCompound(cat, an){
+  const [cs,cq,cn] = cat, [as,aq,anm] = an, g = gcd(cq,aq), nc = aq/g, na = cq/g;
+  const part = (s,n) => n===1 ? s : (isPoly(s) ? `(${s})${n}` : `${s}${n}`);
+  const name = `${anm} ${/^[aeiouyh]/i.test(norm(cn)) ? "d'" : "de "}${cn}`;
+  return {formula: part(cs,nc)+part(as,na), name, cs, cq, nc, as, aq:-aq, na};
+}
+function normIon(s){
+  let t = deSub(deSup(String(s))).replace(/[\s^()]/g,"").replace(/−/g,"-");
+  t = t.replace(/([+-])(\d)$/, "$2$1");     // Cl-1 → Cl1-
+  t = t.replace(/([A-Za-z])1([+-])$/, "$1$2"); // Na1+ → Na+
+  return t;
+}
+const ionKey = (sym,q) => sym + (Math.abs(q)>1?Math.abs(q):"") + (q>0?"+":"-");
+// Équation de dissociation : « Na2SO4 => 2 Na+ + SO4 2- »
+const escRe = t => t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+function eqOk(v, c){
+  const t = deSub(deSup(String(v))).replace(/\^/g,"").replace(/[−–]/g,"-");
+  const m = t.split(/=>|⇒|->|→|=/); if(m.length!==2) return false;
+  const lhs = parseFormula(m[0].trim()), want = parseFormula(c.formula);
+  if(!lhs || Object.keys(lhs).length!==Object.keys(want).length || Object.keys(want).some(e=>lhs[e]!==want[e])) return false;
+  let rhs = " " + m[1] + " ";
+  const term = (sym,q) => {
+    const a = Math.abs(q), sg = q>0 ? "\\+" : "-";
+    const ch = a===1 ? `(?:1?${sg})` : `(?:${a}${sg}|${sg}${a})`;
+    return new RegExp(`(^|[\\s+])\\s*(\\d*)\\s*${escRe(sym)}\\s*${ch}(?=[\\s+]|$)`);
+  };
+  for(const [sym,q,n] of [[c.cs,c.cq,c.nc],[c.as,c.aq,c.na]]){
+    const r = term(sym,q).exec(rhs); if(!r) return false;
+    if((r[2]===""?1:+r[2]) !== n) return false;
+    rhs = rhs.slice(0,r.index) + r[1] + rhs.slice(r.index + r[0].length);
+  }
+  return /^[\s+]*$/.test(rhs);
+}
+function chargeOk(v, q){
+  const t = String(v).replace(/\s/g,"").replace(/[−–]/g,"-");
+  if(t==="+" || t==="-") return (t==="+"?1:-1)===q;
+  return parseDO(t)===q;
+}
+const eqHTML = c => `${fmtF(c.formula)} ⇒ ${c.nc>1?c.nc+" ":""}${ionHTML(c.cs,c.cq)} + ${c.na>1?c.na+" ":""}${ionHTML(c.as,c.aq)}`;
+// Symbole ou ion : juste même si la majuscule est oubliée (un rappel s'affiche alors)
+const caseSlip = (got, want) => got!==want && got.toLowerCase()===want.toLowerCase();
+const soft = (f, test) => Object.assign(f, {soft: test});
+const normName = s => norm(s).replace(/\bd'\s*/g,"de ").replace(/\s+/g," ");
+
+// ---------- Configurations électroniques ----------
+const ORDER = ["1s","2s","2p","3s","3p","4s","3d","4p","5s","4d","5p","6s","4f","5d","6p","7s","5f","6d","7p"];
+const CAP = {s:2,p:6,d:10,f:14}, LV = {s:0,p:1,d:2,f:3}, SHELL = ["","K","L","M","N","O","P","Q"];
+// Exceptions à la règle de Klechkowski (configurations réelles de l'état fondamental)
+const EXC = {24:{"4s":1,"3d":5}, 29:{"4s":1,"3d":10}, 41:{"5s":1,"4d":4}, 42:{"5s":1,"4d":5}, 44:{"5s":1,"4d":7}, 45:{"5s":1,"4d":8},
+  46:{"5s":0,"4d":10}, 47:{"5s":1,"4d":10}, 57:{"4f":0,"5d":1}, 58:{"4f":1,"5d":1}, 64:{"4f":7,"5d":1}, 78:{"6s":1,"5d":9},
+  79:{"6s":1,"5d":10}, 89:{"5f":0,"6d":1}, 90:{"5f":0,"6d":2}, 91:{"5f":2,"6d":1}, 92:{"5f":3,"6d":1}, 93:{"5f":4,"6d":1}, 96:{"5f":7,"6d":1}};
+function fill(nE){
+  const c = {}; let r = nE;
+  for(const o of ORDER){ if(r<=0) break; const k = Math.min(CAP[o[1]], r); c[o]=k; r-=k; }
+  return c;
+}
+function configOf(Z, q=0){
+  let c = fill(Z);
+  if(EXC[Z]) c = {...c, ...EXC[Z]};
+  if(q>0){ // cation : on retire d'abord la couche la plus externe (n le plus grand, puis l le plus grand)
+    let r = q;
+    while(r>0){
+      const o = Object.keys(c).filter(k=>c[k]>0).sort((a,b)=>(+b[0]-+a[0]) || (LV[b[1]]-LV[a[1]]))[0];
+      c[o]--; r--;
+    }
+  } else if(q<0){
+    let r = -q;
+    for(const o of ORDER){ if(r<=0) break; const free = CAP[o[1]]-(c[o]||0); const k = Math.min(free,r); if(k>0){ c[o]=(c[o]||0)+k; r-=k; } }
+  }
+  return c;
+}
+const cfgColor = c => ORDER.filter(o=>c[o]>0).map(o=>`<span class="sc-${o[1]}">${o}<sup>${c[o]}</sup></span>`).join(" ");
+const cfgHTML = c => ORDER.filter(o=>c[o]>0).map(o=>`${o}<sup>${c[o]}</sup>`).join(" ");
+const CORES = [[86,"Rn"],[54,"Xe"],[36,"Kr"],[18,"Ar"],[10,"Ne"],[2,"He"]];
+function shortCfg(c){
+  const total = Object.values(c).reduce((a,b)=>a+b,0);
+  for(const [z,g] of CORES){
+    if(z>=total) continue;
+    const core = fill(z);
+    if(Object.keys(core).every(o=>c[o]===core[o]))
+      return `[${g}] ` + ORDER.filter(o=>c[o]>0 && !(o in core)).map(o=>`${o}<sup>${c[o]}</sup>`).join(" ");
+  }
+  return null;
+}
+function parseCfg(s){
+  let t = String(s).replace(/\[\s*(He|Ne|Ar|Kr|Xe|Rn)\s*\]/gi, (m,g)=>{
+    const z = CORES.find(x=>x[1].toLowerCase()===g.toLowerCase())[0];
+    const c = fill(z); return " "+ORDER.filter(o=>c[o]).map(o=>o+c[o]).join(" ")+" ";
+  });
+  t = deSup(t).replace(/[\s^]/g,"").toLowerCase();
+  const out = {}; const re = /([1-7])([sp])(\d)|([1-7])d(10|\d)|([1-7])f(1[0-4]|\d)/g; let m, used = 0;
+  while((m = re.exec(t))){
+    const o = m[1] ? m[1]+m[2] : m[4] ? m[4]+"d" : m[6]+"f";
+    const k = +(m[3] ?? m[5] ?? m[7]);
+    out[o] = (out[o]||0) + k; used += m[0].length;
+  }
+  return used ? out : null;
+}
+function sameCfg(a,b){
+  if(!a) return false;
+  const keys = new Set([...Object.keys(a),...Object.keys(b)]);
+  for(const k of keys) if((a[k]||0)!==(b[k]||0)) return false;
+  return true;
+}
+
+// ---------- Valence (éléments Z ≤ 20) ----------
+function valenceInfo(Z){
+  const c = configOf(Z), n = Math.max(...Object.keys(c).map(o=>+o[0]));
+  const outer = Object.keys(c).filter(o=>+o[0]===n);
+  const ve = outer.reduce((a,o)=>a+c[o],0);
+  let single = 0;
+  for(const o of outer){ const k = c[o], orb = CAP[o[1]]/2; single += k<=orb ? k : 2*orb-k; }
+  return {sh:n, ve, single, c};
+}
+const ION_STABLE = {3:1,11:1,19:1,4:2,12:2,20:2,13:3,7:-3,15:-3,8:-2,16:-2,9:-1,17:-1};
+const NOBLE = [[2,"He"],[10,"Ne"],[18,"Ar"],[36,"Kr"]];
+const VAL = {H:1,Li:1,Na:1,K:1,Be:2,Mg:2,Ca:2,B:3,Al:3,C:4,Si:4,N:3,P:3,O:2,S:2,F:1,Cl:1,Br:1,I:1};
+const PAIRS = [["H","O"],["N","H"],["C","H"],["C","O"],["Al","O"],["Na","Cl"],["Mg","O"],["Mg","Cl"],["Ca","Cl"],["Na","O"],["K","Br"],
+  ["Li","F"],["Al","Cl"],["Ca","O"],["Si","O"],["H","Cl"],["H","S"],["P","H"],["Ca","F"],["Al","S"],["B","F"],["Mg","N"],["Si","H"],
+  ["C","Cl"],["N","Cl"],["H","F"],["Na","S"],["Al","N"],["K","O"],["B","H"]];
+function pairFormula(A,B){
+  const a = VAL[A], b = VAL[B], g = gcd(a,b), ka = b/g, kb = a/g;
+  return {ka, kb, formula: A+(ka>1?ka:"")+B+(kb>1?kb:"")};
+}
+function sameRatio(u, ka, kb, A, B){
+  const c = parseFormula(u); if(!c) return false;
+  const keys = Object.keys(c); if(keys.length!==2 || !(A in c) || !(B in c)) return false;
+  return Math.abs(c[A]*kb - c[B]*ka) < 1e-9;
+}
+
+// ---------- Quantité de matière ----------
+const SUBSTANCES = [["H2O","eau"],["CO2","dioxyde de carbone"],["NaCl","chlorure de sodium"],["CH4","méthane"],["NH3","ammoniac"],
+  ["H2SO4","acide sulfurique"],["CaCO3","calcite"],["Fe2O3","hématite"],["Fe3O4","magnétite"],["Al2O3","alumine"],["C6H12O6","glucose"],
+  ["SiO2","quartz"],["TiO2","rutile"],["ZnS","blende"],["PbS","galène"],["Cu2S","chalcocite"],["FeS2","pyrite"],["CaF2","fluorine"],
+  ["BaSO4","barytine"],["CuSO4","sulfate de cuivre"],["Ca3(PO4)2","phosphate de calcium"],["KNO3","nitrate de potassium"],
+  ["Ag4MnSb2S6","samsonite"],["Cu10.4Ni1.6Sb4S13","tétraédrite"],["Pb13CuSb7S24","sulfure de plomb, cuivre et antimoine"],["Sb2S3","stibine"],["Bi2Te3","tellurure de bismuth"]];
+const MASSES = [0.5,1,2,2.5,5,10,12,15,18,20,25,50,100];
+/*ENDLOGIC*/
+
+// ---------- Jeux ----------
+// Chaque jeu : gen() tire un exercice, show(q) l'affiche, fields(q) liste les réponses attendues, explain(q) donne la correction.
+// Pour ajouter un jeu : une entrée dans GAMES avec la section où il apparaît.
+const F = (id,label,ok,ans,kind="num",opts) => ({id,label,ok,ans,kind,opts});
+const notationTile = (A,Z,s,tag) => ({tile:true, html:`<div class="nota"><div class="nums"><span>${A}</span><span>${Z}</span></div><div class="sym">${s}</div></div>${tag?`<span class="tag">${tag}</span>`:""}`});
+const plate = (big, cap="", data="") => {
+  const len = big.replace(/<[^>]+>/g,"").length, size = len<=3?4.2:len<=6?3.2:len<=10?2.3:len<=16?1.7:1.35;
+  return {html:`<div class="big" style="font-size:${size}rem">${big}</div>${cap?`<div class="cap">${cap}</div>`:""}${data?`<div class="data">${data}</div>`:""}`};
+};
+const dataLine = f => Object.keys(parseFormula(f)).map(e=>`M(${e}) = ${String(BY_SYM[e].M).replace(".",",")}`).join(" · ")+" g/mol";
+
+function pickAtom(){
+  const lv = $("level").value, max = lv==="1"?20:lv==="2"?36:999;
+  const p = EL.filter(e=>e.Z<=max); let e, t=0;
+  do { e = rnd(p); t++; } while(state.recent.includes(e.s) && t<30);
+  remember(e.s);
+  let A = e.A;
+  if($("iso").checked && e.iso.length && Math.random()<0.35) A = rnd(e.iso);
+  return {...e, A, N:A-e.Z, isIso:A!==e.A};
+}
+function remember(k){ state.recent.push(k); if(state.recent.length>6) state.recent.shift(); }
+function pickFresh(list, key){
+  let x, t=0; do { x = rnd(list); t++; } while(state.recent.includes(key(x)) && t<30);
+  remember(key(x)); return x;
+}
+const elemNameOk = (v,c) => { const n = norm(v); return n===norm(c.n) || (ISO_NAMES[c.s+c.A] && n===norm(ISO_NAMES[c.s+c.A])); };
+const selOk = ans => v => v===ans;
+
+const GAMES = [
+  // ===== Exercice 1 : structure de l'atome =====
+  {id:"struct", section:"atome", tab:"Fiche de l'atome", title:"Fiche de l'atome", opts:["level","iso"],
+   desc:"À partir de la notation, retrouve le nom, les protons, les électrons, les neutrons et Z.",
+   q:"Complète la fiche de cet atome",
+   gen: pickAtom,
+   show: c => notationTile(c.A,c.Z,c.s,c.isIso?"isotope":""),
+   fields: c => [
+     F("nom","Nom de l'élément",v=>elemNameOk(v,c), c.n + (ISO_NAMES[c.s+c.A]?` (${ISO_NAMES[c.s+c.A]})`:""), "text"),
+     F("p","Nombre de protons",v=>isInt(v,c.Z),c.Z),
+     F("e","Nombre d'électrons",v=>isInt(v,c.Z),c.Z),
+     F("n","Nombre de neutrons",v=>isInt(v,c.N),c.N),
+     F("z","Numéro atomique",v=>isInt(v,c.Z),c.Z)],
+   explain: c => `Z = ${c.Z} donc ${c.Z} protons et ${c.Z} électrons (atome neutre). <code>N = A − Z = ${c.A} − ${c.Z} = ${c.N}</code> neutrons.`},
+
+  {id:"inverse", section:"atome", tab:"Notation inverse", title:"Notation inverse", opts:["level","iso"],
+   desc:"À partir des protons et des neutrons, écris le symbole, A et Z.",
+   q:"Écris la notation de cet atome",
+   gen: pickAtom,
+   show: c => plate(c.n, `Protons : <b>${c.Z}</b> · Neutrons : <b>${c.N}</b>`),
+   fields: c => [
+     soft(F("sym","Symbole X",v=>v.trim().toLowerCase()===c.s.toLowerCase(),c.s,"text"), v=>caseSlip(v.trim(),c.s)),
+     F("a","Nombre de masse A",v=>isInt(v,c.A),c.A),
+     F("z","Numéro atomique Z",v=>isInt(v,c.Z),c.Z),
+     F("e","Nombre d'électrons",v=>isInt(v,c.Z),c.Z)],
+   explain: c => `Z = nombre de protons = ${c.Z}. <code>A = Z + N = ${c.Z} + ${c.N} = ${c.A}</code>. Notation : <b>${c.A}/${c.Z} ${c.s}</b> (${c.n}).`},
+
+  {id:"ions", section:"atome", tab:"Ions", title:"Ions", desc:"Degré d'oxydation, électrons gagnés ou perdus, cation ou anion.",
+   q:"Analyse cet ion",
+   gen(){ const [s,q] = pickFresh(ION_ONE, x=>x[0]+x[1]); return {...BY_SYM[s], q}; },
+   show: c => plate(ionHTML(c.s,c.q)),
+   fields: c => [
+     F("nom","Nom de l'élément",v=>norm(v)===norm(c.n),c.n,"text"),
+     F("do","Degré d'oxydation (ex. +II)",v=>parseDO(v)===c.q,doStr(c.q),"text"),
+     F("gp","A-t-il gagné ou perdu des électrons ?",selOk(c.q>0?"perdu":"gagné"),c.q>0?"perdu":"gagné","select",["gagné","perdu"]),
+     F("k","Combien d'électrons ?",v=>isInt(v,Math.abs(c.q)),Math.abs(c.q)),
+     F("ca","Cation ou anion ?",selOk(c.q>0?"cation":"anion"),c.q>0?"cation":"anion","select",["cation","anion"]),
+     F("ne","Nombre d'électrons de l'ion",v=>isInt(v,c.Z-c.q),c.Z-c.q)],
+   explain: c => `${c.n} : Z = ${c.Z}. La charge ${chg(c.q)} indique que l'atome a <b>${c.q>0?"perdu":"gagné"} ${Math.abs(c.q)} électron${Math.abs(c.q)>1?"s":""}</b> : c'est un <b>${c.q>0?"cation":"anion"}</b>, D.O. = ${doStr(c.q)}. Il lui reste <code>${c.Z} − (${c.q>0?"+":""}${c.q}) = ${c.Z-c.q}</code> électrons.`},
+
+  {id:"composes", section:"atome", tab:"Composés ioniques", title:"Composés ioniques",
+   desc:"Nomme le composé et décompose-le en ions, comme NaCl ⇒ Na⁺ + Cl⁻.",
+   q:"Analyse ce composé, puis écris son équation",
+   gen(){
+     let cat, an, t=0;
+     do { cat = rnd(CATIONS); an = rnd(ANIONS); t++; } while((SKIP.has(cat[0]+"|"+an[0]) || state.recent.includes(cat[0]+an[0])) && t<40);
+     remember(cat[0]+an[0]); return makeCompound(cat,an);
+   },
+   show: c => plate(fmtF(c.formula)),
+   fields: c => [
+     F("nom","Nom du composé",v=>normName(v)===normName(c.name),c.name,"wide"),
+     F("nc1",`Nombre de cations ${fmtF(c.cs)}`,v=>isInt(v,c.nc),c.nc),
+     F("dq1",`Degré d'oxydation du cation ${fmtF(c.cs)} (ex. +II)`,v=>chargeOk(v,c.cq),doStr(c.cq),"text"),
+     F("na1",`Nombre d'anions ${fmtF(c.as)}`,v=>isInt(v,c.na),c.na),
+     F("dq2",`Degré d'oxydation de l'anion ${fmtF(c.as)} (ex. −I)`,v=>chargeOk(v,c.aq),doStr(c.aq),"text"),
+     F("nc","Nombre de cations",v=>isInt(v,c.nc),c.nc,"tpl"),
+     F("cq","Charge du cation",v=>chargeOk(v,c.cq),chg(c.cq),"tpl"),
+     F("na","Nombre d'anions",v=>isInt(v,c.na),c.na,"tpl"),
+     F("aq","Charge de l'anion",v=>chargeOk(v,c.aq),chg(c.aq),"tpl")],
+   tpl: c => `<div class="row wide"><label for="nc">Pour finir, l'équation de dissociation : reporte le nombre d'ions et leur charge</label>
+     <div class="eq-tpl"><span class="eq-f">${fmtF(c.formula)}</span> <span class="eq-arrow">⇒</span>
+       <input id="nc" class="eq-n" inputmode="numeric" autocomplete="off" placeholder="?" aria-label="Nombre d'ions ${c.cs}"> <span class="eq-f">${fmtF(c.cs)}<sup><input id="cq" class="eq-q" autocomplete="off" placeholder="±" aria-label="Charge de ${c.cs}"></sup></span>
+       <span class="eq-plus">+</span>
+       <input id="na" class="eq-n" inputmode="numeric" autocomplete="off" placeholder="?" aria-label="Nombre d'ions ${c.as}"> <span class="eq-f">${fmtF(c.as)}<sup><input id="aq" class="eq-q" autocomplete="off" placeholder="±" aria-label="Charge de ${c.as}"></sup></span>
+     </div>
+     <span class="fb" id="fb-eq"></span>
+     <span class="eq-help">Charge : 2+, 3−, + ou − (aussi accepté : +2, +II). Un seul ion : mets 1.</span></div>`,
+   explain: c => `${fmtF(c.formula)} ⇒ ${c.nc>1?c.nc+" ":""}${ionHTML(c.cs,c.cq)} + ${c.na>1?c.na+" ":""}${ionHTML(c.as,c.aq)} : <b>${c.name}</b>. Le composé est neutre : <code>${c.nc} × (+${c.cq}) + ${c.na} × (${c.aq}) = 0</code>.` + (c.nc>1 || c.na>1 ? `<br><b>Attention :</b> dans la formule, les petits chiffres en bas (indices) donnent le <b>nombre</b> d'ions ou d'atomes, pas la charge. ${c.nc>1?`Le ${c.nc} de ${isPoly(c.cs)?`(${fmtF(c.cs)})`:fmtF(c.cs)}<sub>${c.nc}</sub> veut dire ${c.nc} ions ${ionHTML(c.cs,c.cq)}, pas un ion ${ionHTML(c.cs,c.nc)}.`:``}` : ``) + (POLY_CALC[c.as] ? `<br><b>Charge de ${fmtF(c.as)} :</b> ${POLY_CALC[c.as]}${GRP_WARN[c.as]||""}` : ``) + (POLY_CALC[c.cs] ? `<br><b>Charge de ${fmtF(c.cs)} :</b> ${POLY_CALC[c.cs]}${GRP_WARN[c.cs]||""}` : ``) + (isPoly(c.as) ? `<br>Dans ${ionHTML(c.as,c.aq)}, le chiffre en indice fait partie de l'ion (${fmtF(c.as)} = ${Object.entries(parseFormula(c.as)).map(([e,k])=>`${k} ${e}`).join(" + ")}) et la charge s'écrit en exposant.` : ``)},
+
+  // ===== Exercice 2 : quantité de matière =====
+  {id:"masse-molaire", section:"qte", tab:"Masse molaire", title:"Masse molaire",
+   desc:"Calcule la masse molaire M d'un composé à partir des masses molaires des éléments.",
+   q:"Calcule la masse molaire",
+   gen(){ const [f,n] = pickFresh(SUBSTANCES, x=>x[0]); return {f,n,M:molarMass(f)}; },
+   show: c => plate(fmtF(c.f), c.n, dataLine(c.f)),
+   fields: c => [F("M","Masse molaire M (g/mol)",v=>near(v,c.M,0.005),fmtN(c.M,6))],
+   explain: c => massDetail(c.f) + `<br>Tolérance acceptée : 0,5 %.`},
+
+  {id:"quantite", section:"qte", tab:"Quantité de matière", title:"Quantité de matière",
+   desc:"Quelle quantité de matière n contient une masse m de ce composé ? n = m / M.",
+   q:"Calcule M puis n",
+   gen(){ const [f,n] = pickFresh(SUBSTANCES, x=>x[0]); const m = rnd(MASSES), M = molarMass(f); return {f,n,m,M,nm:m/M}; },
+   show: c => plate(fmtF(c.f), `${c.n} · m = <b>${fmtN(c.m)} g</b>`, dataLine(c.f)),
+   fields: c => [
+     F("M","Masse molaire M (g/mol)",v=>near(v,c.M,0.005),fmtN(c.M,6)),
+     F("n","Quantité de matière n (mol)",v=>near(v,c.nm,0.01),fmtN(c.nm,4))],
+   explain: c => `${massDetail(c.f)}<br><code>n = m / M = ${fmtN(c.m)} / ${fmtN(c.M,6)}</code> ≈ <b>${fmtN(c.nm,4)} mol</b>. Tolérance : 1 %.`},
+
+  {id:"pesee", section:"qte", tab:"Pesée des précurseurs", title:"Pesée des précurseurs",
+   desc:"Pour synthétiser une masse m du composé, quelle masse de chaque élément faut-il peser ? (exercice 3 du cours)",
+   q:"Calcule M, n puis la masse de chaque précurseur",
+   gen(){
+     const list = SUBSTANCES.filter(([f])=>Object.keys(parseFormula(f)).length>=2 && Object.keys(parseFormula(f)).length<=4);
+     const [f,n] = pickFresh(list, x=>x[0]); const m = rnd([1,2,5,10,20]), M = molarMass(f);
+     return {f,n,m,M,nm:m/M,c:parseFormula(f)};
+   },
+   show: c => plate(fmtF(c.f), `${c.n} · à synthétiser : <b>${fmtN(c.m)} g</b>`, dataLine(c.f)),
+   fields: c => [
+     F("M","Masse molaire M (g/mol)",v=>near(v,c.M,0.005),fmtN(c.M,6)),
+     F("n","Quantité de matière n (mol)",v=>near(v,c.nm,0.01),fmtN(c.nm,4)),
+     ...Object.entries(c.c).map(([e,k])=>F("m"+e,`Masse de ${e} à peser (g)`,v=>near(v,c.nm*k*BY_SYM[e].M,0.01),fmtN(c.nm*k*BY_SYM[e].M,4)))],
+   explain: c => `${massDetail(c.f)}<br><code>n = ${fmtN(c.m)} / ${fmtN(c.M,6)}</code> ≈ ${fmtN(c.nm,4)} mol.<br>` +
+     Object.entries(c.c).map(([e,k])=>`m(${e}) = n × ${fmtCount(k)} × M(${e}) = <b>${fmtN(c.nm*k*BY_SYM[e].M,4)} g</b>`).join("<br>") +
+     `<br>Vérification : la somme fait bien ${fmtN(Object.entries(c.c).reduce((a,[e,k])=>a+c.nm*k*BY_SYM[e].M,0),4)} g.`},
+
+  // ===== Exercice 3 : nombres quantiques et couches =====
+  {id:"sous-couche", section:"quant", tab:"Couches et sous-couches", title:"Couches et sous-couches",
+   desc:"Retrouve les nombres quantiques n et l d'une sous-couche, sa couche et le nombre maximal d'électrons.",
+   q:"Décris cette sous-couche",
+   gen(){ const o = pickFresh(["1s","2s","2p","3s","3p","3d","4s","4p","4d","4f","5s","5p","5d","5f"], x=>x); return {o, n:+o[0], l:LV[o[1]]}; },
+   show: c => plate(c.o, "sous-couche"),
+   fields: c => [
+     F("n","Nombre quantique principal n",v=>isInt(v,c.n),c.n),
+     F("l","Nombre quantique azimutal l",v=>isInt(v,c.l),c.l),
+     F("lettre","Lettre de la couche",v=>v.trim().toUpperCase()===SHELL[c.n],SHELL[c.n],"text"),
+     F("orb","Nombre d'orbitales (valeurs de mₗ)",v=>isInt(v,2*c.l+1),2*c.l+1),
+     F("esc","Électrons max dans la sous-couche",v=>isInt(v,2*(2*c.l+1)),2*(2*c.l+1)),
+     F("ec","Électrons max dans la couche (2n²)",v=>isInt(v,2*c.n*c.n),2*c.n*c.n)],
+   explain: c => `${c.o} : n = ${c.n} (couche ${SHELL[c.n]}), lettre ${c.o[1]} ⇒ l = ${c.l}. mₗ va de −${c.l} à +${c.l} : ${2*c.l+1} orbitale${c.l?"s":""}, 2 électrons par orbitale (spin ±½) ⇒ ${2*(2*c.l+1)} électrons. Couche ${SHELL[c.n]} : <code>2n² = 2 × ${c.n}² = ${2*c.n*c.n}</code> électrons.`},
+
+  {id:"klechkowski", section:"quant", tab:"Ordre de remplissage", title:"Ordre de remplissage",
+   desc:"Compare l'énergie (n + l) de deux sous-couches et trouve celle qui se remplit en premier (règle de Klechkowski).",
+   q:"Laquelle se remplit en premier ?",
+   gen(){
+     let a, b; do { a = rnd(ORDER.slice(0,15)); b = rnd(ORDER.slice(0,15)); } while(a===b);
+     const e = o => +o[0] + LV[o[1]];
+     const first = ORDER.indexOf(a) < ORDER.indexOf(b) ? a : b;
+     return {a,b,ea:e(a),eb:e(b),first};
+   },
+   show: c => plate(`${c.a} <span class="cap">ou</span> ${c.b}`),
+   fields: c => [
+     F("ea",`Énergie n + l de ${c.a}`,v=>isInt(v,c.ea),c.ea),
+     F("eb",`Énergie n + l de ${c.b}`,v=>isInt(v,c.eb),c.eb),
+     F("first","Se remplit en premier",selOk(c.first),c.first,"select",[c.a,c.b])],
+   explain: c => `${c.a} : ${c.a[0]} + ${LV[c.a[1]]} = ${c.ea} ; ${c.b} : ${c.b[0]} + ${LV[c.b[1]]} = ${c.eb}. ` +
+     (c.ea===c.eb ? `Même énergie : c'est la sous-couche de plus petit n qui passe en premier, donc <b>${c.first}</b>.` : `La plus basse énergie se remplit d'abord : <b>${c.first}</b>.`) +
+     `<br>Ordre de Klechkowski : ${ORDER.slice(0,15).join(" ")}`},
+
+  {id:"config", section:"quant", tab:"Configuration électronique", title:"Configuration électronique",
+   desc:"Donne la configuration électronique d'un atome ou d'un ion (exercice du cours).",
+   q:"Écris la configuration électronique",
+   gen(){
+     const ions = [["Na",1],["Mg",2],["Al",3],["K",1],["Ca",2],["F",-1],["Cl",-1],["O",-2],["S",-2],["N",-3],["P",-3],["Br",-1],
+       ["Fe",2],["Fe",3],["Cu",1],["Cu",2],["Zn",2],["Mn",2],["Ni",2],["Co",2],["Cr",3],["Ti",4],["W",6]];
+     let s, q;
+     if(Math.random()<0.5){ const e = pickFresh(PT.slice(0,36), x=>x.s); s=e.s; q=0; }
+     else { [s,q] = pickFresh(ions, x=>x[0]+x[1]); }
+     const e = BY_SYM[s];
+     return {...e, q, ne:e.Z-q, cfg:configOf(e.Z,q)};
+   },
+   show: c => plate(c.q ? ionHTML(c.s,c.q) : c.s, c.q>0 ? `ion ${c.n.toLowerCase()} (${ROMAN[c.q]})` : c.q<0 ? `ion ${ANION_NAME[c.s]}` : `atome de ${c.n.toLowerCase()} · Z = ${c.Z}`),
+   fields: c => [
+     F("ne","Nombre d'électrons",v=>isInt(v,c.ne),c.ne),
+     F("cfg","Configuration (ex. 1s2 2s2 2p6 ou [Ne] 3s2)",v=>sameCfg(parseCfg(v),c.cfg),cfgHTML(c.cfg),"wide")],
+   explain: (c, a) => {
+     const sh = shortCfg(c.cfg);
+     let t = `${c.q? `${c.n} : Z = ${c.Z}, charge ${chg(c.q)} ⇒ ${c.ne} électrons.` : `Z = ${c.Z} ⇒ ${c.ne} électrons.`} On remplit dans l'ordre de Klechkowski (1s 2s 2p 3s 3p 4s 3d 4p…).`;
+     if(c.q>0) t += ` Pour un cation, on retire d'abord les électrons de la couche la plus externe (le 4s avant le 3d).`;
+     if(EXC[c.Z]) t += ` Le ${c.n.toLowerCase()} est une exception : une sous-couche d pleine ou à moitié pleine est plus stable, d'où 4s<sup>1</sup>.`;
+     t += `<br><b>${cfgHTML(c.cfg)}</b>${sh?` soit <b>${sh}</b>`:""}`;
+     // Erreur classique : placer directement les électrons de l'ion, comme pour l'atome neutre qui en a autant
+     const r = a && parseCfg(a.cfg);
+     if(c.q>0 && r && !sameCfg(r, c.cfg) && (sameCfg(r, fill(c.ne)) || sameCfg(r, configOf(c.ne)))){
+       const c0 = configOf(c.Z), outer = Object.keys(c0).filter(k=>c0[k]>0).sort((x,y)=>(+y[0]-+x[0]) || (LV[y[1]]-LV[x[1]]))[0];
+       t += `<span class="trap"><b>Ton erreur :</b> tu as placé directement les ${c.ne} électrons, comme pour l'atome ${deEl(PT[c.ne-1].n.toLowerCase())} (Z = ${c.ne}). Pour un ion, on part de l'atome neutre ${c.n.toLowerCase()} (Z = ${c.Z}) : ${cfgHTML(c0)}, puis on retire ${c.q} électron${c.q>1?"s":""} en commençant par la couche la plus externe (${outer}, n = ${outer[0]}).</span>`;
+     }
+     return t;
+   },
+   // Diapo à ouvrir après une erreur : la méthode animée pour les cations des métaux 3d, sinon la correction du cours
+   slideAt: c => c.q>0 && c.Z>=21 && c.Z<=30 ? "cation" : c.q ? "c_cases" : null},
+
+  // ===== Exercice 4 : configuration électronique et composés =====
+  {id:"valence", section:"config", tab:"Électrons de valence", title:"Électrons de valence",
+   desc:"Trouve la couche de valence, les électrons de valence et les électrons célibataires, puis l'ion stable.",
+   q:"Étudie la couche de valence",
+   gen(){ const e = pickFresh(EL.filter(x=>x.Z<=20), x=>x.s); return {...e, ...valenceInfo(e.Z), ion: ION_STABLE[e.Z]}; },
+   show: c => notationTile(c.A,c.Z,c.s),
+   fields: c => [
+     F("sh","Couche de valence (n ou lettre K, L, M…)",v=>isInt(v,c.sh) || norm(v)===SHELL[c.sh].toLowerCase(),`${c.sh} (couche ${SHELL[c.sh]})`,"text"),
+     F("ve","Électrons de valence",v=>isInt(v,c.ve),c.ve),
+     F("ce","Électrons célibataires",v=>isInt(v,c.single),c.single),
+     ...(c.ion ? [soft(F("ion","Ion stable formé (ex. Na+)",v=>normIon(v).toLowerCase()===ionKey(c.s,c.ion).toLowerCase(),ionHTML(c.s,c.ion),"text"), v=>caseSlip(normIon(v),ionKey(c.s,c.ion)))] : [])],
+   explain: (c, a={}) => {
+     const g = NOBLE.reduce((b,x)=>Math.abs(x[0]-c.Z)<Math.abs(b[0]-c.Z)?x:b);
+     // Comptage couche par couche
+     const byN = {};
+     ORDER.filter(o=>c.c[o]>0).forEach(o=>(byN[o[0]] = byN[o[0]] || []).push(o));
+     const rows = Object.keys(byN).sort().map(n=>{
+       const subs = byN[n], tot = subs.reduce((x,o)=>x+c.c[o],0), val = +n===c.sh;
+       return `<span class="vl-row${val?" val":""}"><b>${SHELL[n]}</b> (n = ${n}) : ${subs.map(o=>`<span class="sc-${o[1]}">${o}<sup>${c.c[o]}</sup></span>`).join(" ")} → ${subs.length>1?subs.map(o=>c.c[o]).join(" + ")+" = ":""}<b>${tot}</b>${val?" ← couche de valence":""}</span>`;
+     }).join("");
+     const col = posOf(c.Z)[1];
+     const tip = c.Z===2 ? `L'hélium est une exception : sa seule couche (K) est pleine avec 2 électrons.`
+       : `<b>Astuce :</b> ${c.s} est dans la colonne ${col} du tableau, donc ${col<=2 ? `${col} électron${col>1?"s":""} de valence (colonnes 1 et 2 : le numéro de la colonne)` : `${col} − 10 = ${col-10} électrons de valence (colonnes 13 à 18 : le numéro moins 10)`}.`;
+     let t = `On compte les électrons de la <b>dernière couche</b> (n le plus grand) :<span class="vl-rows">${rows}</span>${tip}`;
+     t += ` Parmi eux, <b>${c.single}</b> célibataire${c.single>1?"s":""} (seuls dans leur case, règle de Hund).`;
+     // Pièges fréquents, d'après la réponse donnée
+     const v = parseNum(a.ve);
+     if(isFinite(v) && v!==c.ve){
+       if(v===8-c.ve) t += `<span class="trap"><b>Ton erreur :</b> ${v}, c'est le nombre d'électrons qui <b>manquent</b> à ${c.s} pour arriver à 8. Les électrons de valence sont ceux qu'il <b>a déjà</b> sur sa dernière couche : ${c.ve}.</span>`;
+       else if(v===c.Z) t += `<span class="trap"><b>Ton erreur :</b> ${v}, c'est le nombre total d'électrons (Z). Seuls ceux de la dernière couche comptent : ${c.ve}.</span>`;
+       else if(byN[c.sh] && byN[c.sh].some(o=>c.c[o]===v)) t += `<span class="trap"><b>Ton erreur :</b> tu n'as compté qu'une sous-couche. La couche n = ${c.sh} contient ${byN[c.sh].map(o=>o).join(" et ")} : il faut additionner, ${byN[c.sh].map(o=>c.c[o]).join(" + ")} = ${c.ve}.</span>`;
+     }
+     if(c.ion) t += `<br>Pour être stable, il prend la configuration du gaz noble le plus proche (${g[1]}) : ${c.ion>0 ? `il est plus simple de <b>perdre</b> ses ${c.ve} électron${c.ve>1?"s":""} de valence que d'en gagner ${8-c.ve}` : `il est plus simple de <b>gagner</b> ${-c.ion} électron${c.ion<-1?"s":""} que d'en perdre ${c.ve}`} ⇒ <b>${ionHTML(c.s,c.ion)}</b>${c.ion>0?" (il perd des électrons négatifs : charge +)":" (il gagne des électrons négatifs : charge −)"}.`;
+     else if(NOBLE.some(x=>x[0]===c.Z)) t += `<br>C'est un gaz noble : déjà stable, il ne forme pas d'ion.`;
+     else if(c.s==="C"||c.s==="Si") t += `<br>Il ne forme pas d'ion simple : il peut passer en état de valence 4 (un électron s monte en p) et former 4 liaisons, comme dans CH<sub>4</sub>.`;
+     return t;
+   }},
+
+  {id:"formule", section:"config", tab:"Formule du composé", title:"Formule du composé",
+   desc:"À partir de la valence de chaque élément, trouve la formule du composé qu'ils forment (Al + O ⇒ Al₂O₃).",
+   q:"Quel composé forment ces deux éléments ?",
+   gen(){ const [A,B] = pickFresh(PAIRS, x=>x.join("")); return {A,B,va:VAL[A],vb:VAL[B],...pairFormula(A,B)}; },
+   show: c => plate(`${c.A} <span class="cap">+</span> ${c.B}`, `${BY_SYM[c.A].n} et ${BY_SYM[c.B].n.toLowerCase()}`),
+   fields: c => [
+     F("va",`Valence de ${c.A} (liaisons possibles)`,v=>isInt(v,c.va),c.va),
+     F("vb",`Valence de ${c.B} (liaisons possibles)`,v=>isInt(v,c.vb),c.vb),
+     F("fo","Formule du composé",v=>sameRatio(v,c.ka,c.kb,c.A,c.B),c.formula,"text")],
+   explain: c => `${c.A} peut former ${c.va} liaison${c.va>1?"s":""} et ${c.B} ${c.vb}. Pour que tous les électrons célibataires soient appariés : ${c.ka} ${c.A} × ${c.va} = ${c.kb} ${c.B} × ${c.vb} ⇒ <b>${fmtF(c.formula)}</b>.` +
+     (c.A==="C"||c.A==="Si" ? ` (${c.A} est en état de valence 4 : un électron 2s passe en 2p.)` : "")},
+
+  {id:"mecanique", section:"config", tab:"Mécanique des liaisons", title:"Mécanique des liaisons",
+   desc:"À partir des cases quantiques des deux atomes, trouve comment ils se lient : partage ou transfert d'électrons, combien, et la formule obtenue.",
+   q:"Comment ces deux atomes se lient-ils ?",
+   gen(){ const [f,A,B,nB,o,kind] = pickFresh(MECA, x=>x[0]); return {f,A,B,nB,o,kind,c4:A==="C"}; },
+   show: c => ({wide:true, html:`<div class="meca-plate">${boxesHTML(valBoxes(c.A,false),"rA")}${c.A===c.B?"":boxesHTML(valBoxes(c.B),"rB")}<div class="cap">${BY_SYM[c.A].n}${c.A===c.B?" + "+BY_SYM[c.B].n.toLowerCase():" et "+BY_SYM[c.B].n.toLowerCase()}</div></div>`}),
+   fields: c => [
+     F("kind","Type de liaison",selOk(c.kind==="cov"?"covalente (partage)":"ionique (transfert)"),c.kind==="cov"?"covalente (partage)":"ionique (transfert)","select",["covalente (partage)","ionique (transfert)"]),
+     F("eA",`Électrons de valence mis en jeu par ${c.A} (partagés ou donnés)`,v=>isInt(v,c.nB*c.o),c.nB*c.o),
+     F("eB",`Électrons mis en jeu par chaque ${c.B} (partagés ou reçus)`,v=>isInt(v,c.o),c.o),
+     F("nB",`Nombre d'atomes ${c.B} liés à ${c.A===c.B?"l'autre "+c.A:c.A}`,v=>isInt(v,c.nB),c.nB),
+     F("fo","Formule du composé",v=>formulaOk(v,c.f),fmtF(c.f),"text")],
+   explain: c => {
+     const qA = valBoxes(c.A, c.c4), qB = [...Array(c.nB)].map(()=>valBoxes(c.B));
+     bondBoxes(qA, qB, c.o, c.kind);
+     const veA = VE(c.A) ?? valenceInfo(BY_SYM[c.A].Z).ve, veB = VE(c.B) ?? valenceInfo(BY_SYM[c.B].Z).ve;
+     let t;
+     if(c.kind==="cov") t = `Deux non-métaux : ils <b>partagent</b> leurs électrons célibataires (liaison covalente). ${c.A} a <b>${c.nB*c.o}</b> célibataire${c.nB*c.o>1?"s":""}${c.c4?" (état de valence 4 : un électron 2s monte en 2p)":""}, chaque ${c.B} en a <b>${c.o}</b> : il faut <b>${c.nB}</b> ${c.B} pour les apparier tous, avec ${c.o} doublet${c.o>1?"s":""} par liaison. Autour de ${c.A} : ${veA} + ${c.nB*c.o} = ${veA+c.nB*c.o} électrons.`;
+     else t = `Un métal et un non-métal : ${c.A} <b>donne</b> ses ${c.nB*c.o} électron${c.nB*c.o>1?"s":""} de valence (liaison ionique). Chaque ${c.B} n'en accepte que <b>${c.o}</b> (il lui en manque ${8-veB}) : il faut <b>${c.nB}</b> ${c.B}. On obtient ${ionHTML(c.A,c.nB*c.o)} et ${c.nB>1?c.nB+" ":""}${ionHTML(c.B,-c.o)}.`;
+     return `${t} ⇒ <b>${fmtF(c.f)}</b><div class="qbx-wrap hl" data-play="1">${boxesHTML(qA,"rA")}${qB.map(b=>boxesHTML(b,"rB")).join("")}</div>`;
+   }},
+];
+
+// Diapos du cours associées à chaque jeu (numéros de page du PDF « Sciences des matériaux »)
+const SLIDES = {
+  struct:["c_atome","c_iso"], inverse:["c_atome","c_iso"], ions:["methode","c_ion"], composes:["methode","poly","indices","c_ion","c_dissol"],
+  "masse-molaire":["c_iso","c_mole"], quantite:["c_mole"], pesee:["c_mole","c_pesee"],
+  "sous-couche":["klech","c_quant","c_cases","video"], klechkowski:["klech","c_cases","video"], config:["klech","c_quant","c_cases","c_blocs","cation","video"],
+  valence:["liaison","c_stab","c_pred"], formule:["liaison","c_stab","c_pred"], mecanique:["liaison","c_stab","c_pred"],
+};
+
+// Composés du jeu « Mécanique des liaisons » : [formule, A, B, nombre de B, électrons par liaison A–B, type]
+const MECA = [["H2O","O","H",2,1,"cov"],["NH3","N","H",3,1,"cov"],["CH4","C","H",4,1,"cov"],["CO2","C","O",2,2,"cov"],["N2","N","N",1,3,"cov"],
+  ["O2","O","O",1,2,"cov"],["HCl","Cl","H",1,1,"cov"],["HF","F","H",1,1,"cov"],["H2S","S","H",2,1,"cov"],["PH3","P","H",3,1,"cov"],["CCl4","C","Cl",4,1,"cov"],["Cl2","Cl","Cl",1,1,"cov"],
+  ["NaCl","Na","Cl",1,1,"ion"],["KCl","K","Cl",1,1,"ion"],["LiF","Li","F",1,1,"ion"],["MgO","Mg","O",1,2,"ion"],["CaO","Ca","O",1,2,"ion"],
+  ["CaCl2","Ca","Cl",2,1,"ion"],["MgCl2","Mg","Cl",2,1,"ion"],["CaF2","Ca","F",2,1,"ion"]];
+function formulaOk(v, f){
+  const a = parseFormula(v), b = parseFormula(f); if(!a) return false;
+  const ka = Object.keys(a), kb = Object.keys(b);
+  if(ka.length!==kb.length || kb.some(e=>!(e in a))) return false;
+  return kb.every(e=>a[e]===b[e]);
+}
+
+const SECTIONS = [
+  {id:"atome", tab:"Structure de l'atome", tools:true},
+  {id:"qte", tab:"Quantité de matière"},
+  {id:"quant", tab:"Nombres quantiques"},
+  {id:"config", tab:"Configuration électronique"},
+];
+const TOOLS = [{id:"pt", tab:"Tableau périodique"},{id:"bilan", tab:"Bilan"}];
+
+// ---------- État ----------
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+const $ = id => document.getElementById(id);
+let state = {section: store.get("section","atome"), tabs: store.get("tabs",{}), game:null, cur:null, done:false, recent:[],
+  sess:{ok:0,total:0,streak:0}, stats: store.get("stats",{})};
+const gameById = id => GAMES.find(g=>g.id===id);
+
+// ---------- Onglets ----------
+function renderSections(){
+  $("tabs").innerHTML = SECTIONS.map((s,i)=>`<button class="tab" role="tab" data-id="${s.id}" aria-selected="${state.section===s.id}">${s.tab}<small><span class="num">Exercice ${i+1}</span></small></button>`).join("");
+  $("tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>openSection(b.dataset.id));
+}
+function openSection(id){
+  const s = SECTIONS.find(x=>x.id===id) || SECTIONS[0];
+  state.section = s.id; store.set("section", s.id); renderSections();
+  const items = GAMES.filter(g=>g.section===s.id).concat(s.tools?TOOLS:[]);
+  let tab = state.tabs[s.id]; if(!items.some(t=>t.id===tab)) tab = items[0].id;
+  openTab(tab);
+}
+function renderSub(){
+  const s = SECTIONS.find(x=>x.id===state.section);
+  const btn = (t,cls)=>`<button class="stab ${cls}" role="tab" data-id="${t.id}" aria-selected="${state.tabs[s.id]===t.id}">${t.tab}</button>`;
+  $("subtabs").innerHTML = GAMES.filter(g=>g.section===s.id).map(g=>btn(g,"")).join("") + (s.tools?TOOLS.map(t=>btn(t,"tool")).join(""):"");
+  $("subtabs").querySelectorAll(".stab").forEach(b=>b.onclick=()=>openTab(b.dataset.id));
+}
+function openTab(id){
+  state.tabs[state.section] = id; store.set("tabs", state.tabs); renderSub();
+  const g = gameById(id);
+  $("panel-game").hidden = !g; $("panel-pt").hidden = id!=="pt"; $("panel-bilan").hidden = id!=="bilan";
+  if(g){
+    $("gameTitle").textContent = g.title; $("gameDesc").textContent = g.desc;
+    document.querySelectorAll("[data-opt]").forEach(el=>el.hidden = !(g.opts||[]).includes(el.dataset.opt));
+    if(state.game!==id){ state.game=id; state.sess={ok:0,total:0,streak:0}; state.recent=[]; sl.i=0; next(); }
+    renderSlides();
+    renderScore();
+  }
+  if(id==="bilan") renderBilan();
+}
+
+// ---------- Déroulement d'un exercice ----------
+function fieldHTML(f){
+  const ctrl = f.kind==="select"
+    ? `<select id="${f.id}"><option value="">— choisir —</option>${f.opts.map(o=>`<option value="${o}">${o}</option>`).join("")}</select>`
+    : `<input id="${f.id}" autocomplete="off" spellcheck="false" inputmode="${f.kind==="num"?"decimal":"text"}">`;
+  return `<div class="row${f.kind==="wide"?" wide":""}"><label for="${f.id}">${f.label}</label>${ctrl}<span class="fb" id="fb-${f.id}"></span></div>`;
+}
+function next(){
+  const g = gameById(state.game);
+  state.cur = g.gen(); state.done = false;
+  const c = state.cur, v = g.show(c), f = g.fields(c);
+  $("board").classList.toggle("wide", !!v.wide);
+  const disp = v.wide ? `<div class="wide-show">${v.html}</div>` : v.tile ? `<div class="tile"><div class="tile-in">${v.html}</div></div>` : `<div class="plate"><div class="plate-in">${v.html}</div></div>`;
+  $("board").innerHTML = `${disp}
+    <form id="f" novalidate>
+      <p class="q">${g.q}</p>
+      ${f.filter(x=>x.kind!=="tpl").map(fieldHTML).join("")}${g.tpl ? g.tpl(c) : ""}
+      <div id="exp"></div>
+      <div class="actions"><button class="btn" id="go">Valider</button><button type="button" class="btn ghost" id="skip">Passer</button></div>
+    </form>`;
+  $("f").onsubmit = ev => {ev.preventDefault(); state.done ? next() : check();};
+  $("skip").onclick = next;
+  $(f[0].id).focus({preventScroll:true});
+}
+function check(){
+  const g = gameById(state.game), c = state.cur, f = g.fields(c); let all = true;
+  f.forEach(x=>{
+    const el = $(x.id), good = x.ok(el.value);
+    el.classList.add(good?"ok":"ko"); el.readOnly = true; if(el.tagName==="SELECT") el.disabled = true;
+    const fb = $("fb-"+x.id);
+    if(fb){ fb.className = "fb "+(good?"ok":"ko"); fb.innerHTML = good ? (x.soft && x.soft(el.value) ? `✓ <small class="case-tip">pense à la majuscule : ${x.ans}</small>` : "✓") : "→ "+x.ans; }
+    if(!good) all = false;
+  });
+  if($("fb-eq")){
+    const okT = f.filter(x=>x.kind==="tpl").every(x=>$(x.id).classList.contains("ok"));
+    $("fb-eq").className = "fb "+(okT?"ok":"ko"); $("fb-eq").innerHTML = okT ? "✓ équation juste" : "→ "+eqHTML(c);
+  }
+  const vals = Object.fromEntries(f.map(x=>[x.id, $(x.id).value]));
+  const at = g.slideAt ? g.slideAt(c) : null;
+  const seeLbl = at ? `Revoir la fiche : ${CUSTOM[at].label.toLowerCase()} →` : "Revoir les fiches du cours →";
+  methodTimers.forEach(clearTimeout); methodTimers = [];
+  $("exp").innerHTML = `<div class="explain">${all?"<b>Parfait.</b> ":""}${g.explain(c, vals)}${!all && SLIDES[state.game] ? `<br><button type="button" class="linkbtn" id="seeSlides">${seeLbl}</button>` : ""}</div>`;
+  document.querySelectorAll('#exp .qbx-wrap[data-play]').forEach(w=>playBoxes(w, 500, 380));
+  if($("seeSlides")) $("seeSlides").onclick = ()=>openSlides(at);
+  state.done = true; $("go").textContent = "Suivant";
+  const s = state.sess; s.total++; if(all){s.ok++; s.streak++;} else s.streak = 0;
+  const st = state.stats[state.game] || {ok:0,total:0,best:0};
+  st.total++; if(all) st.ok++; st.best = Math.max(st.best, s.streak);
+  state.stats[state.game] = st; store.set("stats", state.stats);
+  renderScore(); $("go").focus();
+}
+function renderScore(){
+  const s = state.sess, g = state.stats[state.game] || {ok:0,total:0,best:0};
+  const pct = g.total ? Math.round(100*g.ok/g.total)+" %" : "–";
+  $("score").innerHTML = [[`${s.ok}/${s.total}`,"Cette séance"],[s.streak,"Série en cours"],[g.best,"Record de série"],[pct,"Réussite globale"]]
+    .map(([v,l])=>`<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
+}
+
+// ---------- Diapos du cours ----------
+let sl = {open:false, i:0};
+function renderSlides(){
+  const list = SLIDES[state.game] || [];
+  $("slBtn").hidden = !list.length;
+  $("slBtn").textContent = sl.open ? "Masquer le cours" : `Revoir le cours (${list.length} fiche${list.length>1?"s":""})`;
+  // La vidéo est retirée dès qu'on la quitte, sinon elle continuerait de jouer en arrière-plan
+  if($("slCustom").dataset.key === "video" && !(sl.open && list[Math.min(sl.i,list.length-1)] === "video")){ $("slCustom").innerHTML = ""; delete $("slCustom").dataset.key; }
+  $("slBtn").setAttribute("aria-expanded", sl.open);
+  $("slides").hidden = !sl.open || !list.length;
+  if(!sl.open || !list.length) return;
+  sl.i = Math.min(sl.i, list.length-1);
+  const n = list[sl.i];
+  if($("slCustom").dataset.key !== n){ stopMethod(); $("slCustom").dataset.key = n; CUSTOM[n].build(); }
+  $("slTitle").innerHTML = CUSTOM[n].title + ` <span>· ${sl.i+1} / ${list.length}</span>`;
+  $("slPrev").disabled = sl.i===0; $("slNext").disabled = sl.i===list.length-1;
+  $("slThumbs").innerHTML = list.map((p,k)=>`<button type="button" class="th-method" data-k="${k}" aria-label="${CUSTOM[p].label}" aria-current="${k===sl.i}"><b>${CUSTOM[p].thumb}</b><small>${CUSTOM[p].label}</small></button>`).join("");
+  $("slThumbs").querySelectorAll("button").forEach(b=>b.onclick=()=>{sl.i=+b.dataset.k; renderSlides();});
+}
+function openSlides(at){
+  const k = (SLIDES[state.game] || []).indexOf(at);
+  if(k>=0){ sl.i = k; delete $("slCustom").dataset.key; } // diapo animée reconstruite pour l'exercice en cours
+  sl.open = true; renderSlides(); $("slides").scrollIntoView({behavior:"smooth", block:"start"}); }
+$("slBtn").onclick = ()=>{ sl.open = !sl.open; renderSlides(); };
+$("slPrev").onclick = ()=>{ sl.i--; renderSlides(); };
+$("slNext").onclick = ()=>{ sl.i++; renderSlides(); };
+
+// ---------- Diapo « Méthode » : trouver la charge des ions ----------
+const ATOM_DEMO = ["Li","Na","K","Mg","Ca","Al","N","P","O","S","F","Cl"];
+const POLY = [["SO4",-2,"sulfate"],["NO3",-1,"nitrate"],["PO4",-3,"phosphate"],["CO3",-2,"carbonate"],["OH",-1,"hydroxyde"],["NH4",1,"ammonium"]];
+const POLY_CALC = {SO4:"S +6, 4 O −2 : +6 − 8 = −2", NO3:"N +5, 3 O −2 : +5 − 6 = −1", PO4:"P +5, 4 O −2 : +5 − 8 = −3",
+  CO3:"C +4, 3 O −2 : +4 − 6 = −2", OH:"O −2, H +1 : −2 + 1 = −1", NH4:"N −3, 4 H +1 : −3 + 4 = +1"};
+const GRP_WARN = {PO4:" (dans PO₄, P donne ses 5 électrons aux O : il vaut +5, et non −3 comme P seul)",
+  NO3:" (dans NO₃, N donne ses 5 électrons aux O : il vaut +5, et non −3 comme N seul)",
+  SO4:" (dans SO₄, S donne ses 6 électrons aux O : il vaut +6, et non −2 comme S seul)",
+  CO3:" (dans CO₃, C donne ses 4 électrons aux O : il vaut +4)", NH4:" (ici H vaut +1, donc N garde −3)"};
+// Valeur d'un atome dans un groupement oxygéné, affichée au clic dans le tableau
+const GRP_NOTE = {C:"+4 dans CO₃²⁻", N:"+5 dans NO₃⁻ (mais −3 dans NH₄⁺)", P:"+5 dans PO₄³⁻", S:"+6 dans SO₄²⁻"};
+const REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+let methodTimers = [], balTimers = [];
+function stopMethod(){ methodTimers.forEach(clearTimeout); methodTimers = []; balTimers.forEach(clearTimeout); balTimers = []; }
+const later = (fn,ms,arr=methodTimers) => arr.push(setTimeout(fn, REDUCE ? 0 : ms));
+const SUPD = {0:'⁰',1:'¹',2:'²',3:'³',4:'⁴',5:'⁵',6:'⁶',7:'⁷',8:'⁸',9:'⁹'}, SUBD = {0:'₀',1:'₁',2:'₂',3:'₃',4:'₄',5:'₅',6:'₆',7:'₇',8:'₈',9:'₉'};
+const ionUni = (sym,q) => sym.replace(/\d/g,d=>SUBD[d]) + (Math.abs(q)>1?SUPD[Math.abs(q)]:'') + (q>0?'⁺':'⁻');
+// Configuration colorée par sous-couche, groupée par couche (K | L | M…)
+function shellCfg(Z, q){
+  const c = configOf(Z, q||0), byN = {};
+  ORDER.filter(o=>c[o]>0).forEach(o=> (byN[o[0]] = byN[o[0]] || []).push(`<span class="sc-${o[1]}">${o}<sup>${c[o]}</sup></span>`));
+  return Object.keys(byN).sort().map(n=>`<span class="grp"><small>${SHELL[n]}</small> ${byN[n].join(" ")}</span>`).join(" ");
+}
+function shellsOf(Z){ // répartition par couche (K, L, M, N) pour Z ≤ 20
+  const out = []; let r = Z;
+  for(const cap of [2,8,8,2]){ if(r<=0) break; out.push(Math.min(cap,r)); r -= cap; }
+  return out;
+}
+function buildMethod(){
+  const box = $("slCustom");
+  box.innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Un atome seul : il vise le gaz noble le plus proche</h3>
+      <p class="m-lead">Choisis un atome. Il perd ou gagne des électrons sur sa <b>couche externe</b> pour avoir la même configuration que le gaz noble le plus proche.</p>
+      <div class="m-chips" id="mAtoms">${ATOM_DEMO.map(s=>`<button type="button" class="chip" data-s="${s}">${s}</button>`).join("")}</div>
+      <div class="m-atom">
+        <div><svg id="mSvg" viewBox="0 0 280 302" role="img" aria-label="Modèle de Bohr de l'atome choisi"></svg>
+        <div class="m-key"><span><i class="ks"></i>électron s</span><span><i class="kp"></i>électron p</span><span>K, L, M, N : couches n = 1, 2, 3, 4</span></div></div>
+        <div class="m-story" id="mStory" aria-live="polite"></div>
+      </div>
+      <div class="m-rule"><b>Règle rapide :</b> colonne 1 → <b>+1</b> · colonne 2 → <b>+2</b> · Al → <b>+3</b> · colonne 15 → <b>−3</b> · colonne 16 → <b>−2</b> · colonne 17 → <b>−1</b>. Les charges sont aussi écrites dans le tableau périodique de l'appli.</div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Un composé : les charges + et − s'équilibrent</h3>
+      <p class="m-lead">Un composé ionique est neutre. On prend autant d'ions qu'il faut pour que le total des charges + soit égal au total des charges −.</p>
+      <div class="m-pick">
+        <label for="mCat">Cation <select id="mCat">${CATIONS.map((c,i)=>`<option value="${i}">${ionUni(c[0],c[1])} (${c[2]})</option>`).join("")}</select></label>
+        <label for="mAn">Anion <select id="mAn">${ANIONS.map((a,i)=>`<option value="${i}">${ionUni(a[0],-a[1])} (${a[2]})</option>`).join("")}</select></label>
+        <button type="button" class="btn ghost small" id="mReplay">Rejouer</button>
+      </div>
+      <div class="m-balance" id="mBal"></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> Les ions de plusieurs atomes : on additionne</h3>
+      <p class="m-lead">CO₃, SO₄… ne sont pas dans le tableau : ce sont des groupes d'atomes. Leur charge est la <b>somme des degrés d'oxydation</b> de leurs atomes. Chaque <b>O compte −2</b>, chaque <b>H compte +1</b>, et l'atome central (C, N, P, S) donne <b>tous ses électrons de valence</b> : C +4, N +5, P +5, S +6 (le numéro de sa colonne moins 10).</p>
+      <div class="m-poly">${POLY.map(([f,q,n])=>`<div class="m-card ${q>0?"pos":"neg"}"><b>${ionHTML(f,q)}</b><span>${n}</span><code>${POLY_CALC[f]}</code></div>`).join("")}</div>
+      <p class="m-lead"><b>Astuce de nom :</b> en <b>-ure</b> (chlorure, sulfure) = un seul atome, charge lue dans le tableau. En <b>-ate</b> (sulfate, nitrate) = ion avec de l'oxygène, charge à calculer comme ci-dessus (ou à retenir).</p>
+    </div>`;
+  $("mAtoms").querySelectorAll(".chip").forEach(b=>b.onclick=()=>playAtom(b.dataset.s));
+  $("mCat").value = "5"; $("mAn").value = String(ANIONS.findIndex(a=>a[0]==="PO4"));
+  $("mCat").onchange = $("mAn").onchange = $("mReplay").onclick = playBalance;
+  playAtom("Na"); playBalance();
+}
+function playAtom(sym){
+  stopMethod();
+  $("mAtoms").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.s===sym));
+  const e = BY_SYM[sym], q = ION_STABLE[e.Z], sh = shellsOf(e.Z), last = sh.length-1;
+  const R = [44,72,100,124].slice(0,sh.length), cx = 140, cy = 140;
+  const lose = q > 0, k = Math.abs(q);
+  const gas = NOBLE.find(x=>x[0]===e.Z-q)[1];
+  let dots = "", rings = "";
+  R.forEach((r,i)=>{ rings += `<circle class="ring${i===last?" outer":""}" cx="${cx}" cy="${cy}" r="${r}"/><text class="ring-t" x="${(cx+(r+9)*Math.cos(-3*Math.PI/8)).toFixed(1)}" y="${(cy+(r+9)*Math.sin(-3*Math.PI/8)+4).toFixed(1)}">${SHELL[i+1]}</text>`; });
+  sh.forEach((n,i)=>{
+    const total = (i===last && !lose) ? n + k : n;
+    for(let j=0;j<total;j++){
+      const a = -Math.PI/2 + 2*Math.PI*j/total, x = cx + R[i]*Math.cos(a), y = cy + R[i]*Math.sin(a);
+      const isNew = i===last && !lose && j>=n, leaves = i===last && lose;
+      const dx = (x-cx)*0.9, dy = (y-cy)*0.9;
+      dots += `<circle class="e ${j<2?"es":"ep"}${i===last?" ext":""}${isNew?" new":""}${leaves?" leave":""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6.5" style="--dx:${dx.toFixed(1)}px;--dy:${dy.toFixed(1)}px"/>`;
+    }
+  });
+  $("mSvg").innerHTML = `${rings}<circle class="nuc" cx="${cx}" cy="${cy}" r="24"/><text class="nuc-t" x="${cx}" y="${cy-2}">${sym}</text><text class="nuc-z" x="${cx}" y="${cy+13}">${e.Z}+</text>${dots}<text class="ion-t" id="mIon" x="${cx}" y="296"></text>`;
+  const shellTxt = a => a.join(" · ");
+  const after = lose ? sh.slice(0,last) : [...sh.slice(0,last), sh[last]+k];
+  $("mStory").innerHTML = `
+    <p class="st1"><b>${e.n}</b> (Z = ${e.Z}) : ${e.Z} électrons répartis <b>${shellTxt(sh)}</b> sur les couches ${sh.map((_,i)=>SHELL[i+1]).join(", ")}. Sa couche externe porte <b>${sh[last]}</b> électron${sh[last]>1?"s":""}.</p>
+    <p class="st1 cfgline">Configuration : ${shellCfg(e.Z, null)}</p>
+    <p class="st2">${lose ? `Il est plus facile d'en <b>perdre ${k}</b> que d'en gagner ${8-sh[last]}.` : `Il est plus facile d'en <b>gagner ${k}</b> que d'en perdre ${sh[last]}.`}</p>
+    <p class="st3">Il lui reste <b>${e.Z-q}</b> électrons (${shellCfg(e.Z, q)}), comme le <b>${BY_SYM[gas].n.toLowerCase()}</b>. Il a ${lose?"perdu":"gagné"} ${k} charge${k>1?"s":""} négative${k>1?"s":""} : <b class="big-ion">${ionHTML(sym,q)}</b>, un <b>${lose?"cation":"anion"}</b>.</p>`;
+  const svg = $("mSvg"), story = $("mStory");
+  svg.classList.remove("go"); story.classList.remove("s2","s3");
+  later(()=>{ story.classList.add("s2"); svg.classList.add("hl"); }, 700);
+  later(()=>{ svg.classList.add("go"); }, 1500);
+  later(()=>{ story.classList.add("s3"); $("mIon").innerHTML = `${sym}<tspan dy="-9" font-size="13">${k>1?k:""}${lose?"+":"−"}</tspan>`; }, 2500);
+}
+function playBalance(){
+  balTimers.forEach(clearTimeout); balTimers = [];
+  const cat = CATIONS[+$("mCat").value], an = ANIONS[+$("mAn").value], c = makeCompound(cat, an);
+  const total = c.nc * cat[1];
+  const unit = (sym,q,sign) => `<span class="m-ion ${sign>0?"pos":"neg"}" style="--w:${q}"><b>${ionHTML(sym,sign*q)}</b><i>${Array(q).fill(sign>0?"+":"−").map(x=>`<em>${x}</em>`).join("")}</i></span>`;
+  $("mBal").innerHTML = `
+    <div class="m-row"><span class="m-lab">Charges +</span><div class="m-track">${Array(c.nc).fill(0).map(()=>unit(c.cs,cat[1],1)).join("")}</div><span class="m-sum">+${total}</span></div>
+    <div class="m-row"><span class="m-lab">Charges −</span><div class="m-track">${Array(c.na).fill(0).map(()=>unit(c.as,an[1],-1)).join("")}</div><span class="m-sum">−${total}</span></div>
+    <div class="m-res"><span>${c.nc} × (+${cat[1]}) + ${c.na} × (−${an[1]}) = 0</span><b>${fmtF(c.formula)}</b><span>${c.name}</span></div>`;
+  const ions = [...$("mBal").querySelectorAll(".m-ion")];
+  ions.forEach((el,i)=> later(()=>el.classList.add("in"), 120 + i*260, balTimers));
+  later(()=>$("mBal").classList.add("done"), 200 + ions.length*260, balTimers);
+  $("mBal").classList.remove("done");
+}
+
+// ---------- Diapo « Règle de Klechkowski » ----------
+const KL_ROWS = {1:"s",2:"sp",3:"spd",4:"spdf",5:"spdf",6:"spd",7:"sp"};
+const KX = {s:70,p:150,d:230,f:310}, KY = n => 50 + (n-1)*52;
+// ---------- Diapo « Cations 3d » : le 4s part avant le 3d ----------
+const CX_IONS = [["Ti",4],["Cr",3],["Mn",2],["Fe",2],["Fe",3],["Co",2],["Ni",2],["Cu",1],["Cu",2],["Zn",2]];
+let cx = ["Fe",2];
+// Cases quantiques d'une sous-couche, dans l'ordre de remplissage (Hund : d'abord un ↑ par case, puis les ↓)
+const cxSlots = sub => { const k = sub[1]==="s" ? 1 : 5, r = [...Array(k).keys()]; return r.map(i=>sub+"u"+i).concat(r.map(i=>sub+"d"+i)); };
+const supN = n => String(n).replace(/\d/g, d=>SUPD[d]);
+const cxCfg = c => `[Ar] 4s${supN(c["4s"]||0)} 3d${supN(c["3d"]||0)}`;
+function buildCation(){
+  const c = state.cur;
+  if(state.game==="config" && c && c.q>0 && c.Z>=21 && c.Z<=30) cx = [c.s, c.q];
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> D'abord l'atome neutre, ensuite on retire les électrons</h3>
+      <p class="m-lead">Pour un cation, on ne place pas directement ses électrons. On écrit la configuration de l'<b>atome neutre</b> (Klechkowski : le 4s se remplit avant le 3d), puis on retire les électrons de la <b>couche la plus externe</b>, celle qui a le plus grand n. Ici c'est la couche n = 4 : <b>le 4s part avant le 3d</b>.</p>
+      <div class="m-chips" id="cxIons">${CX_IONS.map(([s,q])=>`<button type="button" class="chip" data-s="${s}" data-q="${q}">${ionHTML(s,q)}</button>`).join("")}</div>
+      <div class="cx-wrap" id="cxWrap"></div>
+      <div class="m-story" id="cxStory"></div>
+    </div>
+    <p class="m-rule" id="cxTrap"></p>`;
+  $("cxIons").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ cx = [b.dataset.s, +b.dataset.q]; playCation(); });
+  playCation();
+}
+function playCation(){
+  stopMethod();
+  const [s,q] = cx, e = BY_SYM[s], c0 = configOf(e.Z), cq = configOf(e.Z, q), ne = e.Z - q;
+  $("cxIons").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.s===s && +b.dataset.q===q));
+  const box = sub => {
+    const on = new Set(cxSlots(sub).slice(0, c0[sub]||0)), k = sub[1]==="s" ? 1 : 5;
+    return `<div class="cx-sub sc-${sub[1]}" id="cxs${sub}"><small>n = ${sub[0]}</small><div class="cx-orbs">${[...Array(k).keys()].map(i=>
+      `<span class="cx-o">${["u","d"].map(d=>`<i class="cx-e" id="cx${sub}${d}${i}">${on.has(sub+d+i) ? (d==="u"?"↑":"↓") : ""}</i>`).join("")}</span>`).join("")}</div><b>${sub}</b><small id="cxn${sub}">${c0[sub]||0} e⁻</small></div>`;
+  };
+  $("cxWrap").innerHTML = `<div class="cx-core"><b>[Ar]</b><small>1s² 2s² 2p⁶ 3s² 3p⁶</small><small>18 e⁻</small></div>${box("4s")}${box("3d")}`;
+  const rm4 = (c0["4s"]||0) - (cq["4s"]||0), rm3 = (c0["3d"]||0) - (cq["3d"]||0);
+  const st = $("cxStory"); st.className = "m-story";
+  st.innerHTML = `
+    <p><b>Atome ${deEl(e.n.toLowerCase())}</b> : Z = ${e.Z} ⇒ ${e.Z} électrons ⇒ <b>${cxCfg(c0)}</b>${EXC[e.Z] ? ` (exception : une 3d pleine ou à moitié pleine est plus stable)` : ""}</p>
+    <p class="st2"><b>${ionHTML(s,q)}</b> : l'atome perd ${q} électron${q>1?"s":""}. On les retire de la couche la plus externe, n = 4 : ${rm4} du 4s${rm3 ? `, puis ${rm3} du 3d une fois le 4s vide` : ""}.</p>
+    <p class="st3"><b>${ionHTML(s,q)}</b> : ${ne} électrons ⇒ <span class="big-ion">${cxCfg(cq)}</span><br>soit 1s² 2s² 2p⁶ 3s² 3p⁶ 4s${supN(cq["4s"]||0)} 3d${supN(cq["3d"]||0)}</p>`;
+  const naive = fill(ne);
+  $("cxTrap").hidden = sameCfg(naive, cq);
+  $("cxTrap").innerHTML = `<b>Piège :</b> placer directement les ${ne} électrons de ${ionHTML(s,q)} dans l'ordre de Klechkowski donne ${cxCfg(naive)}. C'est ce qu'on écrirait pour l'atome ${deEl(PT[ne-1].n.toLowerCase())} (Z = ${ne}), pas pour ${ionHTML(s,q)} ✗`;
+  // Électrons qui partent : les derniers placés, d'abord dans le 4s puis dans le 3d
+  const out = [], s4 = cxSlots("4s").slice(0, c0["4s"]||0), s3 = cxSlots("3d").slice(0, c0["3d"]||0), left = {...c0};
+  for(let i=0;i<rm4;i++) out.push(s4.pop());
+  for(let i=0;i<rm3;i++) out.push(s3.pop());
+  later(()=>{ $("cxs4s").classList.add("outer"); st.classList.add("s2"); }, 1000);
+  out.forEach((id,i)=>{
+    later(()=>$("cx"+id).classList.add("hl"), 1600 + i*600);
+    later(()=>{ const sub = id.slice(0,2); $("cx"+id).classList.add("out"); left[sub]--; $("cxn"+sub).textContent = `${left[sub]} e⁻`; }, 1900 + i*600);
+  });
+  later(()=>{ $("cxs4s").classList.remove("outer"); st.classList.add("s3"); }, 2300 + out.length*600);
+}
+
+// ---------- Diapo « Vidéo » : nombres quantiques ----------
+const VIDEO = {id:"wtOzI3xEHkA", title:"Les Nombres Quantiques et Configuration Electronique", author:"Taylon"};
+function buildVideo(){
+  $("slCustom").innerHTML = `
+    <div class="m-video"><iframe src="https://www.youtube-nocookie.com/embed/${VIDEO.id}?rel=0" title="${VIDEO.title}"
+      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    <p class="m-lead">« ${VIDEO.title} », chaîne ${VIDEO.author}. La vidéo ne se lance pas ?
+      <a class="linkbtn" href="https://www.youtube.com/watch?v=${VIDEO.id}" target="_blank" rel="noopener">La regarder sur YouTube →</a></p>`;
+}
+function buildKlech(){
+  const box = $("slCustom");
+  let cells = "", arrows = "";
+  for(let k=1;k<=8;k++){
+    const diag = [];
+    for(let n=1;n<=7;n++) for(const l of KL_ROWS[n]) if(n+LV[l]===k) diag.push([n,l]);
+    if(!diag.length) continue;
+    diag.sort((a,b)=>a[0]-b[0]);
+    const [n0,l0] = diag[0], [n1,l1] = diag[diag.length-1];
+    const x0 = KX[l0]+32, y0 = KY(n0)-20, x1 = KX[l1]-34, y1 = KY(n1)+22;
+    arrows += `<line class="k-arrow" id="ka${k}" x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" marker-end="url(#kHead)"/>`;
+  }
+  for(let n=1;n<=7;n++){
+    cells += `<text class="k-row" x="12" y="${KY(n)+5}">${n}</text>`;
+    for(const l of KL_ROWS[n]) cells += `<g class="k-cell k-${l}" id="kc${n}${l}"><rect x="${KX[l]-28}" y="${KY(n)-17}" width="56" height="34" rx="3"/><text x="${KX[l]}" y="${KY(n)+6}">${n}${l}<tspan class="k-n" dy="-8" id="kn${n}${l}"></tspan></text><text class="k-fill" x="${KX[l]}" y="${KY(n)+28}" id="kf${n}${l}">0 / ${CAP[l]}</text></g>`;
+  }
+  const heads = ["s","p","d","f"].map(l=>`<text class="k-head k-${l}" x="${KX[l]}" y="${KY(1)-34}">${l}</text><text class="k-cap k-${l}" x="${KX[l]}" y="${KY(1)-22}">${CAP[l]} e⁻ max</text>`).join("");
+  box.innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Les sous-couches s, p, d, f</h3>
+      <div class="k-legend">
+        <div class="k-l k-s"><b>s</b><span>l = 0 · 1 orbitale · <b>2</b> e⁻ max</span></div>
+        <div class="k-l k-p"><b>p</b><span>l = 1 · 3 orbitales · <b>6</b> e⁻ max</span></div>
+        <div class="k-l k-d"><b>d</b><span>l = 2 · 5 orbitales · <b>10</b> e⁻ max</span></div>
+        <div class="k-l k-f"><b>f</b><span>l = 3 · 7 orbitales · <b>14</b> e⁻ max</span></div>
+      </div>
+      <p class="m-lead">Une sous-couche se note <b>numéro de couche + lettre</b> : 3d = couche n = 3 (M), sous-couche d. Son énergie vaut <b>n + l</b> : 4s → 4 + 0 = 4, 3d → 3 + 2 = 5, donc la 4s se remplit avant la 3d.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Règle de Klechkowski : on suit les flèches</h3>
+      <p class="m-lead">Sous chaque case : électrons placés / électrons maximum (s : 2, p : 6, d : 10, f : 14). Choisis un élément puis lance le remplissage. Chaque flèche regroupe les sous-couches de même énergie n + l ; on les parcourt de haut en bas, flèche après flèche.</p>
+      <div class="m-pick">
+        <label for="kEl">Élément <select id="kEl">${PT.slice(0,86).map(e=>`<option value="${e.Z}">${e.Z} · ${e.s} (${e.n})</option>`).join("")}</select></label>
+        <button type="button" class="btn small" id="kGo">▶ Remplir</button>
+      </div>
+      <div class="k-wrap">
+        <svg id="kSvg" viewBox="0 0 360 420" role="img" aria-label="Diagramme de Klechkowski">
+          <defs><marker id="kHead" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="k-headp"/></marker></defs>
+          ${heads}${arrows}${cells}
+        </svg>
+        <div class="k-out">
+          <div class="k-count" id="kCount"></div>
+          <div class="k-cfg" id="kCfg"></div>
+          <p class="k-msg" id="kMsg"></p>
+        </div>
+      </div>
+      <p class="m-lead">Ordre obtenu : <b>1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p 7s 5f</b>…</p>
+    </div>`;
+  $("kEl").value = "26";
+  $("kGo").onclick = playKlech; $("kEl").onchange = playKlech;
+  playKlech();
+}
+function playKlech(){
+  stopMethod();
+  const Z = +$("kEl").value, e = PT[Z-1];
+  document.querySelectorAll("#kSvg .k-cell").forEach(g=>g.classList.remove("on","part","now"));
+  document.querySelectorAll("#kSvg .k-arrow").forEach(a=>a.classList.remove("lit"));
+  document.querySelectorAll("#kSvg .k-n").forEach(t=>t.textContent="");
+  document.querySelectorAll("#kSvg .k-fill").forEach(t=>{ t.textContent = `0 / ${CAP[t.id.slice(-1)]}`; t.classList.remove("full","half"); });
+  $("kCfg").innerHTML = ""; $("kMsg").innerHTML = "";
+  const steps = []; let r = Z;
+  for(const o of ORDER){ if(r<=0) break; const k = Math.min(CAP[o[1]], r); steps.push([o,k]); r -= k; }
+  const done = [];
+  $("kCount").innerHTML = `<b>0</b> / ${Z} électrons placés · ${e.n}`;
+  const speed = Math.max(220, Math.min(520, 5200/steps.length));
+  steps.forEach(([o,k],i)=> later(()=>{
+    document.querySelectorAll("#kSvg .k-cell.now").forEach(g=>g.classList.remove("now"));
+    const g = $("kc"+o); g.classList.add(k===CAP[o[1]]?"on":"part","now");
+    $("kn"+o).textContent = k;
+    const kf = $("kf"+o); kf.textContent = `${k} / ${CAP[o[1]]}`; kf.classList.add(k===CAP[o[1]]?"full":"half");
+    $("ka"+(+o[0]+LV[o[1]])).classList.add("lit");
+    done.push(`<span class="sc-${o[1]}">${o}<sup>${k}</sup></span>`);
+    $("kCfg").innerHTML = done.join(" ");
+    const placed = steps.slice(0,i+1).reduce((a,x)=>a+x[1],0);
+    $("kCount").innerHTML = `<b>${placed}</b> / ${Z} électrons placés · ${e.n}`;
+    if(i===steps.length-1){
+      const sh = shortCfg(configOf(Z));
+      let msg = sh ? `En abrégé : <b>${sh}</b>` : "";
+      if(EXC[Z]) msg = `<b>Exception :</b> la configuration réelle du ${e.n.toLowerCase()} est <b>${cfgHTML(configOf(Z))}</b>. ` + (Z===24||Z===29 ? `Un électron 4s passe en 3d : une sous-couche d ${Z===24?"à moitié pleine":"pleine"} est plus stable.` : `Les sous-couches d et f pleines ou à moitié pleines sont plus stables.`);
+      $("kMsg").innerHTML = msg;
+    }
+  }, 250 + i*speed));
+}
+// ---------- Diapo « Charge d'un groupement d'atomes » ----------
+// [symbole, degré d'oxydation, nombre d'atomes, d'où vient la valeur]
+const POLY_ATOMS = {
+  CO3:[["C",4,1,"colonne 14 : 4 électrons de valence, tous donnés"],["O",-2,3,"colonne 16 : gagne 2 électrons"]],
+  SO4:[["S",6,1,"colonne 16 : 6 électrons de valence, tous donnés"],["O",-2,4,"colonne 16 : gagne 2 électrons"]],
+  NO3:[["N",5,1,"colonne 15 : 5 électrons de valence, tous donnés"],["O",-2,3,"colonne 16 : gagne 2 électrons"]],
+  PO4:[["P",5,1,"colonne 15 : 5 électrons de valence, tous donnés"],["O",-2,4,"colonne 16 : gagne 2 électrons"]],
+  OH:[["O",-2,1,"colonne 16 : gagne 2 électrons"],["H",1,1,"colonne 1 : perd 1 électron"]],
+  NH4:[["N",-3,1,"colonne 15 : gagne 3 électrons (H est déjà +1)"],["H",1,4,"colonne 1 : perd 1 électron"]],
+};
+const sgn = q => (q>0?"+":"−")+Math.abs(q);
+function buildPoly(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">!</span> CO₃, SO₄, NO₃… ne sont pas dans le tableau périodique</h3>
+      <p class="m-lead">Ce sont des <b>groupements d'atomes</b> qui restent soudés et portent une charge ensemble. On ne lit pas leur charge directement : on la <b>calcule</b> à partir des atomes qui les composent.</p>
+      <div class="p-rules">
+        <div class="p-rule"><span class="m-num">1</span><div><b>Décomposer</b><span>CO₃ = 1 atome C + 3 atomes O</span></div></div>
+        <div class="p-rule"><span class="m-num">2</span><div><b>Donner à chaque atome son degré d'oxydation</b><span><b class="neg">O = −2</b> toujours · <b class="pos">H = +1</b> · l'atome central donne <b class="pos">tous ses électrons de valence</b> : C +4, N +5, P +5, S +6</span></div></div>
+        <div class="p-rule"><span class="m-num">3</span><div><b>Additionner</b><span>La somme de tous les degrés d'oxydation = la charge du groupement</span></div></div>
+      </div>
+      <div class="p-where"><span>Où lire ces valeurs dans le tableau :</span>${[["C",4,"col. 14"],["N",5,"col. 15"],["P",5,"col. 15"],["S",6,"col. 16"],["O",-2,"col. 16"],["H",1,"col. 1"]].map(([e,q,c])=>`<span class="p-mini ${q>0?"pos":"neg"}"><b>${e}</b><em>${sgn(q)}</em><small>${c}</small></span>`).join("")}</div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">→</span> Calcul pas à pas</h3>
+      <div class="m-chips" id="pIons">${Object.keys(POLY_ATOMS).map(f=>`<button type="button" class="chip" data-f="${f}">${fmtF(f)}</button>`).join("")}</div>
+      <div class="p-stage" id="pStage" aria-live="polite"></div>
+    </div>`;
+  $("pIons").querySelectorAll(".chip").forEach(b=>b.onclick=()=>playPoly(b.dataset.f));
+  playPoly("CO3");
+}
+function playPoly(f){
+  stopMethod();
+  $("pIons").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.f===f));
+  const parts = POLY_ATOMS[f], q = POLY.find(x=>x[0]===f)[1], name = POLY.find(x=>x[0]===f)[2];
+  const atoms = parts.flatMap(([e,d,n])=>Array(n).fill([e,d]));
+  const decomp = parts.map(([e,d,n])=>`${n} ${e}`).join(" + ");
+  $("pStage").innerHTML = `
+    <p class="p-line p1"><b>1.</b> ${fmtF(f)} = ${decomp}</p>
+    <div class="p-atoms">${atoms.map(([e,d],i)=>`<span class="p-atom ${d>0?"pos":"neg"}" style="--i:${i}"><b>${e}</b><em>${sgn(d)}</em></span>`).join("")}</div>
+    <div class="p-why p2">${parts.map(([e,d,n,why])=>`<span><b>${e} = ${sgn(d)}</b> : ${why}</span>`).join("")}</div>
+    <p class="p-line p3"><b>3.</b> ${parts.map(([e,d,n])=>n>1?`${n} × (${sgn(d)})`:sgn(d)).join(" + ")} = ${parts.map(([e,d,n])=>sgn(d*n)).join(" ")} = <b class="${q>0?"pos":"neg"}">${sgn(q)}</b></p>
+    <div class="p-res p4"><b>${ionHTML(f,q)}</b><span>ion ${name}, charge ${sgn(q)}</span></div>`;
+  const st = $("pStage"); st.className = "p-stage";
+  later(()=>st.classList.add("s1"), 100);
+  st.querySelectorAll(".p-atom").forEach((a,i)=> later(()=>a.classList.add("in"), 600 + i*280));
+  const t = 600 + atoms.length*280;
+  later(()=>st.classList.add("s2"), t+200);
+  later(()=>st.classList.add("s3"), t+1100);
+  later(()=>st.classList.add("s4"), t+1900);
+}
+// ---------- Diapo « Combien d'ions dans la formule ? » ----------
+const IDX_READ = [["Na","Cl"],["Li","PO4"],["Na","SO4"],["Ca","NO3"],["Al","O"],["Ca","PO4"],["NH4","SO4"]];
+const IDX_CROSS = [["Al","O"],["Ca","PO4"],["Na","SO4"],["Mg","Cl"],["Ca","O"],["Mg","CO3"],["Al","SO4"],["NH4","PO4"]];
+const findCat = s => CATIONS.find(x=>x[0]===s), findAn = s => ANIONS.find(x=>x[0]===s);
+const innerF = sym => sym.replace(/(\d+)/g,'<sub class="inner">$1</sub>');
+function partHTML(sym, n, cls){
+  const body = isPoly(sym) && n>1 ? `(${innerF(sym)})` : innerF(sym);
+  return `<span class="r-part ${cls}">${body}${n>1?`<sub class="outer">${n}</sub>`:`<sub class="outer ghost">1</sub>`}</span>`;
+}
+function buildIdx(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Lire une formule : combien d'ions de chaque ?</h3>
+      <p class="m-lead">Le <b>cation</b> est toujours écrit en premier, l'<b>anion</b> ensuite. Le petit chiffre placé <b>juste après</b> un ion (ou après sa parenthèse) dit combien de fois il est présent. Pas de chiffre = 1.</p>
+      <div class="m-chips" id="rList">${IDX_READ.map(([c,a],i)=>`<button type="button" class="chip" data-i="${i}">${fmtF(makeCompound(findCat(c),findAn(a)).formula)}</button>`).join("")}</div>
+      <div class="r-stage" id="rStage" aria-live="polite"></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Écrire une formule : on croise les charges</h3>
+      <p class="m-lead">La <b>charge du cation</b> devient l'<b>indice de l'anion</b>, et la <b>charge de l'anion</b> devient l'<b>indice du cation</b>. Puis on simplifie si les deux indices ont un diviseur commun. Les charges + et − sont alors forcément égales.</p>
+      <div class="m-chips" id="xList">${IDX_CROSS.map(([c,a],i)=>`<button type="button" class="chip" data-i="${i}">${ionHTML(c,findCat(c)[1])} + ${ionHTML(a,-findAn(a)[1])}</button>`).join("")}</div>
+      <div class="x-stage" id="xStage" aria-live="polite"></div>
+    </div>`;
+  $("rList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>playRead(+b.dataset.i));
+  $("xList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>playCross(+b.dataset.i));
+  playRead(5); playCross(0);
+}
+function playRead(i){
+  methodTimers.forEach(clearTimeout); methodTimers = [];
+  $("rList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", +b.dataset.i===i));
+  const [c,a] = IDX_READ[i], cat = findCat(c), an = findAn(a), k = makeCompound(cat, an);
+  const catTxt = k.nc>1 ? `l'indice <b>${k.nc}</b> → <b>${k.nc} ions ${ionHTML(c,cat[1])}</b>` : `pas d'indice → <b>1 ion ${ionHTML(c,cat[1])}</b>`;
+  let anTxt;
+  if(isPoly(a) && k.na>1) anTxt = `l'indice <b>${k.na}</b> après la parenthèse → <b>${k.na} ions ${ionHTML(a,-an[1])}</b>. Le chiffre <i>dans</i> la parenthèse fait partie de l'ion (${fmtF(a)} = ${Object.entries(parseFormula(a)).map(([e,n])=>`${n} ${e}`).join(" + ")}).`;
+  else if(isPoly(a)) anTxt = `pas de parenthèse ni d'indice après → <b>1 seul ion ${ionHTML(a,-an[1])}</b>. Le ${a.match(/\d+/)?.[0] ?? ""} fait partie de l'ion lui-même.`;
+  else anTxt = k.na>1 ? `l'indice <b>${k.na}</b> → <b>${k.na} ions ${ionHTML(a,-an[1])}</b>` : `pas d'indice → <b>1 ion ${ionHTML(a,-an[1])}</b>`;
+  $("rStage").innerHTML = `
+    <div class="r-formula">${partHTML(c,k.nc,"r-cat")}${partHTML(a,k.na,"r-an")}</div>
+    <div class="r-legend"><span><i class="lg-cat"></i>cation</span><span><i class="lg-an"></i>anion</span><span><b class="lg-out">2</b> nombre d'ions</span><span><b class="lg-in">4</b> fait partie de l'ion</span></div>
+    <p class="r-step r1"><b>Cation</b> ${fmtF(isPoly(c)&&k.nc>1?`(${c})${k.nc}`:c+(k.nc>1?k.nc:""))} : ${catTxt}.</p>
+    <p class="r-step r2"><b>Anion</b> ${fmtF(isPoly(a)&&k.na>1?`(${a})${k.na}`:a+(k.na>1?k.na:""))} : ${anTxt}</p>
+    <p class="r-step r3"><b>Donc</b> ${fmtF(k.formula)} = ${k.nc} ${ionHTML(c,cat[1])} + ${k.na} ${ionHTML(a,-an[1])} · charges : ${k.nc} × (+${cat[1]}) + ${k.na} × (−${an[1]}) = 0 ✓</p>`;
+  const st = $("rStage"); st.className = "r-stage";
+  later(()=>st.classList.add("s1"), 300);
+  later(()=>st.classList.add("s2"), 2000);
+  later(()=>st.classList.add("s3"), 3800);
+}
+function playCross(i){
+  balTimers.forEach(clearTimeout); balTimers = [];
+  $("xList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", +b.dataset.i===i));
+  const [c,a] = IDX_CROSS[i], cq = findCat(c)[1], aq = findAn(a)[1], g = gcd(cq,aq);
+  const rawCat = aq, rawAn = cq;                  // indices obtenus par croisement
+  const rawPart = (sym,n,slot) => `<span class="x-p">${isPoly(sym)&&n>1?`(${fmtF(sym)})`:fmtF(sym)}<sub class="slot" id="${slot}"></sub></span>`;
+  const rawF = (isPoly(c)&&rawCat>1?`(${c})`:c)+(rawCat>1?rawCat:"")+(isPoly(a)&&rawAn>1?`(${a})`:a)+(rawAn>1?rawAn:"");
+  const fin = makeCompound(findCat(c), findAn(a));
+  $("xStage").innerHTML = `
+    <svg class="x-lines" id="xLines" aria-hidden="true"></svg>
+    <div class="x-top">
+      <span class="x-ion pos">${fmtF(c)}<sup><span class="x-q" id="xq1">${cq}</span>+</sup></span>
+      <span class="x-ion neg">${fmtF(a)}<sup><span class="x-q" id="xq2">${aq}</span>−</sup></span>
+    </div>
+    <div class="x-raw"><span class="x-lab">Croisement</span><span class="x-f">${rawPart(c,rawCat,"xs1")}${rawPart(a,rawAn,"xs2")}</span></div>
+    <span class="x-trav pos" id="xt1">${cq}</span><span class="x-trav neg" id="xt2">${aq}</span>
+    <p class="x-step x1">La charge <b>${cq}</b> du cation passe sous l'anion, la charge <b>${aq}</b> de l'anion passe sous le cation${cq===1||aq===1?` (un indice 1 ne s'écrit pas)`:""}.</p>
+    <p class="x-step x2">${g>1 ? `Les deux indices sont divisibles par <b>${g}</b> : ${fmtF(rawF)} → <b>${fmtF(fin.formula)}</b>.` : `Pas de diviseur commun : la formule reste <b>${fmtF(fin.formula)}</b>.`}</p>
+    <p class="x-step x3">Vérification : ${fin.nc} × (+${cq}) = <b class="pos">+${fin.nc*cq}</b> et ${fin.na} × (−${aq}) = <b class="neg">−${fin.na*aq}</b> ✓ → <b>${fin.name}</b></p>`;
+  const st = $("xStage"); st.className = "x-stage";
+  const box = st.getBoundingClientRect(), at = id => { const r = $(id).getBoundingClientRect(); return [r.left - box.left + r.width/2, r.top - box.top + r.height/2]; };
+  const [q1x,q1y] = at("xq1"), [q2x,q2y] = at("xq2"), [s1x,s1y] = at("xs1"), [s2x,s2y] = at("xs2");
+  $("xLines").setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
+  $("xLines").innerHTML = `<line x1="${q1x}" y1="${q1y+10}" x2="${s2x}" y2="${s2y-12}" class="pos"/><line x1="${q2x}" y1="${q2y+10}" x2="${s1x}" y2="${s1y-12}" class="neg"/>`;
+  const t1 = $("xt1"), t2 = $("xt2");
+  t1.style.left = q1x+"px"; t1.style.top = q1y+"px"; t2.style.left = q2x+"px"; t2.style.top = q2y+"px";
+  later(()=>st.classList.add("go"), 700, balTimers);
+  later(()=>{ t1.style.transform = `translate(${s2x-q1x}px,${s2y-q1y}px) scale(.8)`; t2.style.transform = `translate(${s1x-q2x}px,${s1y-q2y}px) scale(.8)`; }, 900, balTimers);
+  later(()=>{ $("xs1").textContent = rawCat; $("xs2").textContent = rawAn; if(rawCat===1) $("xs1").classList.add("one"); if(rawAn===1) $("xs2").classList.add("one"); t1.hidden = t2.hidden = true; st.classList.add("s1"); }, 2300, balTimers);
+  later(()=>st.classList.add("s2"), 3600, balTimers);
+  later(()=>st.classList.add("s3"), 4800, balTimers);
+}
+// ---------- Diapo « Comment les atomes se lient » : partage ou transfert des électrons de valence ----------
+// Chaque molécule : atome central, partenaires (angle en degrés, ordre de liaison), type de liaison
+const BONDS = {
+  H2O:  {c:"O",  p:[["H",180,1],["H",90,1]], kind:"cov"},
+  NH3:  {c:"N",  p:[["H",180,1],["H",0,1],["H",90,1]], kind:"cov"},
+  CH4:  {c:"C",  p:[["H",180,1],["H",0,1],["H",90,1],["H",270,1]], kind:"cov", c4:true},
+  CO2:  {c:"C",  p:[["O",180,2],["O",0,2]], kind:"cov", c4:true},
+  N2:   {c:"N",  p:[["N",0,3]], kind:"cov", shift:-60},
+  HCl:  {c:"Cl", p:[["H",180,1]], kind:"cov", shift:30},
+  NaCl: {c:"Na", p:[["Cl",0,1]], kind:"ion", shift:-60},
+  MgO:  {c:"Mg", p:[["O",0,2]], kind:"ion", shift:-60},
+  CaCl2:{c:"Ca", p:[["Cl",180,1],["Cl",0,1]], kind:"ion"},
+};
+const VE = s => ({H:1,C:4,N:5,O:6,Na:1,Mg:2,Ca:2,Cl:7})[s];
+const gasDe = n => ({1:"de l'hélium",2:"du néon",3:"de l'argon",4:"du krypton"})[n];
+const gasOf = (s, n) => s==="H" ? "l'hélium (2 électrons)" : ({2:"le néon",3:"l'argon",4:"le krypton"})[n] + " (8 électrons)";
+const PER = s => ({H:1,C:2,N:2,O:2,Na:3,Mg:3,Cl:3,Ca:4})[s];
+const rad = a => a*Math.PI/180;
+// Électrons d'un atome à la Lewis : 4 côtés ; les célibataires vont d'abord vers les liaisons, les doublets ailleurs
+function lewis(ve, bonds){                       // bonds : [[angle, nombre d'électrons engagés]]
+  const free = [0,90,180,270], slots = [];
+  const take = a => { const i = free.indexOf(a); if(i>=0) free.splice(i,1); return a; };
+  const angDist = (x,a) => Math.abs(((x-a+540)%360)-180);   // écart angulaire entre deux côtés
+  const nearest = a => free.slice().sort((x,y)=>angDist(x,a)-angDist(y,a))[0];
+  let used = 0;
+  bonds.forEach(([a,k],bi)=>{ slots.push({side:take(a), n:1, bond:bi}); used++; });
+  bonds.forEach(([a,k],bi)=>{ for(let j=1;j<k;j++){ slots.push({side:take(nearest(a)), n:1, bond:bi}); used++; } });
+  const lp = (ve-used)/2;
+  for(let i=0;i<lp;i++) slots.push({side:free.shift(), n:2, bond:-1});
+  return slots;
+}
+function slotDots(x, y, slot, R=37){
+  const u = [Math.cos(rad(slot.side)), Math.sin(rad(slot.side))], v = [-u[1], u[0]];
+  const bx = x+u[0]*R, by = y+u[1]*R;
+  return slot.n===2 ? [[bx+v[0]*7, by+v[1]*7],[bx-v[0]*7, by-v[1]*7]] : [[bx, by]];
+}
+// ---------- Cases quantiques (notation du cours) ----------
+// Couches affichées : tout pour H à Ne (1s 2s 2p), sinon le cœur [Ne]/[Ar] puis la couche externe s et p
+function valBoxes(sym, c4){
+  const e = BY_SYM[sym], c = {...configOf(e.Z)};
+  if(c4){ c["2s"] = 1; c["2p"] = 3; }                       // carbone en état de valence 4
+  const nmax = Math.max(...Object.keys(c).filter(o=>c[o]>0).map(o=>+o[0]));
+  const shown = nmax<=2 ? ORDER.filter(o=>+o[0]<=2 && (c[o]>0 || (o==="2p" && nmax===2))) : [nmax+"s", nmax+"p"].filter(o=>c[o]>0);
+  const core = nmax<=2 ? "" : (nmax===3 ? "[Ne]" : "[Ar]");
+  const subs = shown.map(o=>{
+    const k = CAP[o[1]]/2, n = c[o]||0, boxes = [...Array(k)].map(()=>[]);
+    for(let i=0;i<n;i++) boxes[i<k ? i : i-k].push({spin:i<k?"u":"d", who:"own"});
+    return {o, boxes};
+  });
+  return {sym, core, subs, outer: shown.filter(o=>+o[0]===nmax)};
+}
+const singlesOf = vb => vb.subs.flatMap((sb,si)=>vb.outer.includes(sb.o) ? sb.boxes.map((b,bi)=>[si,bi,b]).filter(x=>x[2].length===1) : []);
+// Applique la liaison : partage (covalente) ou transfert (ionique) ; who = "A" ou "B" (couleur de l'atome d'origine)
+let qeN = 0;
+const qeId = x => x.uid || (x.uid = "qe" + (++qeN));
+// src : l'électron d'origine, pour faire voyager la flèche de sa case à la case qui la reçoit
+function bondBoxes(A, Bs, order, kind){
+  const a = singlesOf(A);
+  if(kind==="cov"){
+    let ai = 0;
+    Bs.forEach(B=>{ const b = singlesOf(B);
+      for(let k=0;k<order;k++){ const sa = a[ai++], sb = b[k];
+        if(sa && sb){ sa[2].sgl = sb[2].sgl = true;
+          const fromA = sa[2][0], fromB = sb[2][0];
+          sa[2].push({spin:"d", who:"B", inc:true, src:fromB}); sb[2].push({spin:"d", who:"A", inc:true, src:fromA}); } } });
+  } else {
+    // le métal donne tous ses électrons de la couche externe
+    const outBoxes = A.subs.filter(sb=>A.outer.includes(sb.o)).flatMap(sb=>sb.boxes);
+    outBoxes.forEach(b=>{ if(b.length) b.sgl = true; });
+    const out = outBoxes.flat(); out.forEach(x=>x.out=true);
+    let j = 0;
+    Bs.forEach(B=>{ singlesOf(B).slice(0,order).forEach(sb=>{ sb[2].sgl = true; sb[2].push({spin:"d", who:"A", inc:true, src:out[j++]}); }); });
+  }
+}
+// Fait voyager chaque flèche reçue depuis la case de l'atome qui la fournit (une par une)
+function playBoxes(wrap, delay=0, gap=420, timers=methodTimers){
+  wrap.classList.add("anim");
+  const go = (fn,ms) => timers.push(setTimeout(fn, REDUCE ? 0 : ms));
+  const incs = [...wrap.querySelectorAll(".ar.inc")];
+  incs.forEach((el,i)=> go(()=>{
+    const src = wrap.querySelector(`.ar[data-q="${el.dataset.src}"]`);
+    const W = wrap.getBoundingClientRect(), d = el.getBoundingClientRect(), r = src ? src.getBoundingClientRect() : d;
+    const fly = document.createElement("i");
+    fly.className = "qfly " + (el.classList.contains("rA") ? "rA" : "rB"); fly.textContent = el.textContent;
+    fly.style.left = (r.left - W.left + wrap.scrollLeft) + "px"; fly.style.top = (r.top - W.top + wrap.scrollTop) + "px";
+    wrap.appendChild(fly);
+    if(src) src.classList.add("lending");
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ fly.style.transform = `translate(${d.left - r.left}px,${d.top - r.top}px)`; }));
+    go(()=>{ el.classList.add("landed"); fly.remove(); if(src){ src.classList.remove("lending"); if(src.classList.contains("out")) src.classList.add("gone"); } }, 900);
+  }, delay + i*gap));
+  return delay + incs.length*gap + 900;
+}
+function boxesHTML(vb, role){
+  return `<div class="qbx ${role}"><b class="qbx-s">${vb.sym}</b>${vb.core?`<span class="qbx-core">${vb.core}</span>`:""}${vb.subs.map(sb=>
+    `<span class="qbx-sub sc-${sb.o[1]}"><span class="qbx-row">${sb.boxes.map(b=>`<span class="qb${b.sgl?" sgl":""}">${b.map(x=>
+      `<i class="ar ${x.spin} ${x.who==="own"?role:x.who==="A"?"rA":"rB"}${x.inc?" inc":""}${x.out?" out":""}" data-q="${qeId(x)}"${x.src?` data-src="${qeId(x.src)}"`:""}>${x.spin==="u"?"↑":"↓"}</i>`).join("")}</span>`).join("")}</span><small>${sb.o}</small></span>`).join("")}</div>`;
+}
+
+let lbKey = "H2O";
+function buildBond(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Partager ou donner ses électrons de valence</h3>
+      <p class="m-lead">Un atome veut la configuration du gaz noble le plus proche : <b>8 électrons</b> sur sa couche externe (<b>2</b> pour H). Ce sont ses <b>électrons célibataires</b> (seuls dans leur case) qui servent à se lier. Deux façons de faire :</p>
+      <div class="lb-kinds"><div><b>Liaison covalente</b> : entre deux non-métaux. Chaque atome met <b>1 électron célibataire en commun</b> ; les deux forment un <b>doublet partagé</b> qui compte pour les deux atomes.</div>
+      <div><b>Liaison ionique</b> : entre un métal et un non-métal. Le métal <b>donne</b> ses électrons de valence au non-métal ; on obtient un cation et un anion qui s'attirent.</div></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Regarde les électrons bouger</h3>
+      <div class="m-chips" id="lbList">${Object.keys(BONDS).map(k=>`<button type="button" class="chip" data-k="${k}">${fmtF(k)}<small>${BONDS[k].kind==="cov"?"covalente":"ionique"}</small></button>`).join("")}</div>
+      <div class="lb-stage" id="lbStage">
+        <svg id="lbSvg" viewBox="0 0 600 330" role="img" aria-label="Animation de la liaison entre les atomes"></svg>
+        <div class="m-story" id="lbStory" aria-live="polite"></div>
+      </div>
+      <div class="qbx-wrap" id="lbBoxes" aria-label="Cases quantiques"></div>
+      <div class="m-pick"><button type="button" class="btn ghost small" id="lbReplay">Rejouer l'animation</button><span class="lb-key"><i class="k1"></i>électrons de l'atome central <i class="k2"></i>électrons de l'autre atome</span></div>
+    </div>`;
+  $("lbList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ lbKey = b.dataset.k; playBond(); });
+  $("lbReplay").onclick = playBond;
+  playBond();
+}
+function playBond(){
+  stopMethod();
+  $("lbList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.k===lbKey));
+  const M = BONDS[lbKey], cx = 300 + (M.shift||0)*1.2, cy = 160, ion = M.kind==="ion";
+  const ceVE = VE(M.c);
+  // Positions de départ (loin) et d'arrivée (liés)
+  const far = a => (a===90||a===270) ? 128 : 200, near = (sym) => sym==="H" ? 78 : (ion ? 140 : 92);
+  const P = M.p.map(([sym,a,o])=>{
+    const u=[Math.cos(rad(a)),Math.sin(rad(a))];
+    return {sym,a,o,u, x0:cx+u[0]*far(a), y0:cy+u[1]*far(a), x1:cx+u[0]*near(sym), y1:cy+u[1]*near(sym)};
+  });
+  // Électrons de l'atome central
+  const cSlots = lewis(ceVE, P.map(p=>[p.a, ion ? 1*p.o : p.o]));
+  let svgE = "", moves = [];
+  const dot = (x,y,cls,id) => `<circle class="lb-e ${cls}" id="${id}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6"/>`;
+  let n = 0;
+  const bondCount = P.map(()=>0);
+  // Zone de liaison : doublets empilés perpendiculairement à l'axe
+  const bondPos = (p, k, side) => {               // k : numéro du doublet, side : -1 côté centre, +1 côté partenaire
+    const mx = (cx+p.x1)/2, my = (cy+p.y1)/2, v=[-p.u[1],p.u[0]], off=(k-(p.o-1)/2)*16;
+    return [mx + v[0]*off + p.u[0]*7*side, my + v[1]*off + p.u[1]*7*side];
+  };
+  cSlots.forEach(sl=>{
+    slotDots(cx, cy, sl).forEach(([x,y])=>{
+      const id = "lbe"+(n++);
+      svgE += dot(x,y,"e1"+(sl.bond>=0?" single":""),id);
+      if(sl.bond>=0){
+        const p = P[sl.bond];
+        if(ion){ // le métal donne : l'électron part vers un célibataire du non-métal (cible calculée plus bas)
+          const k = bondCount[sl.bond]++;
+          moves.push({id, x, y, ion:true, bond:sl.bond, k});
+        } else { const k = bondCount[sl.bond]++; const [tx,ty] = bondPos(p, k, -1); moves.push({id,x,y,tx,ty,bond:sl.bond}); }
+      }
+    });
+  });
+  // Électrons des partenaires
+  let svgP = "";
+  P.forEach((p,pi)=>{
+    const back = (p.a+180)%360, ve = VE(p.sym);
+    const sl = lewis(ve, [[back, ion ? (VE(p.sym)===7?1:2) : p.o]]);
+    let kk = 0, ki = 0, g = "";
+    const dx = p.x1-p.x0, dy = p.y1-p.y0;
+    sl.forEach(x=>{
+      slotDots(p.x0, p.y0, x).forEach(([ex,ey])=>{
+        const id = "lbe"+(n++);
+        g += dot(ex,ey,"e2"+(x.bond>=0?" single":""),id);
+        if(x.bond>=0 && !ion){ const [tx,ty] = bondPos(p, kk++, +1); moves.push({id,x:ex,y:ey,tx,ty,bond:pi}); }
+        else if(x.bond>=0 && ion){
+          // le célibataire se décale ; l'électron reçu du métal vient se placer à côté : un doublet
+          const [[ax,ay],[bx2,by2]] = slotDots(p.x1, p.y1, {side:x.side, n:2});
+          moves.push({id,x:ex,y:ey,tx:ax,ty:ay,carry:true});
+          const m = moves.find(mm=>mm.ion && mm.bond===pi && mm.k===ki); ki++;
+          if(m){ m.tx = bx2; m.ty = by2; }
+        }
+        else moves.push({id,x:ex,y:ey,tx:ex+dx,ty:ey+dy,carry:true});
+      });
+    });
+    svgP += `<g class="lb-atom lb-p" id="lbp${pi}" style="--dx:${(p.x1-p.x0).toFixed(1)}px;--dy:${(p.y1-p.y0).toFixed(1)}px"><circle class="lb-core c2" cx="${p.x0}" cy="${p.y0}" r="24"/><text x="${p.x0}" y="${p.y0+6}">${p.sym}</text></g>`;
+    svgP += g;
+  });
+  const bondsSvg = ion ? "" : P.map((p,pi)=>`<ellipse class="lb-bond" id="lbb${pi}" cx="${((cx+p.x1)/2).toFixed(1)}" cy="${((cy+p.y1)/2).toFixed(1)}" rx="${(p.sym==="H"?24:28)}" ry="${10+p.o*8}" transform="rotate(${p.a} ${((cx+p.x1)/2).toFixed(1)} ${((cy+p.y1)/2).toFixed(1)})"/>`).join("");
+  const charges = ion ? `<text class="lb-q pos" id="lbq0" x="${cx+20}" y="${cy-26}">${M.p.length*M.p[0][2]>1?M.p.length*M.p[0][2]:""}+</text>` + P.map((p,pi)=>`<text class="lb-q neg" id="lbq${pi+1}" x="${p.x1+20}" y="${p.y1-26}">${p.o>1?p.o:""}−</text>`).join("") : "";
+  $("lbSvg").innerHTML = `${bondsSvg}<g class="lb-atom"><circle class="lb-core c1" cx="${cx}" cy="${cy}" r="24"/><text x="${cx}" y="${cy+6}">${M.c}</text></g>${svgP}${svgE}${charges}<text class="lb-formula" id="lbF" x="280" y="290">${M.kind==="cov"?"":""}</text>`;
+  // Récit
+  const cName = BY_SYM[M.c].n.toLowerCase(), pSym = M.p[0][0], pName = BY_SYM[pSym].n.toLowerCase(), nP = M.p.length;
+  const singlesC = ion ? ceVE : M.p.reduce((a,x)=>a+x[2],0), totC = ceVE + (ion ? 0 : singlesC);
+  let t1, t2, t3, t4;
+  if(!ion){
+    const pSingles = M.p[0][2], pVE = VE(pSym);
+    t1 = `<b>${BY_SYM[M.c].n}</b> : ${ceVE} électrons de valence, dont <b>${singlesC} célibataire${singlesC>1?"s":""}</b>${M.c4?" (le carbone passe en état de valence 4 : un électron 2s monte en 2p, voir la fiche « Valence »)":""}. <b>${BY_SYM[pSym].n}</b> : ${pVE} électron${pVE>1?"s":""} de valence, dont <b>${pSingles} célibataire${pSingles>1?"s":""}</b>.`;
+    t2 = `Les électrons célibataires s'allument : ce sont eux qui vont former les liaisons.`;
+    t3 = `Les atomes s'approchent et <b>mettent leurs célibataires en commun</b> : chaque liaison est un <b>doublet</b> (1 électron de chaque atome)${M.p[0][2]>1?`, ici ${M.p[0][2]} doublets entre ${M.c} et ${pSym} : liaison ${M.p[0][2]===2?"double":"triple"}`:""}.`;
+    t4 = `Autour de ${M.c} : ${ceVE} + ${singlesC} = <b>${totC} électrons</b>, comme ${gasOf(M.c, PER(M.c))}. Autour de ${pSym} : ${pSym==="H"?"1 + 1 = <b>2</b>":`${VE(pSym)} + ${M.p[0][2]} = <b>${VE(pSym)+M.p[0][2]}</b>`}, comme ${gasOf(pSym, PER(pSym))}. Tout le monde est stable : <b class="big-ion">${fmtF(lbKey)}</b>`;
+  } else {
+    const q = ceVE, perX = M.p[0][2];
+    t1 = `<b>${BY_SYM[M.c].n}</b> (métal) : ${q} électron${q>1?"s":""} de valence, seul${q>1?"s":""} sur sa couche externe. <b>${BY_SYM[pSym].n}</b> : ${VE(pSym)} électrons de valence, il lui en manque <b>${8-VE(pSym)}</b>.`;
+    t2 = `Pour ${M.c}, perdre ${q} électron${q>1?"s":""} est bien plus facile que d'en gagner ${8-q}.`;
+    t3 = `${M.c} <b>donne</b> ${q>1&&nP>1?`1 électron à chaque ${pSym}`:`${q} électron${q>1?"s":""} à ${pSym}`} : ce n'est pas un partage, c'est un <b>transfert</b>.`;
+    t4 = `${M.c} devient <b>${ionHTML(M.c,q)}</b> (sa couche externe est vide : il lui reste la configuration ${gasDe(PER(M.c)-1)}) et ${pSym} devient <b>${ionHTML(pSym,-perX)}</b> (8 électrons, comme ${gasOf(pSym, PER(pSym)).replace(" (8 électrons)","")}). Les charges + et − s'attirent : <b class="big-ion">${fmtF(lbKey)}</b>`;
+  }
+  // Cases quantiques : l'électron de l'autre atome vient compléter la case à moitié vide
+  const qA = valBoxes(M.c, M.c4), qB = M.p.map(([sym])=>valBoxes(sym));
+  bondBoxes(qA, qB, M.p[0][2], M.kind);
+  $("lbBoxes").innerHTML = `<p class="qbx-title">En cases quantiques (comme dans le cours)</p>` + boxesHTML(qA,"rA") + qB.map(b=>boxesHTML(b,"rB")).join("");
+  $("lbBoxes").classList.remove("go","hl","anim");
+  $("lbStory").innerHTML = `<p class="st1">${t1}</p><p class="st2">${t2}</p><p class="st3">${t3}</p><p class="st4">${t4}</p>`;
+  const st = $("lbStory"), svg = $("lbSvg"); st.className = "m-story"; svg.classList.remove("hl","go","done");
+  moves.forEach(m=>{ const el=$(m.id); el.style.transform = "translate(0,0)"; });
+  later(()=>{ st.classList.add("s2"); svg.classList.add("hl"); $("lbBoxes").classList.add("hl"); }, 1400);
+  later(()=>{ st.classList.add("s3"); svg.classList.add("go");
+    P.forEach((p,pi)=>{ $("lbp"+pi).style.transform = `translate(${(p.x1-p.x0).toFixed(1)}px,${(p.y1-p.y0).toFixed(1)}px)`; });
+    moves.forEach(m=>{ if(!m.ion) $(m.id).style.transform = `translate(${(m.tx-m.x).toFixed(1)}px,${(m.ty-m.y).toFixed(1)}px)`; });
+  }, 2800);
+  if(!ion) playBoxes($("lbBoxes"), 2900, 260);
+  if(ion) playBoxes($("lbBoxes"), 4100, 380);
+  if(ion) later(()=>{ moves.forEach((m,i)=>{ if(m.ion){ const el=$(m.id); el.classList.add("jump"); el.style.transform = `translate(${(m.tx-m.x).toFixed(1)}px,${(m.ty-m.y).toFixed(1)}px)`; } }); }, 4100);
+  later(()=>{ st.classList.add("s4"); svg.classList.add("done"); }, ion ? 5600 : 4300);
+}
+// ---------- Fiches de cours (rédigées pour l'appli, sans reprendre les diapos du professeur) ----------
+const frExp = x => { const [m,e] = x.toExponential(3).split("e"); return `${m.replace(".",",")} × 10<sup>${(+e<0?"−":"")+Math.abs(+e)}</sup>`; };
+const nucl = (sym, A, Z, cls="") => `<span class="fc-nuc ${cls}"><span class="fc-az"><sup>${A}</sup><sub>${Z}</sub></span><b>${sym}</b></span>`;
+const chipsHTML = (id, list, lab) => `<div class="m-chips" id="${id}">${list.map((x,i)=>`<button type="button" class="chip" data-i="${i}">${lab(x)}</button>`).join("")}</div>`;
+function wireChips(id, fn, start=0){
+  const run = i => { $(id).querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", +b.dataset.i===i)); fn(i); };
+  $(id).querySelectorAll(".chip").forEach(b=>b.onclick=()=>run(+b.dataset.i)); run(start);
+}
+// Modèle en couches (Bohr) dessiné pour un atome ou un ion de Z ≤ 20
+function bohrSVG(Z, q=0, N=null, cap=""){
+  const sym = PT[Z-1].s, sh = shellsOf(Z-q), R = [36,58,80,100].slice(0,sh.length), c = 112;
+  let g = R.map((r,i)=>`<circle class="ring${i===R.length-1?" outer":""}" cx="${c}" cy="${c}" r="${r}"/><text class="ring-t" x="${(c+(r+8)*Math.cos(-3*Math.PI/8)).toFixed(1)}" y="${(c+(r+8)*Math.sin(-3*Math.PI/8)+4).toFixed(1)}">${SHELL[i+1]}</text>`).join("");
+  sh.forEach((n,i)=>{ for(let j=0;j<n;j++){ const a = -Math.PI/2 + 2*Math.PI*j/n;
+    g += `<circle class="e ${i===sh.length-1?"ext":""}" cx="${(c+R[i]*Math.cos(a)).toFixed(1)}" cy="${(c+R[i]*Math.sin(a)).toFixed(1)}" r="5"/>`; } });
+  const lab = q ? ionHTML(sym,q).replace(/<sup>(.*?)<\/sup>/,'<tspan dy="-7" font-size="10">$1</tspan>') : sym;
+  return `<figure class="fc-bohr"><svg viewBox="${c-R.at(-1)-16} ${c-R.at(-1)-16} ${2*R.at(-1)+32} ${2*R.at(-1)+32}" role="img" aria-label="Modèle en couches de ${q?"l'ion ":""}${PT[Z-1].n}">${g}<circle class="nuc" cx="${c}" cy="${c}" r="21"/><text class="nuc-t" x="${c}" y="${c+1}">${lab}</text><text class="nuc-z" x="${c}" y="${c+12}">${Z} p⁺${N!=null?" "+N+" n":""}</text></svg>${cap?`<figcaption>${cap}</figcaption>`:""}</figure>`;
+}
+// Cases quantiques de toutes les sous-couches occupées (règles de Hund et de Pauli)
+function fullBoxes(sym, c, role="rA"){
+  const subs = ORDER.filter(o=>c[o]>0).map(o=>{ const k = CAP[o[1]]/2, n = c[o], boxes = [...Array(k)].map(()=>[]);
+    for(let i=0;i<n;i++) boxes[i<k?i:i-k].push({spin:i<k?"u":"d", who:"own"}); return {o, boxes}; });
+  return boxesHTML({sym, core:"", subs}, role);
+}
+const miniBoxes = spec => `<span class="fc-mini">${spec.map(b=>`<span class="qb">${b.split("").map(s=>`<i class="ar ${s}">${s==="u"?"↑":"↓"}</i>`).join("")}</span>`).join("")}</span>`;
+
+// 1 · Structure de l'atome
+const ATOM_EX = [["C",12],["N",14],["O",16],["Na",23],["Mg",24],["Al",27],["Cl",35],["Ca",40],["Fe",56],["Ag",107],["U",238]];
+function buildAtome(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Trois particules</h3>
+      <div class="fc-cards">
+        <div class="fc-card pos"><b>Proton p⁺</b><span>dans le noyau · charge <b>+</b></span><small>m ≈ 1,673 × 10⁻²⁷ kg</small></div>
+        <div class="fc-card"><b>Neutron n</b><span>dans le noyau · <b>neutre</b></span><small>m ≈ 1,675 × 10⁻²⁷ kg</small></div>
+        <div class="fc-card neg"><b>Électron e⁻</b><span>autour du noyau · charge <b>−</b></span><small>m ≈ 9,11 × 10⁻³¹ kg (≈ 1 800 fois plus léger)</small></div>
+      </div>
+      <p class="m-lead">Protons et neutrons forment le <b>noyau</b> : on les appelle les <b>nucléons</b>. Les électrons occupent l'espace autour. Le dessin « en couches » (modèle de Bohr) est une image simplifiée : en réalité on ne connaît que la <b>probabilité</b> de trouver un électron à un endroit, décrite par une <b>orbitale atomique</b>.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> La notation ${nucl("X","A","Z")}</h3>
+      <div class="fc-row">${nucl("X","A","Z","lg")}
+        <ul class="fc-list">
+          <li><b>X</b> : le symbole de l'élément</li>
+          <li><b>Z</b> : le numéro atomique = nombre de <b>protons</b> (= nombre d'électrons si l'atome est neutre)</li>
+          <li><b>A</b> : le nombre de masse = nombre de <b>nucléons</b> (protons + neutrons)</li>
+          <li><b>N = A − Z</b> : le nombre de <b>neutrons</b></li>
+        </ul></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> À toi de lire : choisis un atome</h3>
+      ${chipsHTML("faList", ATOM_EX, ([s,A])=>`<sup>${A}</sup>${s}`)}
+      <div class="fc-row" id="faOut" aria-live="polite"></div>
+    </div>`;
+  wireChips("faList", i=>{
+    const [s,A] = ATOM_EX[i], e = BY_SYM[s];
+    $("faOut").innerHTML = `${nucl(s,A,e.Z,"lg")}<ul class="fc-list">
+      <li><b>${e.n}</b> : Z = <b>${e.Z}</b>, A = <b>${A}</b></li>
+      <li>Protons : Z = <b>${e.Z}</b></li><li>Électrons : <b>${e.Z}</b> (atome neutre)</li>
+      <li>Neutrons : N = A − Z = ${A} − ${e.Z} = <b>${A-e.Z}</b></li></ul>${e.Z<=20 ? bohrSVG(e.Z,0,A-e.Z) : ""}`;
+  }, 0);
+}
+
+// 2 · Isotopes et masse d'un atome
+const ISO = [["Hydrogène","H",[[1,"hydrogène 1"],[2,"deutérium"],[3,"tritium"]]],["Carbone","C",[[12,"carbone 12"],[13,"carbone 13"],[14,"carbone 14 (radioactif)"]]],
+  ["Chlore","Cl",[[35,"chlore 35 (≈ 76 %)"],[37,"chlore 37 (≈ 24 %)"]]],["Uranium","U",[[235,"uranium 235"],[238,"uranium 238"]]]];
+const MP = 1.673e-27, MN = 1.675e-27, ME = 9.11e-31;
+function buildIso(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Les isotopes : même Z, pas le même nombre de neutrons</h3>
+      <p class="m-lead">Un élément est défini par son <b>nombre de protons Z</b>. Ses atomes peuvent avoir plus ou moins de <b>neutrons</b> : ce sont ses <b>isotopes</b>. Comme les neutrons ne portent pas de charge, l'atome reste neutre. Certains isotopes sont instables (radioactifs).</p>
+      ${chipsHTML("fiList", ISO, x=>x[0])}
+      <div class="fc-iso" id="fiOut" aria-live="polite"></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> La masse d'un atome est presque toute dans son noyau</h3>
+      <p class="fc-formula">m(atome) = Z × m<sub>p</sub> + (A − Z) × m<sub>n</sub> + Z × m<sub>e</sub> ≈ Z × m<sub>p</sub> + (A − Z) × m<sub>n</sub></p>
+      <p class="m-lead">Les électrons pèsent si peu qu'on peut les négliger. Exemple avec les isotopes choisis ci-dessus :</p>
+      <div id="fiMass" class="fc-calc"></div>
+      <p class="m-rule">Pourquoi la masse molaire du chlore vaut 35,45 g/mol et pas 35 ? Le chlore naturel est un <b>mélange</b> d'environ 76 % de <sup>35</sup>Cl et 24 % de <sup>37</sup>Cl. Le tableau périodique donne la <b>moyenne</b> pondérée.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> Lire une case du tableau périodique de l'appli</h3>
+      <div class="fc-row"><div class="fc-cell"><span class="z">26</span><span class="s">Fe</span><span class="nm">Fer</span><span class="ma">55,85</span><span class="q">+3</span></div>
+      <ul class="fc-list"><li>en haut : <b>Z</b>, le numéro atomique</li><li>au centre : le <b>symbole</b> et le <b>nom</b></li><li>en dessous : la <b>masse molaire</b> en g/mol</li><li>en bas : la <b>charge principale</b> de l'ion (les autres au clic)</li></ul></div>
+      <p class="m-lead">Attention : chaque tableau périodique a sa propre mise en page. Regarde toujours sa légende avant de lire une case.</p>
+    </div>`;
+  wireChips("fiList", i=>{
+    const [, s, list] = ISO[i], Z = BY_SYM[s].Z;
+    $("fiOut").innerHTML = list.map(([A,nm])=>`<div class="fc-isocard">${nucl(s,A,Z,"lg")}<b>${nm}</b><span>${Z} p⁺ · ${A-Z} n · ${Z} e⁻</span>${Z<=20?bohrSVG(Z,0,A-Z):""}</div>`).join("");
+    $("fiMass").innerHTML = list.map(([A])=>{ const m = Z*MP + (A-Z)*MN;
+      return `<p><sup>${A}</sup>${s} : ${Z} × 1,673 × 10⁻²⁷ + ${A-Z} × 1,675 × 10⁻²⁷ ≈ <b>${frExp(m)} kg</b></p>`; }).join("");
+  }, 1);
+}
+
+// 3 · Ions et degré d'oxydation
+const ION_TAB = [["Na",1],["Mg",2],["Al",3],["Cl",-1],["O",-2],["N",-3]];
+function buildIon(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Un ion, c'est un atome qui a perdu ou gagné des électrons</h3>
+      <p class="m-lead">Un atome neutre a autant d'électrons que de protons. Pour atteindre une configuration <b>plus stable</b>, il peut en <b>perdre</b> ou en <b>gagner</b> : il n'est plus neutre, c'est un <b>ion</b>.</p>
+      <div class="fc-cards">
+        <div class="fc-card pos"><b>Cation</b><span>il a <b>perdu</b> des électrons → charge <b>positive</b></span><small>ex. Na → Na⁺ + e⁻</small></div>
+        <div class="fc-card neg"><b>Anion</b><span>il a <b>gagné</b> des électrons → charge <b>négative</b></span><small>ex. Cl + e⁻ → Cl⁻</small></div>
+      </div>
+      <div class="fc-iso">${bohrSVG(12,0,null,"Mg : 12 e⁻")}${bohrSVG(12,2,null,"Mg²⁺ : 10 e⁻ (2 perdus)")}${bohrSVG(9,0,null,"F : 9 e⁻")}${bohrSVG(9,-1,null,"F⁻ : 10 e⁻ (1 gagné)")}</div>
+      <p class="m-lead">Le noyau ne change pas : Mg²⁺ garde ses 12 protons. Seul le nombre d'électrons varie.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Le degré d'oxydation (D.O.)</h3>
+      <p class="m-lead">C'est la charge de l'ion, écrite en <b>chiffres romains</b> avec son signe : Fe³⁺ → D.O. = <b>+III</b>, S²⁻ → D.O. = <b>−II</b>. Un atome neutre a un D.O. de 0.</p>
+      <table class="fc-tab"><thead><tr><th>Ion</th><th>Élément</th><th>Électrons</th><th>Type</th><th>D.O.</th></tr></thead><tbody>
+      ${ION_TAB.map(([s,q])=>`<tr><td><b>${ionHTML(s,q)}</b></td><td>${BY_SYM[s].n}</td><td>${q>0?"perd":"gagne"} ${Math.abs(q)}</td><td>${q>0?"cation":"anion"}</td><td><b>${doStr(q)}</b></td></tr>`).join("")}
+      </tbody></table>
+    </div>`;
+}
+
+// 4 · Composé ionique et équation de dissociation
+const DIS = [["Na","Cl"],["K","NO3"],["Mg","Cl"],["Ca","OH"],["Al","O"],["Na","SO4"],["NH4","SO4"],["Ca","PO4"],["Al","SO4"]];
+function buildDissol(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Un composé ionique est neutre</h3>
+      <p class="m-lead">Il est formé de <b>cations</b> et d'<b>anions</b> en proportions telles que les charges + et − s'annulent. Le <b>nom</b> donne l'anion puis le cation : « sulfate de sodium » = ions sulfate SO₄²⁻ et ions sodium Na⁺.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> L'équation de dissociation</h3>
+      <p class="m-lead">Dans l'eau, le composé se sépare en ses ions. On écrit : <b>formule ⇒ (nombre) cation + (nombre) anion</b>. L'indice de chaque ion dans la formule devient son <b>coefficient</b>. Un groupement comme SO₄ ou NO₃ reste <b>entier</b> : on ne le casse jamais.</p>
+      ${chipsHTML("fdList", DIS, ([c,a])=>fmtF(makeCompound(findCat(c),findAn(a)).formula))}
+      <div id="fdOut" class="fc-calc" aria-live="polite"></div>
+    </div>`;
+  wireChips("fdList", i=>{
+    const [c,a] = DIS[i], k = makeCompound(findCat(c), findAn(a));
+    $("fdOut").innerHTML = `<p class="fc-eq">${eqHTML(k)}</p>
+      <p><b>${k.name[0].toUpperCase()+k.name.slice(1)}</b> : ${k.nc} ion${k.nc>1?"s":""} ${ionHTML(k.cs,k.cq)} et ${k.na} ion${k.na>1?"s":""} ${ionHTML(k.as,k.aq)}.</p>
+      <p>Vérification des charges : ${k.nc} × (+${k.cq}) + ${k.na} × (−${-k.aq}) = ${k.nc*k.cq} − ${-k.na*k.aq} = <b>0</b> ✓</p>
+      <p>D.O. : cation <b>${doStr(k.cq)}</b>, anion <b>${doStr(k.aq)}</b>.</p>`;
+  }, 5);
+}
+
+// 5 · La mole et la masse molaire
+const MOLE_EX = ["H2O","CO2","NaCl","CaCO3","Fe2O3","CuSO4","C6H12O6"];
+function buildMole(){
+  const mC = 6*MP + 6*MN;
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Pourquoi compter en moles ?</h3>
+      <p class="m-lead">Un atome de <sup>12</sup>C pèse environ 6 × 1,673 × 10⁻²⁷ + 6 × 1,675 × 10⁻²⁷ ≈ <b>${frExp(mC)} kg</b>, soit environ 2 × 10⁻²³ g. Bien trop petit pour être pesé seul ! On regroupe donc les atomes par paquets.</p>
+      <p class="fc-formula">1 mole = N<sub>A</sub> = 6,022 × 10²³ entités (nombre d'Avogadro)</p>
+      <p class="m-lead">La <b>masse molaire M</b> est la masse d'une mole : M(C) = N<sub>A</sub> × m(atome) ≈ 6,022 × 10²³ × ${frExp(mC*1000)} g ≈ <b>12 g/mol</b>. Pour une molécule, on additionne les masses molaires de tous ses atomes.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> La relation à retenir</h3>
+      <p class="fc-formula big">n = <span class="fc-frac"><span>m</span><span>M</span></span><small>n en mol · m en g · M en g/mol</small></p>
+      <div class="m-pick"><label>Substance <select id="fmSub">${MOLE_EX.map(f=>`<option value="${f}">${f.replace(/\d/g,d=>SUBD[d])}</option>`).join("")}</select></label>
+        <label>Masse <input id="fmM" type="number" min="0.01" step="any" value="10" inputmode="decimal"> g</label></div>
+      <div id="fmOut" class="fc-calc" aria-live="polite"></div>
+    </div>`;
+  const run = ()=>{
+    const f = $("fmSub").value, m = parseFloat(String($("fmM").value).replace(",",".")), M = molarMass(f);
+    $("fmOut").innerHTML = `<p>${massDetail(f)}</p>` + (m>0 ? `<p>n = m / M = ${fmtN(m,6)} / ${fmtN(M,6)} ≈ <b>${fmtN(m/M,4)} mol</b></p><p>Soit ${frExp(m/M*6.022e23)} entités ${fmtF(f)}.</p>` : `<p>Entre une masse positive.</p>`);
+  };
+  $("fmSub").onchange = run; $("fmM").oninput = run; run();
+}
+
+// 6 · Peser les précurseurs d'une synthèse
+const SYN_EX = ["Cu2ZnSnS4","CuFeS2","Bi2Te3","PbTe","Cu3SbS4","Ag2S"];
+function buildPesee(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> La méthode en trois étapes</h3>
+      <ol class="fc-list num">
+        <li>Calculer la <b>masse molaire</b> M du composé à fabriquer.</li>
+        <li>En déduire la <b>quantité de matière</b> voulue : n = m / M.</li>
+        <li>Chaque élément X apparaît k fois dans la formule : il en faut <b>k × n</b> moles, donc une masse <b>m(X) = k × n × M(X)</b>.</li>
+      </ol>
+      <p class="m-lead">Contrôle : la somme des masses pesées doit redonner la masse de composé visée.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Essaie avec un composé</h3>
+      <div class="m-pick"><label>Composé <select id="fpSub">${SYN_EX.map(f=>`<option value="${f}">${f.replace(/\d/g,d=>SUBD[d])}</option>`).join("")}</select></label>
+        <label>Masse à synthétiser <input id="fpM" type="number" min="0.01" step="any" value="5" inputmode="decimal"> g</label></div>
+      <div id="fpOut" class="fc-calc" aria-live="polite"></div>
+    </div>`;
+  const run = ()=>{
+    const f = $("fpSub").value, m = parseFloat(String($("fpM").value).replace(",",".")), M = molarMass(f), n = m/M, c = parseFormula(f);
+    if(!(m>0)){ $("fpOut").innerHTML = "<p>Entre une masse positive.</p>"; return; }
+    const rows = Object.entries(c).map(([e,k])=>[e,k,k*n*BY_SYM[e].M]);
+    $("fpOut").innerHTML = `<p>1) ${massDetail(f)}</p><p>2) n = ${fmtN(m,6)} / ${fmtN(M,6)} ≈ <b>${fmtN(n,4)} mol</b></p>
+      <table class="fc-tab"><thead><tr><th>Élément</th><th>k</th><th>m = k × n × M(X)</th></tr></thead><tbody>
+      ${rows.map(([e,k,me])=>`<tr><td><b>${e}</b></td><td>${k}</td><td>${k} × ${fmtN(n,4)} × ${fmtN(BY_SYM[e].M,6)} ≈ <b>${fmtN(me,4)} g</b></td></tr>`).join("")}
+      <tr><td colspan="2">Total</td><td><b>${fmtN(rows.reduce((a,r)=>a+r[2],0),4)} g</b> ✓</td></tr></tbody></table>`;
+  };
+  $("fpSub").onchange = run; $("fpM").oninput = run; run();
+}
+
+// 7 · Couches et nombres quantiques
+function buildQuant(){
+  const L = ["s","p","d","f"];
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Des couches de plus en plus énergétiques</h3>
+      <div class="fc-row">${bohrSVG(14,0,null,"Silicium : 2 · 8 · 4")}
+      <p class="m-lead">Les électrons se rangent en <b>couches</b> autour du noyau, nommées par des lettres à partir de K : <b>K</b> (n = 1), <b>L</b> (n = 2), <b>M</b> (n = 3), <b>N</b> (n = 4)… Plus une couche est loin du noyau, plus son <b>énergie</b> est grande. Chaque couche se divise en <b>sous-couches</b>, et chacune ne peut contenir qu'un nombre limité d'électrons.</p></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Quatre nombres pour décrire un électron</h3>
+      <table class="fc-tab"><thead><tr><th>Nombre</th><th>Ce qu'il repère</th><th>Valeurs possibles</th></tr></thead><tbody>
+        <tr><td><b>n</b> principal</td><td>la couche</td><td>1, 2, 3… (K, L, M…)</td></tr>
+        <tr><td><b>l</b> azimutal</td><td>la sous-couche</td><td>de 0 à n − 1 : <span class="sc-s">0 = s</span>, <span class="sc-p">1 = p</span>, <span class="sc-d">2 = d</span>, <span class="sc-f">3 = f</span></td></tr>
+        <tr><td><b>m<sub>l</sub></b> magnétique</td><td>l'orbitale (une « case »)</td><td>de −l à +l (2l + 1 cases)</td></tr>
+        <tr><td><b>m<sub>s</sub></b> de spin</td><td>le sens de l'électron</td><td>+½ (↑) ou −½ (↓)</td></tr>
+      </tbody></table>
+      <p class="m-rule"><b>Principe de Pauli</b> : deux électrons d'un même atome ne peuvent pas avoir leurs quatre nombres identiques. Dans une case (n, l, m<sub>l</sub> fixés), il ne reste que le spin : <b>2 électrons maximum par case</b>, de spins opposés.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> On en déduit la capacité de chaque couche : 2n²</h3>
+      <table class="fc-tab"><thead><tr><th>Couche</th><th>Sous-couches</th><th>Cases</th><th>e⁻ max</th></tr></thead><tbody>
+      ${[1,2,3,4].map(n=>`<tr><td><b>${SHELL[n]}</b> (n = ${n})</td><td>${L.slice(0,n).map((l,i)=>`<span class="sc-${l}">${n}${l}</span> (${2*i+1} case${i?"s":""})`).join(" · ")}</td><td>${n*n}</td><td><b>${2*n*n}</b></td></tr>`).join("")}
+      </tbody></table>
+      <p class="m-lead">Exemple : la couche L (n = 2) a une sous-couche 2s (1 case) et une sous-couche 2p (3 cases) : 4 cases × 2 = <b>8 électrons</b>.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">4</span> Écrire une configuration électronique</h3>
+      <p class="m-lead">On écrit chaque sous-couche occupée (numéro de couche + lettre) avec, en exposant, son nombre d'électrons. Silicium (Z = 14) : <b>${cfgColor(configOf(14))}</b> → 2 + 2 + 6 + 2 + 2 = 14 électrons.</p>
+    </div>`;
+}
+
+// 8 · Cases quantiques : Klechkowski, Hund, Pauli
+const CASE_EX = [["N",0],["O",0],["Si",0],["Fe",0],["Cu",0],["Na",1],["Cl",-1],["Fe",2],["Fe",3],["Cu",1],["Zn",2]];
+function buildCases(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Trois règles pour remplir les cases</h3>
+      <ul class="fc-list">
+        <li><b>Klechkowski</b> : on remplit les sous-couches par énergie croissante (n + l, puis le plus petit n en cas d'égalité) : 1s 2s 2p 3s 3p 4s 3d 4p…</li>
+        <li><b>Pauli</b> : au plus <b>2 électrons par case</b>, de spins opposés ${miniBoxes(["ud"])}.</li>
+        <li><b>Hund</b> : dans une sous-couche, on met d'abord <b>une flèche ↑ dans chaque case</b>, puis on complète avec les ↓ : 2p³ s'écrit ${miniBoxes(["u","u","u"])} et non ${miniBoxes(["ud","u",""])}.</li>
+      </ul>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Atomes et ions : choisis un exemple</h3>
+      ${chipsHTML("fcList", CASE_EX, ([s,q])=>q?ionHTML(s,q):s)}
+      <div class="qbx-wrap" id="fcBoxes"></div>
+      <div class="fc-calc" id="fcOut" aria-live="polite"></div>
+    </div>`;
+  wireChips("fcList", i=>{
+    const [s,q] = CASE_EX[i], e = BY_SYM[s], c = configOf(e.Z,q), ne = e.Z - q, sc = shortCfg(c);
+    $("fcBoxes").innerHTML = fullBoxes(q?ionUni(s,q):s, c);
+    let note = "";
+    if(q>0 && e.Z>=21) note = `<p class="m-rule">Pour un cation d'un métal de transition, on part de l'atome neutre et on retire d'abord les électrons de la couche la plus externe (le <b>4s avant le 3d</b>).</p>`;
+    else if(EXC[e.Z] && !q) note = `<p class="m-rule">Exception : ${e.n.toLowerCase()} préfère une sous-couche 3d ${c["3d"]===10?"pleine":"à moitié pleine"} : un électron 4s passe en 3d (${cfgColor(c)}).</p>`;
+    else if(q<0) note = `<p class="m-rule">Un anion garde l'ordre de Klechkowski : on ajoute simplement ${-q} électron${q<-1?"s":""} dans la première case libre.</p>`;
+    $("fcOut").innerHTML = `<p><b>${q?"Ion "+ionHTML(s,q):e.n}</b> : Z = ${e.Z}, ${ne} électrons</p><p>${cfgColor(c)}${sc?` &nbsp;=&nbsp; ${sc}`:""}</p>${note}`;
+  }, 3);
+}
+
+// 9 · Les blocs du tableau périodique
+const blockOf = Z => (Z>=57&&Z<=71)||(Z>=89&&Z<=103) ? "f" : Z===2 ? "s" : (c=>c<=2?"s":c<=12?"d":"p")(posOf(Z)[1]);
+function buildBlocs(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Le tableau périodique suit le remplissage des sous-couches</h3>
+      <p class="m-lead">Chaque zone du tableau correspond à la sous-couche qui reçoit le <b>dernier électron</b> : c'est le <b>bloc</b> de l'élément. La ligne (période) donne le numéro <b>n</b> de la couche externe.</p>
+      <div class="fc-blocs">${PT.map(e=>{const [r,c] = posOf(e.Z); return `<span class="b-${blockOf(e.Z)}" style="grid-row:${r};grid-column:${c}" title="${e.n} : bloc ${blockOf(e.Z)}">${e.s}</span>`;}).join("")}</div>
+      <div class="k-legend">
+        <div class="k-l k-s"><b>s</b><span>colonnes 1–2 (+ He) : ns¹ ou ns²</span></div>
+        <div class="k-l k-p"><b>p</b><span>colonnes 13–18 : ns² np¹ à np⁶</span></div>
+        <div class="k-l k-d"><b>d</b><span>colonnes 3–12 : (n−1)d se remplit</span></div>
+        <div class="k-l k-f"><b>f</b><span>lanthanides, actinides : (n−2)f</span></div>
+      </div>
+      <p class="m-lead">Exemple : le soufre est en ligne 3, 4ᵉ colonne du bloc p → sa configuration finit par <b>3p⁴</b>. Le fer est en ligne 4, 6ᵉ colonne du bloc d → elle finit par <b>3d⁶</b>.</p>
+    </div>`;
+}
+
+// 10 · Stabilité et électrons de valence
+const VAL_EX = ["H","C","N","O","F","Na","Mg","Al","P","S","Cl"];
+function buildStab(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Des configurations plus ou moins stables</h3>
+      <p class="m-lead">Les gaz nobles (He, Ne, Ar…) ont leur couche externe pleine : ils ne réagissent presque pas. Les autres atomes cherchent à s'en rapprocher. Du plus stable au moins stable, en général :</p>
+      <ol class="fc-list num fc-scale">
+        <li>couche externe pleine comme un gaz noble : ${miniBoxes(["ud"])} s² ${miniBoxes(["ud","ud","ud"])} p⁶</li>
+        <li>sous-couche pleine : ${miniBoxes(["ud","ud","ud","ud","ud"])} d¹⁰</li>
+        <li>sous-couche à moitié pleine, spins identiques : ${miniBoxes(["u","u","u"])} p³</li>
+        <li>sous-couche partiellement remplie, spins identiques : ${miniBoxes(["u","u","u","",""])} d³</li>
+        <li>sous-couche partiellement remplie, appariée : ${miniBoxes(["ud","ud","u","u",""])} d⁶</li>
+      </ol>
+      <p class="m-lead">Pour y arriver, un atome peut <b>perdre ou gagner</b> des électrons (il devient un ion) ou les <b>partager</b> avec un voisin (liaison covalente).</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Électrons de valence et électrons célibataires</h3>
+      <p class="m-lead">Les électrons de la <b>couche externe</b> (le plus grand n) sont les <b>électrons de valence</b>. Ceux qui sont <b>seuls dans leur case</b> (célibataires) peuvent chacun former <b>une liaison covalente</b>.</p>
+      ${chipsHTML("fsList", VAL_EX, s=>s)}
+      <div class="qbx-wrap hl" id="fsBoxes"></div>
+      <div class="fc-calc" id="fsOut" aria-live="polite"></div>
+    </div>`;
+  wireChips("fsList", i=>{
+    const s = VAL_EX[i], e = BY_SYM[s], vb = valBoxes(s), vi = valenceInfo(e.Z), k = singlesOf(vb).length;
+    let html = boxesHTML(vb,"rA"), txt = `<p><b>${e.n}</b> : ${vi.ve} électron${vi.ve>1?"s":""} de valence (couche ${SHELL[vi.sh]}), <b>${k}</b> célibataire${k>1?"s":""}${k?` → ${k} liaison${k>1?"s":""} covalente${k>1?"s":""} possible${k>1?"s":""}`:""}.</p>`;
+    if(s==="C"){
+      const vb4 = valBoxes("C",true); html += boxesHTML(vb4,"rB");
+      txt += `<p class="m-rule">Le carbone n'a que 2 célibataires au départ, mais un électron 2s peut <b>passer dans la case 2p vide</b> : il obtient alors <b>4 célibataires</b> (état de valence 4). C'est pour ça qu'il forme presque toujours 4 liaisons : CH₄, CO₂…</p>`;
+    }
+    $("fsBoxes").innerHTML = html; $("fsOut").innerHTML = txt;
+  }, 3);
+}
+
+// 11 · Prévoir la formule à partir des célibataires
+const PRED = [["H2O","O","H",2,1,"cov"],["NH3","N","H",3,1,"cov"],["CH4","C","H",4,1,"cov"],["CO2","C","O",2,2,"cov"],["N2","N","N",1,3,"cov"],["Al2O3","Al","O",0,0,"ion"],["MgCl2","Mg","Cl",0,0,"ion"]];
+function buildPredict(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Chaque célibataire cherche un partenaire</h3>
+      <p class="m-lead">Dans une liaison <b>covalente</b>, deux atomes mettent chacun un électron célibataire en commun : la paire formée compte pour les deux. On lie donc les atomes jusqu'à ce qu'il n'y ait plus aucun célibataire. Dans un composé <b>ionique</b> (métal + non-métal), le métal donne ses électrons de valence et on croise les charges.</p>
+      ${chipsHTML("fpList", PRED, x=>fmtF(x[0]))}
+      <div class="qbx-wrap hl" id="fpBoxes"></div>
+      <div class="fc-calc" id="fpOut2" aria-live="polite"></div>
+    </div>`;
+  wireChips("fpList", i=>{
+    const [f,A,B,nB,ord,kind] = PRED[i], a = valBoxes(A, A==="C"), b = valBoxes(B), ka = singlesOf(a).length, kb = singlesOf(b).length;
+    $("fpBoxes").innerHTML = boxesHTML(a,"rA") + (A===B ? "" : boxesHTML(b,"rB"));
+    if(kind==="cov") $("fpOut2").innerHTML = `<p>${BY_SYM[A].n} : <b>${ka}</b> célibataire${ka>1?"s":""}${A==="C"?" (état de valence 4)":""} · ${BY_SYM[B].n.toLowerCase()} : <b>${kb}</b>.</p>
+      <p>${A===B ? `Les deux atomes d'azote mettent en commun leurs 3 célibataires : <b>liaison triple</b> N≡N.` : `Il faut <b>${nB}</b> atome${nB>1?"s":""} ${deEl(BY_SYM[B].n.toLowerCase())} pour apparier les ${ka} célibataires ${deEl(BY_SYM[A].n.toLowerCase())}${ord>1?` (liaisons <b>doubles</b> : chaque ${BY_SYM[B].n.toLowerCase()} apporte ${ord} célibataires)`:""}.`} ⇒ <b>${fmtF(f)}</b></p>`;
+    else { const qa = ION_STABLE[BY_SYM[A].Z], qb = ION_STABLE[BY_SYM[B].Z], g = gcd(qa,-qb);
+      $("fpOut2").innerHTML = `<p>${BY_SYM[A].n} donne ses ${qa} électrons de valence → ${ionHTML(A,qa)} · ${BY_SYM[B].n.toLowerCase()} en gagne ${-qb} → ${ionHTML(B,qb)}.</p><p>On croise les charges : ${(-qb)/g} ${ionHTML(A,qa)} pour ${qa/g} ${ionHTML(B,qb)} ⇒ <b>${fmtF(f)}</b> (${(-qb)/g} × ${qa} = ${qa/g} × ${-qb} électrons échangés).</p>`; }
+  }, 0);
+}
+
+const CUSTOM = {
+  methode: {title:"<b>Méthode</b> · trouver la charge des ions", label:"Méthode", thumb:"Na⁺ Cl⁻", build: buildMethod},
+  poly:    {title:"<b>Charge d'un groupement d'atomes</b> · CO₃, SO₄, NO₃…", label:"Groupements", thumb:"CO₃²⁻", build: buildPoly},
+  indices: {title:"<b>Combien d'ions dans la formule ?</b> · lire et écrire", label:"Indices", thumb:"Al₂O₃", build: buildIdx},
+  liaison: {title:"<b>Comment les atomes se lient</b> · partage ou transfert des électrons de valence", label:"Liaisons", thumb:"H–O–H", build: buildBond},
+  klech:   {title:"<b>Règle de Klechkowski</b> · ordre de remplissage", label:"Klechkowski", thumb:"1s 2s 2p…", build: buildKlech},
+  cation:  {title:"<b>Ions des métaux de transition</b> · le 4s part avant le 3d", label:"Cations 3d", thumb:"Fe²⁺", build: buildCation},
+  c_atome: {title:"<b>Structure de l'atome</b> · noyau, électrons, notation", label:"L'atome", thumb:"¹²C", build: buildAtome},
+  c_iso:   {title:"<b>Isotopes</b> · et masse d'un atome", label:"Isotopes", thumb:"²H ³H", build: buildIso},
+  c_ion:   {title:"<b>Ions</b> · cations, anions, degré d'oxydation", label:"Ions", thumb:"Mg²⁺ F⁻", build: buildIon},
+  c_dissol:{title:"<b>Composés ioniques</b> · équation de dissociation", label:"Dissociation", thumb:"⇒ 2 Na⁺", build: buildDissol},
+  c_mole:  {title:"<b>La mole</b> · masse molaire et n = m / M", label:"La mole", thumb:"n = m/M", build: buildMole},
+  c_pesee: {title:"<b>Synthèse</b> · peser chaque précurseur", label:"Pesée", thumb:"m(X)", build: buildPesee},
+  c_quant: {title:"<b>Couches et nombres quantiques</b> · n, l, m<sub>l</sub>, m<sub>s</sub>", label:"Nombres quantiques", thumb:"n l m", build: buildQuant},
+  c_cases: {title:"<b>Cases quantiques</b> · Klechkowski, Hund, Pauli", label:"Cases quantiques", thumb:"↑↓ ↑ ↑", build: buildCases},
+  c_blocs: {title:"<b>Blocs s, p, d, f</b> · le tableau et les sous-couches", label:"Blocs", thumb:"s p d f", build: buildBlocs},
+  c_stab:  {title:"<b>Stabilité et valence</b> · électrons célibataires", label:"Valence", thumb:"C*", build: buildStab},
+  c_pred:  {title:"<b>Prévoir la formule</b> · apparier les célibataires", label:"Prévoir", thumb:"NH₃", build: buildPredict},
+  video:   {title:"<b>Vidéo</b> · les nombres quantiques et la configuration électronique", label:"Vidéo", thumb:"▶", build: buildVideo},
+};
+
+// ---------- Bilan ----------
+let resetArmed = false;
+function renderBilan(){
+  const all = Object.values(state.stats).reduce((a,s)=>({ok:a.ok+s.ok,total:a.total+s.total,best:Math.max(a.best,s.best)}),{ok:0,total:0,best:0});
+  $("totals").innerHTML = [[all.total,"Exercices faits"],[all.total?Math.round(100*all.ok/all.total)+" %":"–","Réussite"],[all.best,"Meilleure série"]]
+    .map(([v,l])=>`<div class="total"><b>${v}</b><span>${l}</span></div>`).join("");
+  $("bilanRows").innerHTML = SECTIONS.map((sec,i)=>`<tr class="sec"><td colspan="4">Exercice ${i+1} · ${sec.tab}</td></tr>` +
+    GAMES.filter(g=>g.section===sec.id).map(g=>{
+      const s = state.stats[g.id]||{ok:0,total:0,best:0}, p = s.total?Math.round(100*s.ok/s.total):0;
+      return `<tr><td>${g.title}</td><td class="n">${s.total}</td><td class="n">${s.total?p+" %":"–"}<span class="bar"><i style="width:${p}%"></i></span></td><td class="n">${s.best}</td></tr>`;
+    }).join("")).join("");
+  $("reset").innerHTML = resetArmed
+    ? `<span>Toutes tes statistiques seront effacées.</span><button class="btn danger small" id="rsYes">Effacer</button><button class="btn ghost small" id="rsNo">Annuler</button>`
+    : `<button class="btn ghost small" id="rsAsk">Remettre les statistiques à zéro</button>`;
+  if(resetArmed){
+    $("rsYes").onclick=()=>{state.stats={};store.set("stats",{});resetArmed=false;renderBilan();};
+    $("rsNo").onclick=()=>{resetArmed=false;renderBilan();};
+  } else $("rsAsk").onclick=()=>{resetArmed=true;renderBilan();};
+}
+
+// ---------- Tableau périodique ----------
+// Charges usuelles des ions (les plus fréquentes), affichées dans le tableau
+const CHARGES = {H:[1,-1],Li:[1],Na:[1],K:[1],Rb:[1],Cs:[1],Fr:[1],Be:[2],Mg:[2],Ca:[2],Sr:[2],Ba:[2],Ra:[2],
+  B:[3],Al:[3],Ga:[3],In:[3],Tl:[1,3],C:[4,-4],Si:[4,-4],Ge:[4],Sn:[4,2],Pb:[2,4],N:[-3,5],P:[-3,5],As:[-3],Sb:[3,5],Bi:[3],
+  O:[-2],S:[-2,6],Se:[-2],Te:[-2],F:[-1],Cl:[-1],Br:[-1],I:[-1],At:[-1],He:[0],Ne:[0],Ar:[0],Kr:[0],Xe:[0],Rn:[0],
+  Sc:[3],Ti:[4],V:[5,3],Cr:[3],Mn:[2],Fe:[3,2],Co:[2,3],Ni:[2],Cu:[2,1],Zn:[2],Y:[3],Zr:[4],Nb:[5],Mo:[6],Ru:[3],Rh:[3],
+  Pd:[2],Ag:[1],Cd:[2],Hf:[4],Ta:[5],W:[6],Os:[4],Ir:[3],Pt:[2,4],Au:[3,1],Hg:[2,1],Ac:[3],Th:[4],Pa:[5],U:[6,4],Np:[5],Pu:[4],Am:[3]};
+for(let z=57; z<=71; z++) CHARGES[PT[z-1].s] = CHARGES[PT[z-1].s] || [3];
+const chStr = a => a.map(q=> q===0 ? "0" : (q>0?"+":"−")+Math.abs(q)).join("/");
+const chCls = a => a.every(q=>q===0) ? "zero" : a.every(q=>q>0) ? "pos" : a.every(q=>q<0) ? "neg" : "mix";
+
+const FAMS = [["alc","Métaux alcalins"],["ter","Alcalino-terreux"],["tr","Métaux de transition"],["post","Autres métaux"],
+  ["mld","Métalloïdes"],["nm","Non-métaux"],["hal","Halogènes"],["gn","Gaz nobles"],["lan","Lanthanides"],["act","Actinides"]];
+function posOf(Z){
+  if(Z===1) return [1,1]; if(Z===2) return [1,18];
+  if(Z<=4) return [2,Z-2]; if(Z<=10) return [2,Z+8];
+  if(Z<=12) return [3,Z-10]; if(Z<=18) return [3,Z];
+  if(Z<=36) return [4,Z-18]; if(Z<=54) return [5,Z-36];
+  if(Z<=56) return [6,Z-54]; if(Z<=71) return [9,Z-54]; if(Z<=86) return [6,Z-68];
+  if(Z<=88) return [7,Z-86]; if(Z<=103) return [10,Z-86]; return [7,Z-100];
+}
+function famOf(Z){
+  if([3,11,19,37,55,87].includes(Z)) return "alc";
+  if([4,12,20,38,56,88].includes(Z)) return "ter";
+  if([2,10,18,36,54,86,118].includes(Z)) return "gn";
+  if([9,17,35,53,85,117].includes(Z)) return "hal";
+  if([1,6,7,8,15,16,34].includes(Z)) return "nm";
+  if([5,14,32,33,51,52].includes(Z)) return "mld";
+  if(Z>=57&&Z<=71) return "lan";
+  if(Z>=89&&Z<=103) return "act";
+  const c=posOf(Z)[1]; return (c>=3&&c<=12)?"tr":"post";
+}
+// Charge prise par l'atome central quand il est lié à des oxygènes (groupements du cours)
+const OXO = {C:"+4 CO₃", N:"+5 NO₃", P:"+5 PO₄", S:"+6 SO₄"};
+// Masse molaire affichée dans la case : 2 décimales ; [nombre de masse] pour les éléments sans isotope stable
+const massTxt = e => Number.isInteger(e.M) ? `[${e.M}]` : (Math.round(e.M*100+1e-6)/100).toFixed(2).replace(".",",");
+const mainQ = s => s==="C" ? null : CHARGES[s] ? CHARGES[s][0] : null;   // le carbone ne forme pas d'ion simple
+function renderPT(gridId, detailId, legendId){
+  $(gridId).innerHTML = PT.map(e=>{const [r,c]=posOf(e.Z);
+    return `<button type="button" class="cell" data-z="${e.Z}" title="${e.n} · Z = ${e.Z} · M = ${String(e.M).replace(".",",")} g/mol" style="grid-row:${r};grid-column:${c};--fam:var(--fam-${famOf(e.Z)})"><span class="z">${e.Z}</span><span class="s">${e.s}</span><span class="nm">${e.n}</span><span class="ma">${massTxt(e)}</span><span class="q ${mainQ(e.s)!=null?chCls([mainQ(e.s)]):""}">${mainQ(e.s)!=null?chStr([mainQ(e.s)]):""}</span>${OXO[e.s]?`<span class="og">${OXO[e.s]}</span>`:""}</button>`;}).join("")
+    + `<div class="ph" style="grid-row:6;grid-column:3">57–71</div><div class="ph" style="grid-row:7;grid-column:3">89–103</div><div class="spacer" style="grid-row:8;grid-column:1"></div>`;
+  $(legendId).innerHTML = FAMS.map(([k,l])=>`<span><i style="--fam:var(--fam-${k})"></i>${l}</span>`).join("")
+    + `<label class="q-toggle"><input type="checkbox" class="qBox" ${showQ?"checked":""}> Charge principale des ions (les autres au clic) : <b class="pos">+ perd des électrons</b> · <b class="neg">− en gagne</b> · <b class="zero">0 gaz noble</b> · <b class="oxo">+5 PO₄ : charge de l'atome dans un groupement avec l'oxygène</b> · <b class="mass">55,85 : masse molaire en g/mol ([98] : élément sans isotope stable)</b></label>`;
+  $(legendId).querySelector(".qBox").onchange = ev => setQ(ev.target.checked);
+  $(gridId).onclick = ev=>{
+    const b = ev.target.closest(".cell"); if(b) selectCell(gridId, detailId, +b.dataset.z);
+  };
+}
+function selectCell(gridId, detailId, Z){
+    const b = $(gridId).querySelector(`.cell[data-z="${Z}"]`);
+    $(gridId).querySelectorAll(".sel").forEach(x=>x.classList.remove("sel")); b.classList.add("sel");
+    const e = PT[Z-1], f = FAMS.find(x=>x[0]===famOf(e.Z))[1];
+    const ions = (e.s==="C"||e.s==="Si") ? "pas d'ion simple, forme des liaisons covalentes" : CHARGES[e.s] ? (GRP_NOTE[e.s] ? [CHARGES[e.s][0]] : CHARGES[e.s]).map(q=> q===0 ? "ne forme pas d'ion" : ionHTML(e.s,q)).join(", ") : "–";
+    const c = configOf(e.Z), sh = shortCfg(c);
+    const hide = detailId==="ptDetail2" && state.game==="config";
+    const cfg = hide ? `<span class="pt-hide">masquée pendant le jeu « Configuration électronique », c'est à toi de la trouver</span>`
+      : `${cfgColor(c)}${sh?` <span class="pt-short">soit ${sh}</span>`:""}${EXC[e.Z]?` <span class="pt-exc">exception à Klechkowski</span>`:""}`;
+    $(detailId).innerHTML = `<b>${e.s}</b> · ${e.n} · Z = ${e.Z} · M = ${String(e.M).replace(".",",")} g/mol · ${f.toLowerCase()} · ions courants : ${ions}<div class="pt-cfg">Configuration : ${cfg}</div>${GRP_NOTE[e.s] ? `<div class="pt-grp"><b>Attention :</b> ${e.s==="C" ? "le carbone ne forme pas d'ion seul, mais" : `seul, ${e.s} forme ${ionHTML(e.s,CHARGES[e.s][0])}, mais`} dans un groupement avec de l'oxygène il donne ses électrons : <b>${GRP_NOTE[e.s]}</b>.</div>` : ""}`;
+}
+// Recherche : nom (sans accents), symbole ou numéro atomique
+function findElements(q){
+  q = norm(q); if(!q) return null;
+  if(/^\d+$/.test(q)) return PT.filter(e=>String(e.Z)===q);
+  const exact = PT.filter(e=>e.s.toLowerCase()===q);
+  const byName = PT.filter(e=>norm(e.n).startsWith(q) && !exact.includes(e));
+  const inside = q.length>=3 ? PT.filter(e=>norm(e.n).includes(q) && !exact.includes(e) && !byName.includes(e)) : [];
+  return [...exact, ...byName, ...inside];
+}
+function setupSearch(searchId, gridId, detailId, countId){
+  const input = $(searchId), grid = $(gridId);
+  const run = (pick) => {
+    const hits = findElements(input.value);
+    grid.classList.toggle("searching", !!hits);
+    grid.querySelectorAll(".cell").forEach(c=>{
+      const on = !!hits && hits.some(e=>e.Z===+c.dataset.z);
+      c.classList.toggle("hit", on); c.classList.toggle("dim", !!hits && !on);
+    });
+    $(countId).textContent = !hits ? "" : hits.length ? `${hits.length} résultat${hits.length>1?"s":""}${hits.length>1?" · Entrée pour le premier : "+hits[0].n:""}` : "Aucun élément trouvé";
+    if(hits && hits.length && (pick || hits.length===1)) selectCell(gridId, detailId, hits[0].Z);
+  };
+  input.oninput = () => run(false);
+  input.onkeydown = ev => {
+    if(ev.key==="Enter"){ ev.preventDefault(); run(true); }
+    if(ev.key==="Escape"){ input.value = ""; run(false); }
+  };
+}
+let showQ = store.get("showQ", true);
+function setQ(on){
+  showQ = on; store.set("showQ", on);
+  document.querySelectorAll(".pt").forEach(p=>p.classList.toggle("no-q", !on));
+  document.querySelectorAll(".qBox").forEach(b=>b.checked = on);
+}
+function setPT(open){
+  $("ptInline").hidden = !open; $("ptBtn").setAttribute("aria-expanded", open);
+  $("ptBtn").textContent = open ? "Masquer le tableau périodique" : "Afficher le tableau périodique";
+  store.set("ptOpen", open);
+}
+$("ptBtn").onclick = ()=>setPT($("ptInline").hidden);
+
+// ---------- Impression du tableau (application de bureau : A4 paysage) ----------
+const IS_APP = /Electron/.test(navigator.userAgent);
+document.documentElement.classList.toggle("is-app", IS_APP);
+document.body.insertAdjacentHTML("beforeend", '<div id="printZone"></div>');
+document.querySelectorAll(".pt-print").forEach(b=>b.onclick=()=>{
+  const sec = b.dataset.pt==="1" ? $("ptMain") : $("ptInline");
+  const copy = sec.cloneNode(true);
+  copy.removeAttribute("id"); copy.hidden = false; copy.classList.add("printing");
+  copy.querySelectorAll("[id]").forEach(x=>x.removeAttribute("id"));
+  copy.querySelectorAll(".cell").forEach(c=>c.classList.remove("sel","hit","dim"));
+  copy.querySelectorAll(".pt").forEach(t=>t.classList.remove("searching"));
+  $("printZone").replaceChildren(copy); document.documentElement.classList.add("print-pt");
+  const done = ()=>{ $("printZone").replaceChildren(); document.documentElement.classList.remove("print-pt"); window.removeEventListener("afterprint", done); };
+  window.addEventListener("afterprint", done);
+  setTimeout(()=>window.print(), 50);
+});
+
+// ---------- Maille cubique faces centrées (en-tête) ----------
+(function(){
+  const cv = $("cell"), ctx = cv.getContext("2d"), dpr = Math.min(window.devicePixelRatio||1, 2), S = 76;
+  cv.width = S*dpr; cv.height = S*dpr; ctx.scale(dpr,dpr);
+  const P = [], E = [];
+  for(const x of [-1,1]) for(const y of [-1,1]) for(const z of [-1,1]) P.push([x,y,z,0]);
+  [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].forEach(p=>P.push([...p,1]));
+  for(let i=0;i<8;i++) for(let j=i+1;j<8;j++){ const d = P[i].slice(0,3).reduce((a,v,k)=>a+Math.abs(v-P[j][k]),0); if(d===2) E.push([i,j]); }
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function draw(t){
+    const cs = getComputedStyle(document.documentElement);
+    const ink = cs.getPropertyValue("--muted").trim(), a1 = cs.getPropertyValue("--accent").trim(), a2 = cs.getPropertyValue("--accent2").trim();
+    const th = t*0.00035 + 0.6, tilt = 0.5, sc = 20;
+    const pr = P.map(([x,y,z,f])=>{
+      const X = x*Math.cos(th) + z*Math.sin(th), Z1 = -x*Math.sin(th) + z*Math.cos(th);
+      const Y = y*Math.cos(tilt) - Z1*Math.sin(tilt), D = y*Math.sin(tilt) + Z1*Math.cos(tilt);
+      return {x:S/2 + X*sc, y:S/2 + Y*sc, d:D, f};
+    });
+    ctx.clearRect(0,0,S,S);
+    ctx.strokeStyle = ink; ctx.lineWidth = 1; ctx.globalAlpha = .55;
+    E.forEach(([i,j])=>{ctx.beginPath();ctx.moveTo(pr[i].x,pr[i].y);ctx.lineTo(pr[j].x,pr[j].y);ctx.stroke();});
+    ctx.globalAlpha = 1;
+    pr.slice().sort((a,b)=>a.d-b.d).forEach(p=>{
+      const r = (p.f?4.2:5.2) * (1 + p.d*0.08);
+      ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2);
+      ctx.fillStyle = p.f ? a2 : a1; ctx.globalAlpha = .55 + (p.d+1.5)*0.15; ctx.fill(); ctx.globalAlpha = 1;
+    });
+    if(!reduce) requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+// ---------- Démarrage ----------
+$("level").onchange = ()=>{ state.recent=[]; if(gameById(state.game)) next(); };
+$("iso").onchange = ()=>{ if(gameById(state.game)) next(); };
+renderPT("pt1","ptDetail1","legend1"); renderPT("pt2","ptDetail2","legend2"); setQ(showQ);
+setupSearch("ptSearch1","pt1","ptDetail1","ptCount1"); setupSearch("ptSearch2","pt2","ptDetail2","ptCount2");
+setPT(store.get("ptOpen", false));
+openSection(state.section);
+</script>
+
+</body></html>

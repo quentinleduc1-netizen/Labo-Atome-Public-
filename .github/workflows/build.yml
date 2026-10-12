@@ -1,0 +1,79 @@
+name: Construire et publier l'application
+
+# À chaque envoi sur main : l'appli est construite (Windows, Mac, Linux).
+# Si la version de package.json n'a pas encore de release, la release vX.Y.Z est créée
+# et chaque machine y dépose directement ses fichiers (.exe, .dmg, .AppImage).
+# Aucun fichier intermédiaire n'est stocké dans GitHub Actions (pas de quota consommé).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      mac:
+        description: "Construire aussi la version Mac (.dmg) — coûte 10 fois plus de minutes"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      release: ${{ steps.v.outputs.release }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" >/dev/null; then
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            echo "La version $VERSION est déjà publiée : construction seule."
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+            echo "Nouvelle version $VERSION : une release sera créée."
+          fi
+      - name: Créer la release
+        if: steps.v.outputs.release == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.v.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: Labo Atomes ${{ steps.v.outputs.version }}
+          generate_release_notes: true
+          make_latest: true
+
+  build:
+    needs: check
+    strategy:
+      fail-fast: false
+      matrix:
+        # Mac désactivé par défaut (une minute Mac compte pour 10) : le cocher dans « Run workflow »
+        os: ${{ fromJSON(inputs.mac && '["windows-latest","ubuntu-latest","macos-latest"]' || '["windows-latest","ubuntu-latest"]') }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run dist
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+      - name: Déposer les fichiers dans la release
+        if: needs.check.outputs.release == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.check.outputs.version }}
+          files: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.AppImage
+          fail_on_unmatched_files: false
