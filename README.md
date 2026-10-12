@@ -1,6 +1,6 @@
 # Labo Atomes
 
-Application d'entraînement pour le cours de sciences des matériaux : chapitre I (atomes et ions) et chapitre II (liaisons interatomiques et classes de matériaux). Chaque exercice est tiré au hasard et corrigé immédiatement, avec la méthode du cours.
+Application d'entraînement pour le cours de sciences des matériaux : chapitre I (atomes et ions), chapitre II (liaisons interatomiques et classes de matériaux) et chapitre III (cristallographie). Chaque exercice est tiré au hasard et corrigé immédiatement, avec la méthode du cours.
 
 ## Exercices
 Un sélecteur de chapitre, puis un onglet par partie du cours, chacun avec ses jeux.
@@ -19,6 +19,13 @@ Chapitre II :
 4. **Classes de matériaux** : classer un matériau (métal, céramique ou verre, polymère, composite, naturel), alliages (acier, fonte, laiton, bronze, dural), polymères (thermoplastiques, élastomères, thermodurcissables).
 
 Fiches animées du chapitre II : familles de liaisons, électronégativité (tableau coloré, Δχ et nuage électronique), gaz d'électrons de la liaison métallique (avec ou sans tension), liaisons hydrogène (eau / méthane), dipôles de Van der Waals, états de la matière (particules animées, types de solides), courbe d'énergie Ep(r) interactive (attraction, répulsion, n), tableau liaison → propriétés avec animation fragile / ductile, classes de matériaux, métaux et alliages, verres et céramiques, polymères (polymérisation animée, arrangement des chaînes).
+
+Chapitre III :
+1. **Maille et motif** : vocabulaire du cristal, atomes par maille (règle de partage 1/8, 1/4, 1/2, 1 sur CS, CC, CFC, CsCl, NaCl, pérovskite, diamant), paramètre de maille et rayon (a = 2r, a√3 = 4r, a√2 = 4r).
+2. **Compacité et masse volumique** : compacité d'un métal, masse volumique ρ = Z·M/(N_A·V) (métaux et composés ioniques).
+3. **Systèmes cristallins** : système (7) et réseau de Bravais (P, I, F, C) à partir des paramètres et des nœuds.
+
+Fiches du chapitre III : le cristal (mono/polycristal, grains), la maille (animation réseau + motif, paramètres a b c α β γ, exemple CsCl), mailles cubiques dessinées en 3D avec comptage animé des atomes, compacité et masse volumique pas à pas (fer α, fer γ, Cu, Al, W, Po, NaCl, SrTiO₃), les 7 systèmes et les 14 réseaux de Bravais dessinés, et pourquoi quadratique C = quadratique P.
 
 Le tableau périodique (118 éléments, familles, masses molaires, charges usuelles des ions, nom et masse molaire dans chaque case, charge dans les groupements oxygénés CO₃ NO₃ PO₄ SO₄, configuration électronique et électronégativité au clic, recherche par nom, symbole ou Z, impression A4 paysage dans l’application) s'affiche dans chaque jeu. Les jeux « Ions » et « Composés ioniques » commencent par une diapo « Méthode » animée (perte/gain d'électrons, équilibre des charges) ; les jeux de « Nombres quantiques » par une diapo animée de la règle de Klechkowski, et se terminent par une vidéo YouTube sur les nombres quantiques (`VIDEO`). Le jeu « Configuration électronique » a aussi une diapo animée pour les cations des métaux de transition (le 4s part avant le 3d) ; une réponse où les électrons de l'ion ont été placés comme pour un atome neutre reçoit une correction dédiée, et le lien après une erreur ouvre la fiche utile (`slideAt`). Les sous-couches s, p, d, f ont chacune leur couleur. Le bouton « Revoir le cours » ouvre les fiches de cours liées au jeu (associées dans `SLIDES`, construites dans `CUSTOM`) ; après une erreur, un lien y mène directement. Ces fiches sont rédigées pour l'appli et interactives (atome, isotopes, ions, dissociation, mole, pesée, nombres quantiques, cases quantiques, blocs, valence, prévision de formule) : aucune diapo du cours d'origine n'est incluse. Le score et les records sont conservés entre deux lancements.
 

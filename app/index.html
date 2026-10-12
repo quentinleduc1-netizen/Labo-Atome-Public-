@@ -588,6 +588,26 @@ html:not(.is-app) .app-only{display:none}
 #pmSvg.go .pm-db{opacity:0} #pmSvg.go .pm-u{transform:translate(var(--xg),30px)} .pm-chain{stroke:var(--ink);stroke-width:2;opacity:0;transition:opacity .5s 1.3s} #pmSvg.go .pm-chain{opacity:1}
 .pm-node{fill:var(--sub-f)} .pm-link{stroke:var(--sub-f);stroke-width:2}
 #pmMsg{font-size:.9rem;color:var(--muted)}
+/* Chapitre III */
+.cl{height:auto;max-width:100%;display:block} .cl-edge{stroke:var(--ink);stroke-width:1.4;fill:none} .cl-edge.back{stroke-dasharray:4 3;stroke:var(--muted)}
+.cl-at{stroke:var(--surface);stroke-width:1;transition:r .4s,opacity .4s} .cl-at.cA{fill:var(--accent)} .cl-at.cB{fill:var(--sub-p)} .cl-at.cC{fill:var(--accent2)} .cl-at.cN{fill:var(--accent)}
+.cl.has-hl .cl-at:not(.hl){opacity:.25} .cl-at.hl{stroke:var(--sub-f);stroke-width:3}
+.cl-ax{stroke:var(--accent2);stroke-width:2} .cl-axt{font-family:var(--f-mono);font-weight:700;font-size:12px;fill:var(--accent2)}
+.cl-show{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;justify-content:center} .cl-cap{font-size:.95rem;line-height:1.5;text-align:center}
+.cl-key{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle} .cl-key.cA{background:var(--accent)} .cl-key.cB{background:var(--sub-p)} .cl-key.cC{background:var(--accent2)}
+.rel{width:150px;height:150px;flex:none} .rel-sq{fill:none;stroke:var(--ink);stroke-width:1.5} .rel-at{fill:var(--accent);opacity:.45} .rel-at.b{fill:var(--sub-p)} .rel-dim{stroke:var(--sub-f);stroke-width:2} .rel-t{font-family:var(--f-mono);font-size:10px;font-weight:700;text-anchor:middle;fill:var(--ink)} .rel-tri{fill:var(--accent-soft);stroke:var(--ink);stroke-width:1.5}
+#mlSvg{width:100%;max-width:420px;height:auto;display:block;background:var(--surface);border:1px solid var(--line);border-radius:3px}
+.ml-lines line{stroke:var(--line);stroke-width:1} .ml-cell{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2} .ml-node line{stroke:var(--sub-f);stroke-width:2}
+.ml-motif{opacity:0;transition:opacity .9s} #mlSvg.go .ml-motif{opacity:1} .ml-motif .cA{fill:var(--accent)} .ml-motif .cB{fill:var(--sub-p)} .ml-bond{stroke:var(--muted);stroke-width:1.5}
+.ml-lab{font-size:10px;fill:var(--muted);text-anchor:middle}
+.cu-wrap{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center} @media (max-width:640px){.cu-wrap{grid-template-columns:1fr}}
+.sy-list{display:flex;flex-direction:column;gap:6px} .sy-row{display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.sy-head{display:flex;flex-direction:column;font-size:.85rem;color:var(--muted)} .sy-head b{color:var(--ink);font-family:var(--f-display);font-size:1rem}
+.sy-cells{display:flex;flex-wrap:wrap;gap:8px} .sy-fig{margin:0;display:flex;flex-direction:column;align-items:center;font-size:.72rem;color:var(--muted)}
+@media (max-width:560px){.sy-row{grid-template-columns:1fr}}
+#sySvg{width:100%;max-width:400px;height:auto;display:block;background:var(--surface);border:1px solid var(--line);border-radius:3px}
+.sy-grid line{stroke:var(--ink);stroke-width:1.5} .sy-new polygon{fill:var(--accent-soft);stroke:var(--sub-f);stroke-width:2;opacity:0;transition:opacity 1s} #sySvg.go .sy-new polygon{opacity:.85}
+#sySvg .cN{fill:var(--accent)} #sySvg .cC{fill:var(--accent2)}
 .qbx-wrap{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:var(--bg);border:1px solid var(--line);overflow-x:auto}
 .qbx-title{margin:0 0 2px;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .qbx{display:flex;align-items:flex-end;gap:14px;min-width:max-content}
@@ -629,7 +649,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.19.0</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.20.0</span></p>
     </div>
   </header>
 
@@ -1218,6 +1238,8 @@ const SLIDES = {
   etat:["c2_etats"], courbe:["c2_energie"], equilibre:["c2_energie"],
   tendance:["c2_energie","c2_props"], ductile:["c2_props","c2_classes"],
   classe:["c2_classes","c2_metaux","c2_ceram","c2_poly"], alliage:["c2_metaux"], polymere:["c2_poly"],
+  vocab:["c3_cristal","c3_maille","c3_sys"], maille:["c3_maille","c3_cub"], parametre:["c3_cub","c3_compa"],
+  compacite:["c3_cub","c3_compa"], "masse-vol":["c3_compa"], reseau:["c3_maille","c3_sys"],
 };
 
 // Composés du jeu « Mécanique des liaisons » : [formule, A, B, nombre de B, électrons par liaison A–B, type]
@@ -1235,6 +1257,7 @@ function formulaOk(v, f){
 const CHAPTERS = [
   {id:"ch1", num:"I", title:"Atomes et ions", sub:"chapitre I, atomes et ions"},
   {id:"ch2", num:"II", title:"Liaisons et matériaux", sub:"chapitre II, liaisons interatomiques et classes de matériaux"},
+  {id:"ch3", num:"III", title:"Cristallographie", sub:"chapitre III, cristallographie"},
 ];
 const SECTIONS = [
   {id:"atome", ch:"ch1", tab:"Structure de l'atome", tools:true},
@@ -1245,6 +1268,9 @@ const SECTIONS = [
   {id:"etats", ch:"ch2", tab:"États et énergie"},
   {id:"proprietes", ch:"ch2", tab:"Propriétés"},
   {id:"classes", ch:"ch2", tab:"Classes de matériaux"},
+  {id:"maille", ch:"ch3", tab:"Maille et motif", tools:true},
+  {id:"compacite", ch:"ch3", tab:"Compacité et masse volumique"},
+  {id:"systemes", ch:"ch3", tab:"Systèmes cristallins"},
 ];
 const chapOf = sid => CHAPTERS.find(c=>c.id===(SECTIONS.find(s=>s.id===sid)||SECTIONS[0]).ch);
 const TOOLS = [{id:"pt", tab:"Tableau périodique"},{id:"bilan", tab:"Bilan"}];
@@ -2879,6 +2905,287 @@ function buildPolymeres(){
   $("pmList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>draw(+b.dataset.i)); draw(0);
 }
 
+// ======================= Chapitre III : cristallographie =======================
+// Dessin d'une maille (projection cabinet : a vers l'observateur, b vers la droite, c vers le haut)
+const FPOS = [[0,0,0],[.5,.5,0],[.5,0,.5],[0,.5,.5]];
+function expandPos(p){ // toutes les images d'une position dans [0,1]³
+  const out = [];
+  for(const dx of (p[0]===0?[0,1]:[0])) for(const dy of (p[1]===0?[0,1]:[0])) for(const dz of (p[2]===0?[0,1]:[0])) out.push([p[0]+dx,p[1]+dy,p[2]+dz]);
+  return out;
+}
+const posKind = p => { const k = p.filter(x=>x===0||x===1).length; return k===3?"sommets":k===2?"milieu des arêtes":k===1?"centre des faces":(p.every(x=>x===.5)?"centre de la maille":"intérieur"); };
+const posWeight = p => ({sommets:1/8,"milieu des arêtes":1/4,"centre des faces":1/2,"centre de la maille":1,"intérieur":1})[posKind(p)];
+function cellSVG(o){
+  const {a=1,b=1,c=1,al=90,be=90,ga=90,atoms=[],size=170,axes=false,hl=null,rad=0.09} = o, d2r = x=>x*Math.PI/180;
+  const A=[a,0,0], B=[b*Math.cos(d2r(ga)), b*Math.sin(d2r(ga)), 0];
+  const cxx = Math.cos(d2r(be)), cyy = (Math.cos(d2r(al)) - Math.cos(d2r(be))*Math.cos(d2r(ga)))/Math.sin(d2r(ga)), czz = Math.sqrt(Math.max(0.05,1-cxx*cxx-cyy*cyy));
+  const C=[c*cxx,c*cyy,c*czz];
+  const P3 = (u,v,w) => [u*A[0]+v*B[0]+w*C[0], u*A[1]+v*B[1]+w*C[1], u*A[2]+v*B[2]+w*C[2]];
+  const pr = ([x,y,z]) => [y - 0.42*x, -z + 0.42*x*0.75];
+  const corners = [[0,0,0],[1,0,0],[0,1,0],[1,1,0],[0,0,1],[1,0,1],[0,1,1],[1,1,1]].map(q=>pr(P3(...q)));
+  const xs = corners.map(p=>p[0]), ys = corners.map(p=>p[1]);
+  const minx = Math.min(...xs)-0.2, maxx = Math.max(...xs)+0.2, miny = Math.min(...ys)-0.2, maxy = Math.max(...ys)+0.2;
+  const sc = size/Math.max(maxx-minx, maxy-miny), S = ([x,y]) => [((x-minx)*sc).toFixed(1), ((y-miny)*sc).toFixed(1)];
+  const W = ((maxx-minx)*sc).toFixed(0), H = ((maxy-miny)*sc).toFixed(0);
+  const edges = [[0,1],[0,2],[0,4],[1,3],[1,5],[2,3],[2,6],[3,7],[4,5],[4,6],[5,7],[6,7]];
+  const E = edges.map(([i,j])=>{ const [x1,y1]=S(corners[i]), [x2,y2]=S(corners[j]); return `<line class="cl-edge${i===0?" back":""}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`; }).join("");
+  const pts = [];
+  atoms.forEach(([sp,list,cls,r])=>list.forEach(p=>expandPos(p).forEach(q=>pts.push({q,sp,cls,r:r||rad,kind:posKind(p)}))));
+  pts.sort((u,v)=>(u.q[0]-v.q[0]) || (u.q[2]-v.q[2]));
+  const AT = pts.map(({q,sp,cls,r,kind})=>{ const [x,y] = S(pr(P3(...q))); return `<circle class="cl-at ${cls}${hl===kind?" hl":""}" data-kind="${kind}" cx="${x}" cy="${y}" r="${(r*sc).toFixed(1)}"><title>${sp} (${q.map(v=>v===.5?"½":v===.25?"¼":v===.75?"¾":v).join(" ; ")})</title></circle>`; }).join("");
+  let AX = "";
+  if(axes){ const O = S(pr(P3(0,0,0))), ea = S(pr(P3(.45,0,0))), eb = S(pr(P3(0,.45,0))), ec = S(pr(P3(0,0,.45)));
+    AX = `<line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${ea[0]}" y2="${ea[1]}"/><text class="cl-axt" x="${ea[0]}" y="${+ea[1]+12}">a</text><line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${eb[0]}" y2="${eb[1]}"/><text class="cl-axt" x="${+eb[0]+6}" y="${+eb[1]+4}">b</text><line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${ec[0]}" y2="${ec[1]}"/><text class="cl-axt" x="${+ec[0]-10}" y="${ec[1]}">c</text>`; }
+  return `<svg class="cl${hl?" has-hl":""}" viewBox="0 0 ${W} ${H}" style="width:${W}px" role="img" aria-label="Maille">${E}${AT}${AX}</svg>`;
+}
+const STRUCT = {
+  CS:   {n:"cubique simple (P)", ex:"polonium", sp:[["A",[[0,0,0]],"cA"]], rel:"a = 2r", relk:"cs"},
+  CC:   {n:"cubique centré (I)", ex:"fer α, chrome, tungstène, sodium", sp:[["A",[[0,0,0],[.5,.5,.5]],"cA"]], rel:"a√3 = 4r", relk:"cc"},
+  CFC:  {n:"cubique à faces centrées (F)", ex:"fer γ, cuivre, aluminium, or", sp:[["A",FPOS,"cA"]], rel:"a√2 = 4r", relk:"cfc"},
+  CsCl: {n:"type CsCl (chlorure de césium)", ex:"CsCl, CsBr", sp:[["Cl",[[0,0,0]],"cB",0.12],["Cs",[[.5,.5,.5]],"cA",0.1]]},
+  NaCl: {n:"type NaCl (sel de table)", ex:"NaCl, KCl, MgO", sp:[["Cl",FPOS,"cB",0.12],["Na",[[.5,0,0],[0,.5,0],[0,0,.5],[.5,.5,.5]],"cA",0.07]]},
+  perov:{n:"pérovskite SrTiO₃", ex:"SrTiO₃, CaTiO₃, BaTiO₃", sp:[["Sr",[[0,0,0]],"cA",0.11],["Ti",[[.5,.5,.5]],"cC",0.07],["O",[[.5,.5,0],[.5,0,.5],[0,.5,.5]],"cB",0.09]]},
+  diam: {n:"diamant", ex:"C diamant, Si, Ge", sp:[["C",FPOS.concat(FPOS.map(p=>p.map(v=>v+.25))),"cA",0.07]]},
+};
+const spCount = list => list.length;      // chaque position de base compte pour 1 atome par maille
+const spKinds = list => [...new Set(list.map(posKind))];
+const kindLabel = kinds => kinds.join(" et ");
+const countDetail = list => { const g = {}; list.forEach(p=>{ const k = posKind(p); g[k] = (g[k]||0) + expandPos(p).length; }); return Object.entries(g).map(([k,n])=>`${n} ${k==="sommets"?"aux sommets × 1/8":k==="milieu des arêtes"?"au milieu des arêtes × 1/4":k==="centre des faces"?"au centre des faces × 1/2":k==="centre de la maille"?"au centre × 1":"à l'intérieur × 1"} = ${fmtN(n*posWeight(list.find(p=>posKind(p)===k)),3)}`).join(" ; "); };
+const KIND_OPTS = [...new Set(Object.values(STRUCT).flatMap(s=>s.sp.map(x=>kindLabel(spKinds(x[1])))))];
+
+// Métaux : [nom, symbole, structure, a (nm), M (g/mol)]
+const METALS = [["polonium","Po","CS",0.335,209],["fer α","Fe","CC",0.287,55.85],["chrome","Cr","CC",0.288,52.00],["tungstène","W","CC",0.3165,183.84],["molybdène","Mo","CC",0.315,95.95],
+  ["sodium","Na","CC",0.429,22.99],["potassium","K","CC",0.533,39.10],["vanadium","V","CC",0.303,50.94],["cuivre","Cu","CFC",0.3615,63.55],["aluminium","Al","CFC",0.405,26.98],
+  ["or","Au","CFC",0.408,196.97],["argent","Ag","CFC",0.409,107.87],["plomb","Pb","CFC",0.495,207.2],["nickel","Ni","CFC",0.352,58.69],["platine","Pt","CFC",0.392,195.08],["fer γ","Fe","CFC",0.365,55.85]];
+const REL = {CS:{n:1, r:a=>a/2, txt:"a = 2r (les atomes se touchent le long d'une arête)", C:Math.PI/6}, CC:{n:2, r:a=>a*Math.sqrt(3)/4, txt:"a√3 = 4r (contact le long de la grande diagonale du cube)", C:Math.PI*Math.sqrt(3)/8}, CFC:{n:4, r:a=>a*Math.sqrt(2)/4, txt:"a√2 = 4r (contact le long de la diagonale d'une face)", C:Math.PI*Math.sqrt(2)/6}};
+const REL_OPTS = ["a = 2r","a√3 = 4r","a√2 = 4r"];
+// Composés ioniques : [nom, formule, Z, a (nm), M]
+const IONICS = [["chlorure de sodium","NaCl",4,0.564,58.44],["chlorure de césium","CsCl",1,0.411,168.36],["oxyde de magnésium","MgO",4,0.421,40.30],["chlorure de potassium","KCl",4,0.629,74.55],["titanate de strontium","SrTiO3",1,0.3905,183.49]];
+const NA = 6.022e23;
+
+const VOCAB = [["Entité géométrique élémentaire : un repère (a, b, c) et la position des atomes dedans ; répétée dans les trois directions, elle reconstitue tout le cristal","maille"],
+  ["Ensemble des points de l'espace qui ont exactement le même environnement atomique","nœuds"],["L'ensemble des nœuds, décrit par la base (a, b, c)","réseau"],
+  ["Les atomes (et leurs coordonnées) à placer sur chaque nœud du réseau","motif"],["Un seul bloc dans lequel l'arrangement des atomes est périodique dans les trois directions","monocristal"],
+  ["Un assemblage de nombreux petits monocristaux de tailles variées","polycristal"],["Chacun des petits monocristaux d'un polycristal (de 1 à 2 nm jusqu'à 10 cm)","grain"],
+  ["Surface qui sépare deux grains d'orientations différentes","joint de grains"],["Les longueurs a, b, c et les angles α, β, γ qui définissent la maille","paramètres de maille"],
+  ["Fraction du volume de la maille réellement occupée par les atomes, supposés être des sphères dures","compacité"],
+  ["Changement de structure cristalline sans changement de composition (fer α → fer γ à 912 °C)","transformation allotropique"],
+  ["Solide sans arrangement périodique des atomes (verre)","amorphe"],["Les 7 familles de mailles définies par les relations entre a, b, c, α, β, γ","systèmes cristallins"],
+  ["Les 14 façons de disposer les nœuds dans les 7 systèmes (P, I, F, C)","réseaux de Bravais"],["Masse de la maille divisée par son volume : Z·M / (N_A·V)","masse volumique"]];
+const VOCAB_TERMS = VOCAB.map(v=>v[1]).sort((x,y)=>x.localeCompare(y));
+
+// 7 systèmes cristallins (conditions écrites comme dans le cours) et leurs réseaux de Bravais
+const SYSTEMS = [
+  ["cubique","a = b = c","α = β = γ = 90°",["P","I","F"],{a:1,b:1,c:1}],
+  ["quadratique","a = b ≠ c","α = β = γ = 90°",["P","I"],{a:1,b:1,c:1.5}],
+  ["orthorhombique","a ≠ b ≠ c","α = β = γ = 90°",["P","I","F","C"],{a:1,b:1.4,c:1.8}],
+  ["hexagonal","a = b ≠ c","α = β = 90° et γ = 120°",["P"],{a:1,b:1,c:1.5,ga:120}],
+  ["rhomboédrique","a = b = c","α = β = γ ≠ 90°",["P"],{a:1,b:1,c:1,al:75,be:75,ga:75}],
+  ["monoclinique","a ≠ b ≠ c","α = β = 90° et γ ≠ 90°",["P","C"],{a:1,b:1.4,c:1.7,ga:110}],
+  ["triclinique","a ≠ b ≠ c","α ≠ β ≠ γ (≠ 90°)",["P"],{a:1,b:1.3,c:1.6,al:80,be:105,ga:95}]];
+const MODES = {P:"simple (P)", I:"centré (I)", F:"faces centrées (F)", C:"bases centrées (C)"};
+const MODE_DESC = {P:"nœuds aux sommets seulement", I:"nœuds aux sommets et au centre de la maille", F:"nœuds aux sommets et au centre des six faces", C:"nœuds aux sommets et au centre de deux faces opposées"};
+const MODE_POS = {P:[[0,0,0]], I:[[0,0,0],[.5,.5,.5]], F:FPOS, C:[[0,0,0],[.5,.5,0]]};
+const bravaisSVG = (sys, mode, size=110) => cellSVG({...sys[4], atoms:[["nœud",MODE_POS[mode],"cN",0.07]], size});
+
+const CH3_GAMES = [
+  {id:"vocab", section:"maille", tab:"Vocabulaire", title:"Le vocabulaire du cristal",
+   desc:"Maille, motif, réseau, nœuds, grains… Retrouve le mot du cours qui correspond à la définition.",
+   q:"De quoi parle-t-on ?",
+   gen(){ const [d,t] = pickFresh(VOCAB, x=>x[1]); return {d,t}; },
+   show: c => ({wide:true, html:`<p class="situation">${c.d}</p>`}),
+   fields: c => [F("te","Terme", selOk(c.t), c.t, "select", VOCAB_TERMS)],
+   explain: c => `<b>${c.t[0].toUpperCase()+c.t.slice(1)}</b> : ${c.d.toLowerCase()}.`},
+
+  {id:"maille", section:"maille", tab:"Atomes par maille", title:"Compter les atomes d'une maille",
+   desc:"Un atome aux sommets est partagé entre 8 mailles (1/8), au milieu d'une arête entre 4 (1/4), au centre d'une face entre 2 (1/2) ; à l'intérieur il compte pour 1. Pour chaque espèce, indique sa position et son nombre par maille.",
+   q:"Combien d'atomes de chaque espèce dans la maille ?",
+   gen(){ const k = pickFresh(Object.keys(STRUCT), x=>x); return {k, ...STRUCT[k]}; },
+   show: c => ({wide:true, html:`<div class="cl-show">${cellSVG({atoms:c.sp, size:190})}<div class="cl-cap"><b>${c.n}</b><br>${c.ex}<br><small>${c.sp.map(x=>`<i class="cl-key ${x[2]}"></i>${x[0]}`).join(" · ")}</small></div></div>`}),
+   fields: c => c.sp.flatMap(([sp,list],i)=>[F("p"+i,`Position de ${sp}`, selOk(kindLabel(spKinds(list))), kindLabel(spKinds(list)), "select", KIND_OPTS), F("n"+i,`Nombre de ${sp} par maille`, v=>isInt(v,spCount(list)), spCount(list))]),
+   explain: c => c.sp.map(([sp,list])=>`<b>${sp}</b> : ${countDetail(list)} → <b>${spCount(list)}</b> par maille.`).join("<br>") + (c.k==="NaCl"?"<br>Formule NaCl : 4 Na pour 4 Cl, Z = 4 motifs NaCl par maille.":c.k==="perov"?"<br>1 Sr, 1 Ti, 3 O : la formule SrTiO₃ est retrouvée, Z = 1.":c.k==="CsCl"?"<br>1 Cs pour 1 Cl : Z = 1 motif CsCl. Attention, ce n'est pas un réseau centré : l'atome du centre n'est pas le même que celui des sommets.":"")},
+
+  {id:"parametre", section:"maille", tab:"Paramètre et rayon", title:"Paramètre de maille et rayon atomique",
+   desc:"Les atomes se touchent le long d'une direction qui dépend de la structure : arête (cubique simple), diagonale d'une face (CFC) ou grande diagonale (CC). Trouve la relation et le rayon.",
+   q:"Quel est le rayon de l'atome ?",
+   gen(){ const [nm,s,st,a,M] = pickFresh(METALS, x=>x[0]); return {nm,s,st,a,M,r:REL[st].r(a)}; },
+   show: c => plate(c.s, `${c.nm} · ${STRUCT[c.st].n}`, `a = ${fmtN(c.a,4)} nm`),
+   fields: c => [F("rel","Relation entre a et r", selOk(STRUCT[c.st].rel), STRUCT[c.st].rel, "select", REL_OPTS), F("r","Rayon atomique r (en nm)", v=>near(v,c.r,0.01), fmtN(c.r,3))],
+   explain: c => `${STRUCT[c.st].n} : ${REL[c.st].txt}. r = ${c.st==="CS"?"a/2":c.st==="CC"?"a√3/4":"a√2/4"} = ${fmtN(c.a,4)}${c.st==="CS"?" / 2":c.st==="CC"?" × 1,732 / 4":" × 1,414 / 4"} ≈ <b>${fmtN(c.r,3)} nm</b> (${fmtN(c.r*1000,3)} pm).<div class="cl-show">${cellSVG({atoms:STRUCT[c.st].sp, size:150})}${relSVG(c.st)}</div>`},
+
+  {id:"compacite", section:"compacite", tab:"Compacité", title:"Calculer une compacité",
+   desc:"C = (n × 4/3 π r³) / V_maille. Compte les atomes, déduis r de a, puis calcule la fraction du volume occupée.",
+   q:"Quelle est la compacité ?",
+   gen(){ const [nm,s,st,a,M] = pickFresh(METALS, x=>x[0]); const r = REL[st].r(a); return {nm,s,st,a,M,r,n:REL[st].n,C:REL[st].C}; },
+   show: c => plate(c.s, `${c.nm} · ${STRUCT[c.st].n}`, `a = ${fmtN(c.a,4)} nm`),
+   fields: c => [F("n","Nombre d'atomes par maille n", v=>isInt(v,c.n), c.n), F("r","Rayon r (en nm)", v=>near(v,c.r,0.01), fmtN(c.r,3)), F("C","Compacité C (en %)", v=>near(v,c.C*100,0.015), fmtN(c.C*100,3))],
+   explain: c => `n = <b>${c.n}</b> (${countDetail(STRUCT[c.st].sp[0][1])}). r = ${fmtN(c.r,3)} nm (${REL[c.st].txt}). V<sub>maille</sub> = a³ = ${fmtN(c.a**3,3)} nm³. Volume des atomes = ${c.n} × 4/3 × π × ${fmtN(c.r,3)}³ = ${fmtN(c.n*4/3*Math.PI*c.r**3,3)} nm³. C = ${fmtN(c.n*4/3*Math.PI*c.r**3,3)} / ${fmtN(c.a**3,3)} = <b>${fmtN(c.C*100,3)} %</b>. La compacité ne dépend pas de a : elle vaut toujours ${c.st==="CS"?"52 % en cubique simple":c.st==="CC"?"68 % en cubique centré":"74 % en cubique à faces centrées (empilement le plus compact possible)"}.`},
+
+  {id:"masse-vol", section:"compacite", tab:"Masse volumique", title:"Calculer une masse volumique",
+   desc:"ρ = Z × M / (N_A × V_maille), avec Z le nombre de motifs par maille. Attention aux unités : 1 nm = 10⁻⁷ cm, donc 1 nm³ = 10⁻²¹ cm³.",
+   q:"Quelle est la masse volumique ?",
+   gen(){ if(Math.random()<0.65){ const [nm,s,st,a,M] = pickFresh(METALS, x=>x[0]); return {nm,f:s,st:STRUCT[st].n,Z:REL[st].n,a,M}; }
+     const [nm,f,Z,a,M] = pickFresh(IONICS, x=>x[1]); return {nm,f,st:f==="CsCl"?"type CsCl":f==="SrTiO3"?"pérovskite":"type NaCl",Z,a,M}; },
+   show: c => plate(fmtF(c.f), `${c.nm} · ${c.st}`, `a = ${fmtN(c.a,4)} nm · M = ${fmtN(c.M,5)} g/mol · N<sub>A</sub> = 6,022 × 10²³ mol⁻¹`),
+   fields: c => [F("Z","Nombre de motifs Z par maille", v=>isInt(v,c.Z), c.Z), F("V","Volume de la maille (en cm³)", v=>near(v,c.a**3*1e-21,0.02), fmtN(c.a**3*1e-21,3)), F("rho","Masse volumique ρ (en g/cm³)", v=>near(v,c.Z*c.M/(NA*c.a**3*1e-21),0.02), fmtN(c.Z*c.M/(NA*c.a**3*1e-21),3))],
+   explain: c => { const V = c.a**3*1e-21, rho = c.Z*c.M/(NA*V); return `Z = <b>${c.Z}</b> motif${c.Z>1?"s":""} ${fmtF(c.f)} par maille. V = a³ = (${fmtN(c.a,4)} × 10⁻⁷ cm)³ = <b>${fmtN(V,3)} cm³</b>. Masse de la maille = Z M / N<sub>A</sub> = ${c.Z} × ${fmtN(c.M,5)} / 6,022 × 10²³ = ${fmtN(c.Z*c.M/NA,3)} g. ρ = ${fmtN(c.Z*c.M/NA,3)} / ${fmtN(V,3)} ≈ <b>${fmtN(rho,3)} g/cm³</b> (${fmtN(rho*1000,4)} kg/m³).`; }},
+
+  {id:"reseau", section:"systemes", tab:"Systèmes et réseaux", title:"Système cristallin et réseau de Bravais",
+   desc:"À partir des paramètres de maille (a, b, c, α, β, γ) retrouve le système cristallin, et à partir de la position des nœuds le mode de réseau (P, I, F ou C).",
+   q:"Quel système, quel réseau ?",
+   gen(){ const sys = pickFresh(SYSTEMS, x=>x[0]); const mode = rnd(sys[3]); return {sys, mode}; },
+   show: c => ({wide:true, html:`<div class="cl-show">${bravaisSVG(c.sys,c.mode,170)}<div class="cl-cap"><b>${c.sys[1]}</b><br><b>${c.sys[2]}</b><br>${MODE_DESC[c.mode]}</div></div>`}),
+   fields: c => [F("sy","Système cristallin", selOk(c.sys[0]), c.sys[0], "select", SYSTEMS.map(s=>s[0])), F("mo","Réseau de Bravais", selOk(MODES[c.mode]), MODES[c.mode], "select", Object.values(MODES))],
+   explain: c => `${c.sys[1]} et ${c.sys[2]} : système <b>${c.sys[0]}</b>. ${MODE_DESC[c.mode][0].toUpperCase()+MODE_DESC[c.mode].slice(1)} : réseau <b>${MODES[c.mode]}</b>. Réseaux possibles dans ce système : ${c.sys[3].map(m=>MODES[m]).join(", ")}${c.sys[3].length<4?" (les autres seraient équivalents à l'un de ceux-là avec une maille plus petite)":""}.`},
+];
+GAMES.push(...CH3_GAMES);
+
+// Petits schémas 2D : où les atomes se touchent
+function relSVG(st){
+  const clip = `<clipPath id="relc"><rect x="25" y="25" width="100" height="100"/></clipPath>`;
+  if(st==="CS") return `<svg class="rel" viewBox="0 0 150 150">${clip}<rect x="25" y="25" width="100" height="100" class="rel-sq"/><g clip-path="url(#relc)">${[[25,25],[125,25],[25,125],[125,125]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="50" class="rel-at"/>`).join("")}</g><line x1="25" y1="140" x2="125" y2="140" class="rel-dim"/><text x="75" y="149" class="rel-t">a = 2r</text></svg>`;
+  if(st==="CFC") return `<svg class="rel" viewBox="0 0 150 150">${clip}<rect x="25" y="25" width="100" height="100" class="rel-sq"/><g clip-path="url(#relc)">${[[25,25],[125,25],[25,125],[125,125]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="35.4" class="rel-at"/>`).join("")}<circle cx="75" cy="75" r="35.4" class="rel-at b"/></g><line x1="25" y1="25" x2="125" y2="125" class="rel-dim"/><text x="75" y="12" class="rel-t">face : diagonale a√2 = 4r</text></svg>`;
+  return `<svg class="rel" viewBox="0 0 150 150"><polygon points="25,125 125,125 125,25" class="rel-tri"/><text x="75" y="140" class="rel-t">a√2</text><text x="138" y="78" class="rel-t">a</text><text x="60" y="70" class="rel-t">a√3 = 4r</text><circle cx="25" cy="125" r="21.6" class="rel-at"/><circle cx="75" cy="75" r="21.6" class="rel-at b"/><circle cx="125" cy="25" r="21.6" class="rel-at"/></svg>`;
+}
+
+// ---------- Fiches du chapitre III ----------
+function grainsSVG(id){
+  let s = ""; const grains = [[0,0,70,80,0,"g1"],[70,0,160,70,25,"g2"],[0,80,90,160,-20,"g3"],[90,70,160,160,45,"g4"]];
+  grains.forEach(([x0,y0,x1,y1,ang,cls])=>{ const cx=(x0+x1)/2, cy=(y0+y1)/2, ca=Math.cos(ang*Math.PI/180), sa=Math.sin(ang*Math.PI/180);
+    for(let i=-6;i<=6;i++) for(let j=-6;j<=6;j++){ const x = cx + (i*14*ca - j*14*sa), y = cy + (i*14*sa + j*14*ca); if(x>x0+6&&x<x1-6&&y>y0+6&&y<y1-6) s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" class="et-p ${cls}"/>`; } });
+  return `<svg id="${id}" viewBox="0 0 160 160">${s}<path d="M70 0 L70 80 L0 80 M70 70 L160 70 M90 70 L90 160" class="et-joint"/></svg>`;
+}
+function buildCristal(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Qu'est-ce qu'un cristal ?</h3>
+      <p class="m-lead">La cristallographie étudie la <b>matière cristalline</b> à l'échelle atomique : les matériaux dont l'arrangement des atomes est <b>périodique</b>, c'est-à-dire qu'il se répète à l'identique dans les trois directions de l'espace. C'est le cas des <b>métaux et alliages</b>, des <b>céramiques</b> et de certains composites. Un verre ou un polymère amorphe, eux, n'ont pas d'ordre à longue distance : ils sont hors du champ de la cristallographie.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Monocristal ou polycristal</h3>
+      <div class="m-chips" id="crList"><button type="button" class="chip" data-k="mono">Monocristal</button><button type="button" class="chip" data-k="poly">Polycristal</button></div>
+      <div class="fc-row"><figure class="et-fig lg" id="crFig"></figure><div class="m-story" id="crTxt"></div></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> Trois échelles</h3>
+      <table class="fc-tab"><thead><tr><th>Échelle</th><th>Ce qu'on voit</th><th>Exemple</th></tr></thead><tbody>
+        <tr><td><b>Macroscopique</b></td><td>la pièce entière, parfois ses facettes</td><td>panneau photovoltaïque, cristal de galène ou de calcite</td></tr>
+        <tr><td><b>Microscopique</b> (µm)</td><td>les grains et les joints de grains</td><td>coupe polie d'un acier inoxydable au microscope</td></tr>
+        <tr><td><b>Atomique</b> (nm)</td><td>la maille qui se répète</td><td>rangées d'atomes dans un grain</td></tr>
+      </tbody></table>
+    </div>`;
+  const show = k => { $("crList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.k===k));
+    if(k==="mono"){ let s=""; for(let i=0;i<8;i++) for(let j=0;j<8;j++){ const x = 12+i*19.5+(j%2)*0, y = 12+j*19.5; s += `<circle cx="${x}" cy="${y}" r="4.5" class="et-p"/>`; } $("crFig").innerHTML = `<svg viewBox="0 0 160 160">${s}</svg>`;
+      $("crTxt").innerHTML = `<p class="st1"><b>Monocristal</b> : un seul bloc, un seul réseau périodique de bout en bout. Rare dans la nature à grande taille (galène, calcite, quartz) ; fabriqué industriellement pour le silicium des cellules photovoltaïques ou les aubes de turbine.</p>`; }
+    else { $("crFig").innerHTML = grainsSVG("crPoly");
+      $("crTxt").innerHTML = `<p class="st1"><b>Polycristal</b> : un assemblage de petits monocristaux appelés <b>grains</b> (ou cristallites), chacun avec sa propre orientation, séparés par des <b>joints de grains</b>. La taille des grains va de 1–2 nm à 10 cm. Presque tous les métaux courants sont polycristallins.</p><p class="st1">Les joints de grains freinent les dislocations : des grains fins rendent un métal plus résistant.</p>`; } };
+  $("crList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>show(b.dataset.k)); show("poly");
+}
+
+function buildMaille(){
+  const nodes = []; for(let i=0;i<5;i++) for(let j=0;j<4;j++) nodes.push([30+i*55, 28+j*42]);
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Maille = réseau + motif</h3>
+      <p class="m-lead">Un cristal se décrit en deux temps. Le <b>réseau</b> est l'ensemble des <b>nœuds</b> : des points qui ont tous exactement le même environnement, repérés par la base (a, b, c). Le <b>motif</b> est le groupe d'atomes (avec leurs coordonnées) que l'on accroche à chaque nœud. La <b>maille</b> est la plus petite boîte qui, répétée dans les trois directions, reconstruit tout le cristal.</p>
+      <div class="m-pick"><button type="button" class="btn small" id="mlBtn">▶ Poser le motif sur chaque nœud</button></div>
+      <svg id="mlSvg" viewBox="0 0 280 175" role="img" aria-label="Réseau, motif, cristal">
+        <g class="ml-lines">${nodes.filter(([x,y])=>x<250).map(([x,y])=>`<line x1="${x}" y1="${y}" x2="${x+55}" y2="${y}"/>`).join("")}${nodes.filter(([x,y])=>y<150).map(([x,y])=>`<line x1="${x}" y1="${y}" x2="${x}" y2="${y+42}"/>`).join("")}</g>
+        <rect x="30" y="28" width="55" height="42" class="ml-cell"/>
+        ${nodes.map(([x,y])=>`<g class="ml-node"><line x1="${x-4}" y1="${y-4}" x2="${x+4}" y2="${y+4}"/><line x1="${x-4}" y1="${y+4}" x2="${x+4}" y2="${y-4}"/></g>`).join("")}
+        ${nodes.map(([x,y])=>`<g class="ml-motif"><circle cx="${x}" cy="${y}" r="9" class="cA"/><circle cx="${x+16}" cy="${y-12}" r="5" class="cB"/><line x1="${x}" y1="${y}" x2="${x+16}" y2="${y-12}" class="ml-bond"/></g>`).join("")}
+        <text x="57" y="92" class="ml-lab">maille</text>
+      </svg>
+      <p class="m-lead" id="mlTxt">Les croix sont les nœuds du réseau ; le rectangle est une maille (ici à 2 dimensions, avec a et b).</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Les six paramètres de maille</h3>
+      <div class="fc-row">${cellSVG({a:1,b:1.3,c:1.5,al:80,be:100,ga:95,size:170,axes:true,atoms:[["nœud",[[0,0,0]],"cN",0.06]]})}
+      <ul class="fc-list"><li><b>a, b, c</b> : les longueurs des trois arêtes (en nm ou en Å, 1 Å = 0,1 nm).</li><li><b>α</b> : l'angle entre b et c · <b>β</b> : entre a et c · <b>γ</b> : entre a et b.</li><li>Dans une maille <b>cubique</b>, a = b = c et α = β = γ = 90°. Mais toutes les mailles ne sont pas cubiques : voir les 7 systèmes cristallins.</li></ul></div>
+      <p class="m-rule">Sur les dessins, les atomes sont représentés petits pour y voir clair. En réalité ils se <b>touchent</b> : dans une maille cubique simple, l'arête vaut exactement deux rayons, a = 2r.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> Un exemple : CsCl</h3>
+      <div class="fc-row">${cellSVG({atoms:STRUCT.CsCl.sp, size:150})}<ul class="fc-list"><li>Réseau cubique simple P : nœuds aux 8 sommets.</li><li>Motif : <b>Cl (0 ; 0 ; 0)</b> et <b>Cs (½ ; ½ ; ½)</b>.</li><li>Par maille : 8 × 1/8 = 1 Cl et 1 Cs → 1 motif CsCl, Z = 1.</li><li>On peut tout aussi bien mettre Cs à l'origine et Cl au centre : c'est le même cristal, vu d'une autre maille.</li></ul></div>
+    </div>`;
+  $("mlBtn").onclick = ()=>{ const on = $("mlSvg").classList.toggle("go"); $("mlTxt").textContent = on ? "Le même motif (un gros atome et un petit) est posé sur chaque nœud : on obtient le cristal. Le réseau dit où, le motif dit quoi." : "Les croix sont les nœuds du réseau ; le rectangle est une maille (ici à 2 dimensions, avec a et b)."; };
+}
+
+let cubKey = "CFC";
+function buildCubiques(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Les trois mailles cubiques des métaux… et quelques composés</h3>
+      <div class="m-chips" id="cuList">${Object.entries(STRUCT).map(([k,s])=>`<button type="button" class="chip" data-k="${k}">${k==="perov"?"Pérovskite":k==="diam"?"Diamant":k}</button>`).join("")}</div>
+      <div class="cu-wrap"><div id="cuFig"></div><div id="cuTxt" class="fc-calc"></div></div>
+      <div class="m-pick"><button type="button" class="btn small" id="cuCount">▶ Compter les atomes</button></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> La règle de partage</h3>
+      <table class="fc-tab"><thead><tr><th>Position</th><th>Partagé entre</th><th>Compte pour</th></tr></thead><tbody>
+        <tr><td>sommet</td><td>8 mailles</td><td><b>1/8</b></td></tr><tr><td>milieu d'une arête</td><td>4 mailles</td><td><b>1/4</b></td></tr><tr><td>centre d'une face</td><td>2 mailles</td><td><b>1/2</b></td></tr><tr><td>intérieur (centre…)</td><td>1 maille</td><td><b>1</b></td></tr>
+      </tbody></table>
+      <p class="m-rule">Résultat à retenir : cubique simple <b>1</b> atome, cubique centré <b>2</b>, cubique à faces centrées <b>4</b>. Le fer passe de CC (fer α, a = 0,29 nm) à CFC (fer γ, a = 0,35 nm) à 912 °C : c'est une <b>transformation allotropique</b>.</p>
+    </div>`;
+  const draw = (k, hl=null) => { cubKey = k; const s = STRUCT[k]; $("cuList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.k===k));
+    $("cuFig").innerHTML = cellSVG({atoms:s.sp, size:200, hl});
+    $("cuTxt").innerHTML = `<p><b>${s.n}</b> · ${s.ex}</p>` + s.sp.map(([sp,list,cls])=>`<p><i class="cl-key ${cls}"></i><b>${sp}</b> : ${list.map(p=>"("+p.map(v=>v===.5?"½":v===.25?"¼":v===.75?"¾":v).join(" ; ")+")").join(", ")} → ${kindLabel(spKinds(list))}</p>`).join("") + (s.rel?`<p>Contact entre atomes : <b>${s.rel}</b></p>`:"") + `<p id="cuRes"></p>`; };
+  $("cuList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ stopMethod(); draw(b.dataset.k); });
+  $("cuCount").onclick = ()=>{ stopMethod(); const s = STRUCT[cubKey]; const kinds = [...new Set(s.sp.flatMap(x=>x[1].map(posKind)))]; let t = 0;
+    kinds.forEach(k=>{ later(()=>{ draw(cubKey, k); $("cuRes").innerHTML = `<b>${k}</b> : ${s.sp.filter(x=>x[1].some(p=>posKind(p)===k)).map(([sp,list])=>{ const n = list.filter(p=>posKind(p)===k).reduce((a,p)=>a+expandPos(p).length,0); return `${sp} ${n} × ${k==="sommets"?"1/8":k==="milieu des arêtes"?"1/4":k==="centre des faces"?"1/2":"1"} = ${fmtN(n*posWeight(list.find(p=>posKind(p)===k)),3)}`; }).join(" · ")}`; }, t); t += 1400; });
+    later(()=>{ draw(cubKey); $("cuRes").innerHTML = `<b>Total par maille :</b> ${s.sp.map(([sp,list])=>`${spCount(list)} ${sp}`).join(" + ")}`; }, t); };
+  draw("CFC");
+}
+
+function buildCompacite(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Compacité : quelle fraction de la maille est vraiment remplie ?</h3>
+      <p class="fc-formula big">C = <span class="fc-frac"><span>n × 4/3 π r³</span><span>V<sub>maille</sub></span></span><small>n atomes de rayon r · pour plusieurs espèces : Σ n<sub>i</sub> × 4/3 π r<sub>i</sub>³</small></p>
+      <p class="m-lead">Les atomes sont vus comme des <b>sphères dures</b> qui se touchent. Le reste de la maille est du vide. C ne dépend pas de la taille de l'atome, seulement de l'arrangement.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Masse volumique : la masse d'une maille divisée par son volume</h3>
+      <p class="fc-formula big">ρ = <span class="fc-frac"><span>Z × M</span><span>N<sub>A</sub> × V<sub>maille</sub></span></span><small>Z motifs par maille · M en g/mol · V en cm³ · 1 nm = 10⁻⁷ cm</small></p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> Calcul pas à pas</h3>
+      <div class="m-chips" id="cpList">${METALS.filter(m=>["fer α","fer γ","cuivre","aluminium","tungstène","polonium"].includes(m[0])).map(m=>`<button type="button" class="chip" data-k="${m[0]}">${m[0]}</button>`).join("")}<button type="button" class="chip" data-k="NaCl">NaCl (ionique)</button><button type="button" class="chip" data-k="SrTiO3">SrTiO₃</button></div>
+      <div class="cu-wrap"><div id="cpFig"></div><div id="cpTxt" class="fc-calc"></div></div>
+    </div>`;
+  const run = k => { $("cpList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.k===k)); let html = "", fig = "";
+    if(k==="NaCl"){ const rc=0.102, ra=0.181, a=2*(rc+ra), V=a**3, vat=4*4/3*Math.PI*(rc**3+ra**3), M=58.44, Z=4; fig = cellSVG({atoms:STRUCT.NaCl.sp,size:170});
+      html = `<p><b>NaCl</b> : réseau CFC de Cl⁻ (4 par maille) avec Na⁺ au milieu des arêtes et au centre (4 par maille) : Z = 4.</p><p>Contact cation–anion le long d'une arête : a = 2 (r₊ + r₋) = 2 (0,102 + 0,181) = <b>${fmtN(a,3)} nm</b>.</p><p>C = 4 × 4/3 π (r₊³ + r₋³) / a³ = ${fmtN(vat,3)} / ${fmtN(V,3)} = <b>${fmtN(vat/V*100,3)} %</b>.</p><p>ρ = Z M / (N<sub>A</sub> a³) = 4 × 58,44 / (6,022 × 10²³ × ${fmtN(V*1e-21,3)}) = <b>${fmtN(Z*M/(NA*V*1e-21),3)} g/cm³</b>.</p>`; }
+    else if(k==="SrTiO3"){ const a=0.3905, V=a**3, rs=0.144, rt=0.0605, ro=0.140, vat=4/3*Math.PI*(rs**3+rt**3+3*ro**3), M=183.49; fig = cellSVG({atoms:STRUCT.perov.sp,size:170});
+      html = `<p><b>SrTiO₃</b> (pérovskite) : Sr aux sommets (1), Ti au centre (1), O au centre des faces (3) : Z = 1. Ions Sr²⁺, Ti⁴⁺, O²⁻ : 2 + 4 − 6 = 0.</p><p>a = 0,3905 nm, V = a³ = ${fmtN(V,3)} nm³.</p><p>C = 4/3 π (r<sub>Sr</sub>³ + r<sub>Ti</sub>³ + 3 r<sub>O</sub>³) / a³ = ${fmtN(vat,3)} / ${fmtN(V,3)} = <b>${fmtN(vat/V*100,3)} %</b> (les ions ne se touchent pas tous : la maille idéale est un peu « lâche » pour Ti).</p><p>ρ = 1 × 183,49 / (6,022 × 10²³ × ${fmtN(V*1e-21,3)}) = <b>${fmtN(M/(NA*V*1e-21),3)} g/cm³</b>.</p>`; }
+    else { const [nm,s,st,a,M] = METALS.find(m=>m[0]===k), R = REL[st], r = R.r(a), V = a**3, vat = R.n*4/3*Math.PI*r**3; fig = cellSVG({atoms:STRUCT[st].sp,size:170}) + relSVG(st);
+      html = `<p><b>${nm[0].toUpperCase()+nm.slice(1)}</b> (${s}) : ${STRUCT[st].n}, a = ${fmtN(a,4)} nm, M = ${fmtN(M,4)} g/mol.</p><p>1) n = <b>${R.n}</b> atome${R.n>1?"s":""} par maille.</p><p>2) ${R.txt} → r = ${fmtN(r,3)} nm.</p><p>3) V = a³ = ${fmtN(V,3)} nm³ ; volume des atomes = ${R.n} × 4/3 π r³ = ${fmtN(vat,3)} nm³ → C = <b>${fmtN(vat/V*100,3)} %</b>.</p><p>4) ρ = ${R.n} × ${fmtN(M,4)} / (6,022 × 10²³ × ${fmtN(V*1e-21,3)} cm³) = <b>${fmtN(R.n*M/(NA*V*1e-21),3)} g/cm³</b> = ${fmtN(R.n*M/(NA*V*1e-21)*1000,4)} kg/m³.</p>`; }
+    $("cpFig").innerHTML = `<div class="cl-show">${fig}</div>`; $("cpTxt").innerHTML = html; };
+  $("cpList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>run(b.dataset.k)); run("fer α");
+}
+
+function buildSystemes(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Les 7 systèmes cristallins</h3>
+      <p class="m-lead">Les relations entre a, b, c et α, β, γ définissent le <b>système cristallin</b>. Pour chaque système, les nœuds peuvent se placer de plusieurs façons : ce sont les <b>réseaux de Bravais</b>, 14 en tout. <b>P</b> : simple (sommets) · <b>I</b> : centré · <b>F</b> : faces centrées · <b>C</b> : bases centrées (deux faces opposées).</p>
+      <div class="sy-list">${SYSTEMS.map(s=>`<div class="sy-row"><div class="sy-head"><b>${s[0][0].toUpperCase()+s[0].slice(1)}</b><span>${s[1]}</span><span>${s[2]}</span></div><div class="sy-cells">${s[3].map(m=>`<figure class="sy-fig">${bravaisSVG(s,m,86)}<figcaption>${MODES[m]}</figcaption></figure>`).join("")}</div></div>`).join("")}</div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Pourquoi 14 et pas 4 × 7 = 28 ?</h3>
+      <p class="m-lead">Certains réseaux sont redondants. Exemple : un réseau <b>quadratique C</b> (nœuds au centre des deux bases). Vu de dessus, en choisissant d'autres vecteurs a' et b' dans le plan de base, on trouve une maille <b>quadratique P</b> plus petite, tournée de 45°, qui décrit exactement les mêmes nœuds.</p>
+      <div class="m-pick"><button type="button" class="btn small" id="syBtn">▶ Tracer la maille P équivalente</button></div>
+      <svg id="sySvg" viewBox="0 0 260 180" role="img" aria-label="Quadratique C équivaut à quadratique P">
+        <g class="sy-grid">${[0,1,2,3].map(i=>`<line x1="${20+i*70}" y1="20" x2="${20+i*70}" y2="160"/>`).join("")}${[0,1,2].map(j=>`<line x1="20" y1="${20+j*70}" x2="230" y2="${20+j*70}"/>`).join("")}</g>
+        <g class="sy-new">${[[90,55],[160,55],[90,125],[160,125],[55,90],[125,90],[195,90]].map(([x,y])=>`<polygon points="${x},${y-35} ${x+35},${y} ${x},${y+35} ${x-35},${y}"/>`).join("")}</g>
+        ${[0,1,2,3].map(i=>[0,1,2].map(j=>`<circle cx="${20+i*70}" cy="${20+j*70}" r="5" class="cN"/>`).join("")).join("")}
+        ${[0,1,2].map(i=>[0,1].map(j=>`<circle cx="${55+i*70}" cy="${55+j*70}" r="5" class="cC"/>`).join("")).join("")}
+        <text x="125" y="174" class="ml-lab">vue de dessus : sommets (bleu), centres des bases (vert)</text>
+      </svg>
+    </div>`;
+  $("syBtn").onclick = ()=>$("sySvg").classList.toggle("go");
+}
+
 const CUSTOM = {
   methode: {title:"<b>Méthode</b> · trouver la charge des ions", label:"Méthode", thumb:"Na⁺ Cl⁻", build: buildMethod},
   poly:    {title:"<b>Charge d'un groupement d'atomes</b> · CO₃, SO₄, NO₃…", label:"Groupements", thumb:"CO₃²⁻", build: buildPoly},
@@ -2909,6 +3216,11 @@ const CUSTOM = {
   c2_metaux: {title:"<b>Métaux et alliages</b> · ductiles, conducteurs", label:"Métaux", thumb:"Fe+C", build: buildMetaux},
   c2_ceram:  {title:"<b>Verres et céramiques</b> · durs et fragiles", label:"Céramiques", thumb:"SiO₂", build: buildCeram},
   c2_poly:   {title:"<b>Polymères</b> · chaînes, thermoplastiques, thermodurcissables", label:"Polymères", thumb:"–CH₂–", build: buildPolymeres},
+  c3_cristal:{title:"<b>Le cristal</b> · monocristal, polycristal, grains", label:"Cristal", thumb:"grains", build: buildCristal},
+  c3_maille: {title:"<b>La maille</b> · réseau + motif, paramètres a b c α β γ", label:"Maille", thumb:"a b c", build: buildMaille},
+  c3_cub:    {title:"<b>Mailles cubiques</b> · P, I, F et compter les atomes", label:"Cubiques", thumb:"8 × ⅛", build: buildCubiques},
+  c3_compa:  {title:"<b>Compacité et masse volumique</b> · calculs pas à pas", label:"Compacité", thumb:"C · ρ", build: buildCompacite},
+  c3_sys:    {title:"<b>Systèmes cristallins</b> · les 14 réseaux de Bravais", label:"Bravais", thumb:"7 · 14", build: buildSystemes},
   video:   {title:"<b>Vidéo</b> · les nombres quantiques et la configuration électronique", label:"Vidéo", thumb:"▶", build: buildVideo},
 };
 

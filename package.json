@@ -1,6 +1,6 @@
 {
   "name": "labo-atomes",
-  "version": "1.19.0",
+  "version": "1.20.0",
   "description": "Entraînement au chapitre I de sciences des matériaux : atomes, ions, quantité de matière, configurations électroniques",
   "main": "main.js",
   "author": "Quentin Leduc",
