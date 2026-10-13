@@ -673,6 +673,38 @@ html:not(.is-app) .app-only{display:none}
 .pj-cote.cA{fill:var(--accent)} .pj-cote.cB{fill:var(--sub-p)} .pj-cote.cC{fill:var(--accent2)}
 .pj-ax{stroke:var(--accent2);stroke-width:2} .pj-axt{font-family:var(--f-mono);font-weight:700;font-size:12px;fill:var(--accent2)}
 .pj-lv{padding:4px 8px;border-left:3px solid transparent} .pj-lv.on{border-left-color:var(--sub-f);background:var(--accent-soft)}
+
+/* Examen blanc */
+.ex-home{display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:18px 20px}
+.ex-home p{margin:0} .ex-home ul{margin:0;padding-left:1.2em}
+.ex-bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:10px 14px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.ex-time{font-family:var(--f-mono);font-size:1.4rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums} .ex-bar.over .ex-time{color:var(--bad)}
+.ex-bar .msg{flex:1;color:var(--muted);font-size:.9rem;min-width:160px}
+.ex-sheet{display:flex;flex-direction:column;gap:16px}
+.ex-sheet h3{font-family:var(--f-display);margin:0;font-size:1.2rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px} .ex-sheet h3 small{font-weight:400;color:var(--muted);font-size:.9rem}
+.ex-ex{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.ex-ex h4{font-family:var(--f-display);margin:0;font-size:1.05rem;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap} .ex-ex h4 span{color:var(--muted);font-weight:400}
+.ex-intro{margin:0} .ex-intro .fc-nuc{margin:0 4px}
+.ex-part{display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.ex-q{margin:0;font-weight:600} .ex-q small{color:var(--muted);font-weight:400;display:block;margin-top:2px}
+.ex-part textarea{font:inherit;width:100%;padding:8px 10px;border-radius:3px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);resize:vertical;min-height:84px}
+.pad{display:flex;flex-direction:column;gap:6px}
+.pad canvas{width:100%;max-width:480px;aspect-ratio:3/2;background:var(--surface);border:1.5px solid var(--line);border-radius:3px;touch-action:none;cursor:crosshair}
+.pad-tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center} .pad-tools .chip{min-width:0;padding:4px 10px;font-size:.82rem;display:flex;align-items:center;gap:6px}
+.pad-tools .chip i{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid var(--line)}
+.pad-img{max-width:480px;width:100%;border:1.5px solid var(--line);border-radius:3px;background:var(--surface);display:block}
+.ex-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px} @media (max-width:640px){.ex-cols{grid-template-columns:1fr}}
+.ex-col{background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:10px 12px;font-size:.93rem;min-width:0;overflow-x:auto}
+.ex-col h5{margin:0 0 6px;font-family:var(--f-display);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ex-col .you{white-space:pre-wrap;margin:0} .ex-col .you:empty::before{content:"(pas de réponse)";color:var(--muted)}
+.ex-col.model{border-left:4px solid var(--accent2);line-height:1.6}
+.sg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.9rem;color:var(--muted)} .sg .chip{min-width:40px;padding:4px 8px;font-family:var(--f-mono)}
+.ex-pts{font-family:var(--f-mono);font-weight:700;color:var(--accent);white-space:nowrap}
+.ex-res{display:grid;grid-template-columns:minmax(140px,1fr) auto auto;gap:4px 12px;font-size:.92rem;align-items:center}
+.ex-res .v{font-family:var(--f-mono)} .ex-res .ok{color:var(--ok)} .ex-res .ko{color:var(--bad)} .ex-res .v:empty::before{content:"–";color:var(--muted)}
+.ex-fig{display:flex;flex-wrap:wrap;gap:12px;align-items:center} .ex-fig svg.lw{max-width:340px}
+.ex-hist td.n{text-align:right;font-family:var(--f-mono)} .ex-hist .big{font-size:1.05rem;font-weight:700;color:var(--accent)}
+.ex-data{margin:0;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:3px;font-size:.9rem}
 </style>
 </head><body>
 <div class="wrap">
@@ -680,7 +712,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.21.0</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.22.0</span></p>
     </div>
   </header>
 
@@ -743,6 +775,16 @@ html:not(.is-app) .app-only{display:none}
     <div class="totals" id="totals"></div>
     <div class="tbl-wrap"><table><thead><tr><th>Jeu</th><th class="n">Exercices</th><th class="n">Réussite</th><th class="n">Record de série</th></tr></thead><tbody id="bilanRows"></tbody></table></div>
     <div class="reset" id="reset"></div>
+  </section>
+
+  <section class="panel" id="panel-exam" role="tabpanel" hidden>
+    <div class="panel-head"><h2>Examen blanc</h2><p>Un sujet complet dans le style de l'évaluation : 8 exercices, 24 points, 60 minutes.</p></div>
+    <div id="examBody"></div>
+  </section>
+
+  <section class="panel" id="panel-examhist" role="tabpanel" hidden>
+    <div class="panel-head"><h2>Mes examens</h2><p>Les examens blancs que tu as terminés et enregistrés, avec le détail par exercice.</p></div>
+    <div id="examHist"></div>
   </section>
 </div>
 
@@ -1269,6 +1311,7 @@ const CHAPTERS = [
   {id:"ch1", num:"I", title:"Atomes et ions", sub:"chapitre I, atomes et ions"},
   {id:"ch2", num:"II", title:"Liaisons et matériaux", sub:"chapitre II, liaisons interatomiques et classes de matériaux"},
   {id:"ch3", num:"III", title:"Cristallographie", sub:"chapitre III, cristallographie"},
+  {id:"exam", num:"✎", kicker:"Entraînement", title:"Examen blanc", sub:"examen blanc · 8 exercices · 24 points · 60 min"},
 ];
 const SECTIONS = [
   {id:"atome", ch:"ch1", tab:"Structure de l'atome", tools:true},
@@ -1282,6 +1325,7 @@ const SECTIONS = [
   {id:"maille", ch:"ch3", tab:"Maille et motif", tools:true},
   {id:"compacite", ch:"ch3", tab:"Compacité et masse volumique"},
   {id:"systemes", ch:"ch3", tab:"Systèmes cristallins"},
+  {id:"examen", ch:"exam", tab:"Examen blanc", lab:"sujet complet", items:[{id:"exam", tab:"Sujet"},{id:"examhist", tab:"Mes examens"}]},
 ];
 const chapOf = sid => CHAPTERS.find(c=>c.id===(SECTIONS.find(s=>s.id===sid)||SECTIONS[0]).ch);
 const TOOLS = [{id:"pt", tab:"Tableau périodique"},{id:"bilan", tab:"Bilan"}];
@@ -1299,29 +1343,31 @@ const gameById = id => GAMES.find(g=>g.id===id);
 // ---------- Onglets ----------
 function renderSections(){
   const ch = chapOf(state.section);
-  $("chaps").innerHTML = CHAPTERS.map(c=>`<button class="chap" role="tab" data-id="${c.id}" aria-selected="${c.id===ch.id}"><small>Chapitre ${c.num}</small>${c.title}</button>`).join("");
+  $("chaps").innerHTML = CHAPTERS.map(c=>`<button class="chap" role="tab" data-id="${c.id}" aria-selected="${c.id===ch.id}"><small>${c.kicker || "Chapitre "+c.num}</small>${c.title}</button>`).join("");
   $("chaps").querySelectorAll(".chap").forEach(b=>b.onclick=()=>{ const c = b.dataset.id; openSection(state.chap[c] || SECTIONS.find(s=>s.ch===c).id); });
   $("chapSub").textContent = ch.sub;
-  $("tabs").innerHTML = SECTIONS.filter(s=>s.ch===ch.id).map((s,i)=>`<button class="tab" role="tab" data-id="${s.id}" aria-selected="${state.section===s.id}">${s.tab}<small><span class="num">Exercice ${i+1}</span></small></button>`).join("");
+  $("tabs").innerHTML = SECTIONS.filter(s=>s.ch===ch.id).map((s,i)=>`<button class="tab" role="tab" data-id="${s.id}" aria-selected="${state.section===s.id}">${s.tab}<small><span class="num">${s.lab || "Exercice "+(i+1)}</span></small></button>`).join("");
   $("tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>openSection(b.dataset.id));
 }
 function openSection(id){
   const s = SECTIONS.find(x=>x.id===id) || SECTIONS[0];
   state.section = s.id; store.set("section", s.id); state.chap[s.ch] = s.id; store.set("chap", state.chap); renderSections();
-  const items = GAMES.filter(g=>g.section===s.id).concat(s.tools?TOOLS:[]);
+  const items = GAMES.filter(g=>g.section===s.id).concat(s.items||[]).concat(s.tools?TOOLS:[]);
   let tab = state.tabs[s.id]; if(!items.some(t=>t.id===tab)) tab = items[0].id;
   openTab(tab);
 }
 function renderSub(){
   const s = SECTIONS.find(x=>x.id===state.section);
   const btn = (t,cls)=>`<button class="stab ${cls}" role="tab" data-id="${t.id}" aria-selected="${state.tabs[s.id]===t.id}">${t.tab}</button>`;
-  $("subtabs").innerHTML = GAMES.filter(g=>g.section===s.id).map(g=>btn(g,"")).join("") + (s.tools?TOOLS.map(t=>btn(t,"tool")).join(""):"");
+  $("subtabs").innerHTML = GAMES.filter(g=>g.section===s.id).map(g=>btn(g,"")).join("") + (s.items||[]).map(t=>btn(t,"")).join("") + (s.tools?TOOLS.map(t=>btn(t,"tool")).join(""):"");
   $("subtabs").querySelectorAll(".stab").forEach(b=>b.onclick=()=>openTab(b.dataset.id));
 }
 function openTab(id){
   state.tabs[state.section] = id; store.set("tabs", state.tabs); renderSub();
   const g = gameById(id);
   $("panel-game").hidden = !g; $("panel-pt").hidden = id!=="pt"; $("panel-bilan").hidden = id!=="bilan";
+  $("panel-exam").hidden = id!=="exam"; $("panel-examhist").hidden = id!=="examhist";
+  if(id==="exam") renderExam(); if(id==="examhist") renderExamHist();
   if(g){
     $("gameTitle").textContent = g.title; $("gameDesc").textContent = g.desc;
     document.querySelectorAll("[data-opt]").forEach(el=>el.hidden = !(g.opts||[]).includes(el.dataset.opt));
@@ -3413,13 +3459,268 @@ const CUSTOM = {
   video:   {title:"<b>Vidéo</b> · les nombres quantiques et la configuration électronique", label:"Vidéo", thumb:"▶", build: buildVideo},
 };
 
+// ======================= Examen blanc =======================
+// Même squelette que le sujet type : 8 exercices, 24 points, 60 minutes. Chaque sujet tire d'autres données ; « Sujet 0 » reprend celles du sujet type.
+// Trois sortes de questions : « fields » (corrigées automatiquement), « free » (texte libre, corrigé type + auto-notation), « draw » (dessin à la souris, dessin attendu + auto-notation).
+const r4 = x => Math.round(x*4)/4;
+const ptsTxt = p => String(p).replace(".",",");
+const ptsLbl = p => `${ptsTxt(p)} pt${p>1?"s":""}`;
+const freeP = (pts, q, model) => ({kind:"free", pts, q, model});
+const drawP = (pts, q, model, hint) => ({kind:"draw", pts, q, model, hint});
+const fieldsP = (pts, q, fields, model="") => ({kind:"fields", pts, q, fields, model});
+const supA = e => `<sup>${e.A}</sup>${e.s}`;
+const DEF_NOTATION = `Dans ${nucl("X","A","Z")} : <b>X</b> est le symbole de l'élément ; <b>Z</b> le numéro atomique, c'est-à-dire le nombre de protons du noyau (et le nombre d'électrons de l'atome neutre) ; <b>A</b> le nombre de masse, c'est-à-dire le nombre de nucléons (protons + neutrons). Le nombre de neutrons vaut N = A − Z.`;
+
+function exAtomes(fixed){
+  let pick;
+  if(fixed) pick = [EL.find(e=>e.s==="Al"), EL.find(e=>e.s==="Br")];
+  else { const p = EL.filter(e=>e.Z>=3 && e.Z<=56); const a = rnd(p); let b; do { b = rnd(p); } while(b.s===a.s); pick = [a,b]; }
+  const at = pick.map(e=>({...e, N:e.A-e.Z}));
+  return {title:"Structure de l'atome", pts:3, intro:`On considère les atomes ${at.map(e=>nucl(e.s,e.A,e.Z)).join(" et ")}.`,
+    parts:[freeP(1, "a) Que représentent X, A et Z dans la notation ?", DEF_NOTATION),
+      fieldsP(2, "b) Pour chacun des deux atomes, donner le nom de l'élément, le nombre de protons, d'électrons et de neutrons.",
+        at.flatMap((e,i)=>[F(`nom${i}`,`${supA(e)} : nom de l'élément`,v=>norm(v)===norm(e.n),e.n,"text"),F(`p${i}`,`${supA(e)} : protons`,v=>isInt(v,e.Z),e.Z),F(`e${i}`,`${supA(e)} : électrons`,v=>isInt(v,e.Z),e.Z),F(`n${i}`,`${supA(e)} : neutrons`,v=>isInt(v,e.N),e.N)]),
+        at.map(e=>`${nucl(e.s,e.A,e.Z)} <b>${e.n}</b> : Z = ${e.Z} protons et ${e.Z} électrons (atome neutre) ; N = A − Z = ${e.A} − ${e.Z} = ${e.N} neutrons.`).join("<br>"))]};
+}
+function exIons(fixed){
+  const cat = fixed ? ["Ca",2] : rnd(ION_ONE.filter(x=>x[1]>0)), an = fixed ? ["N",-3] : rnd(ION_ONE.filter(x=>x[1]<0));
+  const ions = [cat,an].map(([s,q])=>({...BY_SYM[s],q}));
+  return {title:"Ions : anions et cations", pts:2, intro:`On considère les ions ${ions.map(i=>ionHTML(i.s,i.q)).join(" et ")}.`,
+    parts:[freeP(0.5,"a) Définir les termes cation et anion.", `Un <b>cation</b> est un ion chargé positivement : un atome qui a <b>perdu</b> un ou plusieurs électrons. Un <b>anion</b> est un ion chargé négativement : un atome qui a <b>gagné</b> un ou plusieurs électrons.`),
+      fieldsP(1.5,"b) Pour chaque ion, indiquer le degré d'oxydation, le nombre d'électrons gagnés ou perdus, et préciser s'il s'agit d'un cation ou d'un anion.",
+        ions.flatMap((c,i)=>[F(`do${i}`,`${ionHTML(c.s,c.q)} : degré d'oxydation (ex. +II)`,v=>parseDO(v)===c.q,doStr(c.q),"text"),F(`gp${i}`,`${ionHTML(c.s,c.q)} : électrons…`,selOk(c.q>0?"perdus":"gagnés"),c.q>0?"perdus":"gagnés","select",["gagnés","perdus"]),F(`k${i}`,`${ionHTML(c.s,c.q)} : combien ?`,v=>isInt(v,Math.abs(c.q)),Math.abs(c.q)),F(`ca${i}`,`${ionHTML(c.s,c.q)} : cation ou anion ?`,selOk(c.q>0?"cation":"anion"),c.q>0?"cation":"anion","select",["cation","anion"])]),
+        ions.map(c=>`${ionHTML(c.s,c.q)} (${c.n}, Z = ${c.Z}) : D.O. = <b>${doStr(c.q)}</b>. L'atome a <b>${c.q>0?"perdu":"gagné"} ${Math.abs(c.q)}</b> électron${Math.abs(c.q)>1?"s":""} : c'est un <b>${c.q>0?"cation":"anion"}</b> (il lui reste ${c.Z-c.q} électrons).`).join("<br>"))]};
+}
+const ISOBARS = [[[18,40],[20,40]],[[6,14],[7,14]],[[19,40],[20,40]],[[1,3],[2,3]],[[26,54],[24,54]]];
+function exIso(fixed){
+  let nu, same;
+  if(fixed){ nu = [[10,20],[10,22]]; same = true; }
+  else if(Math.random()<0.7){ const e = rnd(EL.filter(x=>x.iso.length && x.Z<=56)); nu = [[e.Z,e.A],[e.Z,rnd(e.iso)]]; same = true; }
+  else { nu = rnd(ISOBARS); same = false; }
+  const at = nu.map(([Z,A])=>({...PT[Z-1],A,N:A-Z}));
+  return {title:"Isotopes", pts:2, intro:`On considère les atomes ${at.map(e=>nucl(e.s,e.A,e.Z)).join(" et ")}.`,
+    parts:[freeP(0.5,"a) Définir le terme isotope.",`Des <b>isotopes</b> sont des atomes d'un même élément (même Z, donc même nombre de protons et d'électrons) qui diffèrent par leur nombre de neutrons, donc par leur nombre de masse A.`),
+      fieldsP(1.5,"b) Ces deux atomes sont-ils des isotopes ? Justifier et donner, pour chacun, le nombre de protons, d'électrons et de neutrons.",
+        [F("iso","Sont-ils des isotopes ?",selOk(same?"oui":"non"),same?"oui":"non","select",["oui","non"])].concat(at.flatMap((e,i)=>[F(`p${i}`,`${supA(e)} : protons`,v=>isInt(v,e.Z),e.Z),F(`e${i}`,`${supA(e)} : électrons`,v=>isInt(v,e.Z),e.Z),F(`n${i}`,`${supA(e)} : neutrons`,v=>isInt(v,e.N),e.N)])),
+        (same ? `<b>Oui</b> : même Z = ${at[0].Z} (même élément, ${at[0].n.toLowerCase()}) mais A différent (${at[0].A} et ${at[1].A}), donc un nombre de neutrons différent.` : `<b>Non</b> : ils ont le même nombre de masse A = ${at[0].A} mais des Z différents (${at[0].Z} et ${at[1].Z}) : ce sont deux éléments différents (${at[0].n.toLowerCase()} et ${at[1].n.toLowerCase()}). Même A ne suffit pas : des isotopes ont le même Z.`) + "<br>" + at.map(e=>`${nucl(e.s,e.A,e.Z)} : ${e.Z} protons, ${e.Z} électrons, ${e.A} − ${e.Z} = ${e.N} neutrons.`).join(" · "))]};
+}
+function exMole(fixed){
+  const [f,n] = fixed ? ["Al2O3","alumine"] : rnd(SUBSTANCES.filter(([x])=>Object.keys(parseFormula(x)).length<=3 && !/\./.test(x)));
+  const m = fixed ? 5.10 : rnd([1.2,2.5,3.6,5.10,7.5,10,12.4,15,20,25]), M = molarMass(f), nm = m/M;
+  return {title:"Mole et quantité de matière", pts:2, intro:"",
+    parts:[freeP(0.5,"a) Définir la mole et donner la valeur du nombre d'Avogadro N<sub>A</sub>.",`La <b>mole</b> est l'unité de quantité de matière : une mole contient autant d'entités (atomes, molécules, ions) qu'il y a d'atomes dans 12 g de carbone 12, soit <b>N<sub>A</sub> = 6,022 × 10²³ mol⁻¹</b> (nombre d'Avogadro).`),
+      fieldsP(1.5,`b) Calculer la quantité de matière contenue dans ${fmtN(m)} g ${deEl(n)} ${fmtF(f)}.<small>Données : ${dataLine(f)}.</small>`,
+        [F("M","Masse molaire M (g/mol)",v=>near(v,M,0.005),fmtN(M,5)),F("n","Quantité de matière n (mol)",v=>near(v,nm,0.01),fmtN(nm,4))],
+        `${massDetail(f)}<br>n = m / M = ${fmtN(m)} / ${fmtN(M,5)} ≈ <b>${fmtN(nm,4)} mol</b>.`)]};
+}
+function exConfig(fixed){
+  const Z = fixed ? 15 : rnd([5,6,7,8,9,11,12,13,14,15,16,17,19,20,31,32,33,34,35]);
+  const e = PT[Z-1], c = configOf(Z), vi = valenceInfo(Z);
+  return {title:"Configuration électronique", pts:2, intro:"",
+    parts:[fieldsP(2,`Donner la configuration électronique complète de l'atome ${deEl(e.n.toLowerCase())} ${e.s} (Z = ${Z}). Indiquer le nombre d'électrons de valence.`,
+      [F("cfg","Configuration électronique (ex. 1s2 2s2 2p6)",v=>sameCfg(parseCfg(v),c),cfgHTML(c),"wide"),F("ve","Électrons de valence",v=>isInt(v,vi.ve),vi.ve)],
+      `Z = ${Z} ⇒ ${Z} électrons, placés dans l'ordre de Klechkowski (1s 2s 2p 3s 3p 4s 3d 4p…) : <b>${cfgHTML(c)}</b>. La couche externe est n = ${vi.sh} (couche ${SHELL[vi.sh]}) : ${ORDER.filter(o=>c[o]>0&&+o[0]===vi.sh).map(o=>`${o}<sup>${c[o]}</sup>`).join(" ")} ⇒ <b>${vi.ve}</b> électrons de valence.`)]};
+}
+function exCovalent(fixed){
+  const key = fixed ? "CO2" : rnd(["CO2","H2O","NH3","CH4","N2","O2","Cl2","HCl"]);
+  const M = LEWIS[key], syms = [...new Set(M.a.map(x=>x[0]))], maxO = Math.max(...M.b.map(b=>b[2])), bondName = maxO===3?"triple":maxO===2?"double":"simple";
+  const cfgs = syms.map(s=>({s, e:BY_SYM[s], c:configOf(BY_SYM[s].Z), vi:valenceInfo(BY_SYM[s].Z)}));
+  const explain = cfgs.map(x=>{ const i = M.a.findIndex(a=>a[0]===x.s), nb = M.b.filter(b=>b[0]===i||b[1]===i).reduce((a,b)=>a+b[2],0), need = x.s==="H"?2:8;
+    return `<b>${x.e.n}</b> : ${x.vi.ve} électron${x.vi.ve>1?"s":""} de valence${x.s==="C"?" (état de valence 4 : un électron 2s monte en 2p, 4 célibataires)":""}, il lui en manque ${need-x.vi.ve} pour en avoir ${need} comme un gaz noble : il met en commun ${nb} électron${nb>1?"s":""}, soit ${nb} liaison${nb>1?"s":""}.`; }).join(" ");
+  const central = M.a[M.b[0][0]][0], other = M.a[M.b[0][1]][0];
+  const multi = maxO>1 ? ` ${central} et chaque ${other} mettent donc en commun <b>${maxO} doublets</b> : liaison <b>${bondName}</b>, notée ${central}${maxO===2?"=":"≡"}${other}. Chaque atome est entouré de 8 électrons.` : ` Chaque liaison est un doublet partagé ; au total chaque atome est entouré de 8 électrons (2 pour H).`;
+  const struct = M.b.map(([i,j,o])=>`${M.a[i][0]}${o===1?"–":o===2?"=":"≡"}${M.a[j][0]}`).join(", ");
+  return {title:`Liaison covalente et molécule de ${fmtF(key)}`, pts:3, intro:`${cfgs.map(x=>`${x.e.n} : Z = ${x.e.Z}`).join(" · ")}.`,
+    parts:[fieldsP(1,`a) Donner les configurations électroniques ${cfgs.map(x=>"de "+x.s).join(" et ")}.`, cfgs.map(x=>F("cfg"+x.s,`Configuration de ${x.s}`,v=>sameCfg(parseCfg(v),x.c),cfgHTML(x.c),"wide")), cfgs.map(x=>`${x.s} : <b>${cfgHTML(x.c)}</b>`).join(" · ")),
+      freeP(1,`b) À partir de leurs électrons de valence, expliquer pourquoi, dans ${fmtF(key)}, les atomes forment ${M.b.length===1?"une liaison "+bondName:"ces liaisons"} (${struct}).`, explain + multi),
+      drawP(0.5,`c) Représenter la molécule par son schéma de Lewis (un trait par doublet liant, les doublets non liants autour des atomes).`, `<div class="ex-fig">${lewisSVG(key).replace('class="lw"','class="lw go"').replace(' id="lwSvg"','')}</div><p>${M.b.length} liaison${M.b.length>1?"s":""} (${struct}) et ${M.a.reduce((a,x)=>a+x[3].length,0)} doublet${M.a.reduce((a,x)=>a+x[3].length,0)>1?"s":""} non liant${M.a.reduce((a,x)=>a+x[3].length,0)>1?"s":""}.</p>`, "Écris les symboles, relie-les par un trait par doublet partagé (deux traits pour une double liaison), et place les doublets non liants restants."),
+      freeP(0.5,`d) Préciser ce que représente une liaison ${bondName}.`, maxO===2 ? `Une <b>double liaison</b> représente <b>2 doublets liants</b> partagés entre les deux mêmes atomes, soit 4 électrons mis en commun (2 apportés par chaque atome).` : maxO===3 ? `Une <b>triple liaison</b> représente <b>3 doublets liants</b> partagés entre les deux atomes, soit 6 électrons mis en commun (3 par atome).` : `Une <b>liaison simple</b> représente <b>1 doublet liant</b> : 2 électrons mis en commun, un apporté par chaque atome, qui comptent pour les deux atomes.`)]};
+}
+const EX_IONIC_PAIRS = [["Na","Cl"],["K","Cl"],["Li","F"],["Mg","O"],["Ca","Cl"],["Na","F"],["Ca","O"],["Mg","Cl"]];
+function exLiaisons(fixed){
+  const pair = fixed ? ["Na","Cl"] : rnd(BOND_PAIRS), d = Math.round(Math.abs(CHI[pair[0]]-CHI[pair[1]])*100)/100;
+  const [A,B] = fixed ? ["Na","Cl"] : rnd(EX_IONIC_PAIRS), eA = BY_SYM[A], eB = BY_SYM[B], qA = ION_STABLE[eA.Z], qB = ION_STABLE[eB.Z], g = gcd(qA,-qB), nA = (-qB)/g, nB = qA/g, formula = A+(nA>1?nA:"")+B+(nB>1?nB:"");
+  return {title:"Liaisons chimiques et électronégativité", pts:4, intro:"",
+    parts:[freeP(1,"a) Citer les cinq types de liaisons chimiques vus en cours. Les classer en deux familles : liaisons fortes et liaisons faibles. Quelle liaison est la plus résistante ?", `Liaisons <b>fortes</b> : covalente, ionique, métallique. Liaisons <b>faibles</b> : hydrogène, Van der Waals. La plus résistante est la liaison <b>covalente</b>.`),
+      freeP(0.5,"b) Définir l'électronégativité.", `L'<b>électronégativité</b> χ d'un élément est sa tendance à attirer vers lui les électrons d'une liaison dans laquelle il est engagé (nombre sans unité, échelle de Pauling : de 0,7 pour Fr à 4,0 pour F).`),
+      fieldsP(1,`c) À partir de la différence d'électronégativité Δχ, indiquer comment distinguer une liaison covalente non polarisée, covalente polarisée et ionique. Appliquer à la liaison ${pair[0]}–${pair[1]}.<small>Données : χ(${pair[0]}) = ${chiTxt(CHI[pair[0]])} ; χ(${pair[1]}) = ${chiTxt(CHI[pair[1]])}.</small>`,
+        [F("d",`Δχ pour ${pair[0]}–${pair[1]}`,v=>isFinite(parseNum(v))&&Math.abs(parseNum(v)-d)<0.011,chiTxt(d)),F("cl","Type de liaison",selOk(bondClass(d)),bondClass(d),"select",["covalente non polarisée","covalente polarisée","ionique"])],
+        chiRanges(d) + `Δχ = |${chiTxt(CHI[pair[0]])} − ${chiTxt(CHI[pair[1]])}| = <b>${chiTxt(d)}</b> : liaison <b>${bondClass(d)}</b>.`),
+      freeP(1.5,`d) Expliquer la formation de la liaison dans ${fmtF(formula)} : transfert d'électrons, ions formés et nature de l'interaction entre ces ions.<small>${eA.n} : Z = ${eA.Z} ; ${eB.n.toLowerCase()} : Z = ${eB.Z}.</small>`,
+        `${eA.n} (${cfgHTML(configOf(eA.Z))}) a <b>${qA}</b> électron${qA>1?"s":""} de valence ; ${eB.n.toLowerCase()} (${cfgHTML(configOf(eB.Z))}) en a ${valenceInfo(eB.Z).ve}, il lui en manque ${-qB}. ${A} <b>cède</b> ${qA>1?"ses "+qA+" électrons":"son électron"} de valence${nB>1?` (un à chaque ${B})`:""}${nA>1?` ; il faut ${nA} ${A} pour fournir les ${-qB} électrons que demande ${B}`:""} : on obtient les ions <b>${ionHTML(A,qA)}</b> et <b>${ionHTML(B,qB)}</b>, qui ont chacun la configuration d'un gaz noble. Ces ions de charges opposées s'attirent par <b>interaction électrostatique</b> : c'est la liaison <b>ionique</b>, qui assemble les ions en un cristal ${fmtF(formula)}.`)]};
+}
+// Cristaux de l'exercice 8 : a et rayons en Å (comme le sujet), M en g/mol
+const EX_CRYSTALS = [
+  {f:"CsCl", n:"chlorure de césium", st:"CsCl", a:4.123, r:{Cl:1.81, Cs:1.69}, M:168.36, Z:1, desc:"une structure cubique simple. Le chlore est placé aux sommets de la maille et le césium au centre de la maille."},
+  {f:"NaCl", n:"chlorure de sodium", st:"NaCl", a:5.64, r:{Cl:1.81, Na:1.02}, M:58.44, Z:4, desc:"une structure cubique à faces centrées. Le chlore occupe les sommets et le centre des faces ; le sodium occupe le milieu des arêtes et le centre de la maille."},
+  {f:"KCl", n:"chlorure de potassium", st:"NaCl", a:6.29, r:{Cl:1.81, K:1.38}, M:74.55, Z:4, ren:{Na:"K"}, desc:"une structure de type NaCl (cubique à faces centrées). Le chlore occupe les sommets et le centre des faces ; le potassium occupe le milieu des arêtes et le centre de la maille."},
+  {f:"MgO", n:"oxyde de magnésium", st:"NaCl", a:4.21, r:{O:1.40, Mg:0.72}, M:40.30, Z:4, ren:{Cl:"O", Na:"Mg"}, desc:"une structure de type NaCl (cubique à faces centrées). L'oxygène occupe les sommets et le centre des faces ; le magnésium occupe le milieu des arêtes et le centre de la maille."},
+  {f:"Po", n:"polonium", st:"CS", a:3.35, M:209, desc:"une structure cubique simple : un atome à chaque sommet de la maille."},
+  {f:"Fe", n:"fer α", st:"CC", a:2.87, M:55.85, desc:"une structure cubique centrée : un atome à chaque sommet et un atome au centre de la maille."},
+  {f:"W", n:"tungstène", st:"CC", a:3.165, M:183.84, desc:"une structure cubique centrée : un atome à chaque sommet et un atome au centre de la maille."},
+  {f:"Cu", n:"cuivre", st:"CFC", a:3.615, M:63.55, desc:"une structure cubique à faces centrées : un atome à chaque sommet et un au centre de chaque face."},
+  {f:"Al", n:"aluminium", st:"CFC", a:4.05, M:26.98, desc:"une structure cubique à faces centrées : un atome à chaque sommet et un au centre de chaque face."},
+  {f:"Au", n:"or", st:"CFC", a:4.08, M:196.97, desc:"une structure cubique à faces centrées : un atome à chaque sommet et un au centre de chaque face."},
+];
+function exCristal(fixed){
+  const X = fixed ? EX_CRYSTALS[0] : rnd(EX_CRYSTALS), metal = !X.r;
+  const sp = STRUCT[X.st].sp.map(([s,list,cls,r])=>[metal ? X.f : (X.ren && X.ren[s]) || s, list, cls, r]);
+  const V = X.a**3, Vcm = V*1e-24, Z = metal ? REL[X.st].n : X.Z;
+  const radii = metal ? {[X.f]: REL[X.st].r(X.a)} : X.r;
+  const vat = sp.reduce((a,[s,list])=>a + spCount(list)*4/3*Math.PI*radii[s]**3, 0), C = vat/V, rho = Z*X.M/(NA*Vcm);
+  const fx = x => fmtN(x,4);
+  const data = `Données : a = ${fx(X.a)} Å ; ${Object.entries(radii).map(([s,r])=>`r(${metal?s:ionHTML(s,ionCharge(s,CHARGES[s][0]>0?1:-1))}) = ${fmtN(r,3)} Å`).join(" ; ")} ; M(${fmtF(X.f)}) = ${fmtN(X.M,5)} g/mol ; N<sub>A</sub> = 6,022 × 10²³ mol⁻¹ ; 1 Å = 10⁻⁸ cm. Volume d'une sphère : V = 4/3 π r³ ; volume d'une maille cubique : V<sub>maille</sub> = a³.`;
+  const legend = `<small>${sp.map(x=>`<i class="cl-key ${x[2]}"></i>${x[0]}`).join(" · ")}</small>`;
+  const countF = sp.map(([s,list],i)=>F(`n${i}`,`Nombre de ${s} par maille`,v=>isInt(v,spCount(list)),spCount(list)));
+  return {title:`Cristallographie : structure ${metal?"du "+X.n:X.f}`, pts:6,
+    intro:`${metal ? "Le "+X.n : "Le "+X.n+" "+fmtF(X.f)} cristallise dans ${X.desc}<p class="ex-data">${data}</p>`,
+    parts:[freeP(1,"a) Définir une maille cristalline. Préciser les deux éléments nécessaires pour la décrire et expliquer comment elle permet de reconstruire un cristal.", `Une <b>maille</b> est le plus petit volume (un parallélépipède défini par a, b, c, α, β, γ) qui contient toute l'information du cristal. On la décrit par deux éléments : le <b>réseau</b> (l'ensemble des nœuds, repérés par la base a, b, c) et le <b>motif</b> (les atomes posés sur chaque nœud, avec leurs coordonnées). En répétant la maille par <b>translation</b> le long de a, b et c, dans les trois directions de l'espace, on reconstruit tout le cristal.`),
+      drawP(1,`b) Dessiner la maille de ${fmtF(X.f)} en trois dimensions${metal?"":", en distinguant clairement les deux types d'ions"}.`, `<div class="ex-fig">${cellSVG({atoms:sp, size:180})}<div>${legend}<br>${sp.map(([s,list])=>`${s} : ${kindLabel(spKinds(list))}`).join("<br>")}</div></div>`, "Un cube en perspective, les atomes aux bonnes positions, et une légende pour chaque espèce."),
+      drawP(1,"c) Dessiner la projection de cette maille selon la direction [001] (projection sur le plan (001)), avec les cotes.", `<div class="ex-fig">${projSVG({atoms:sp, size:160})}<div>${legend}<br>Cote 0;1 : plancher et plafond superposés · ½ : mi-hauteur.</div></div>`, "Un carré (la face a × b), un cercle par position, la cote (0;1, ½…) à côté de chaque atome, et une légende."),
+      fieldsP(1.5,`d) Calculer le nombre ${metal?"d'atomes":"d'ions de chaque espèce"} contenus dans une maille élémentaire. En déduire le nombre de ${metal?"motifs":"formules "+fmtF(X.f)} par maille.`,
+        countF.concat([F("Z",`Nombre de ${metal?"motifs":"formules "+fmtF(X.f)} par maille (Z)`,v=>isInt(v,Z),Z)]),
+        sp.map(([s,list])=>`<b>${s}</b> : ${countDetail(list)} → <b>${spCount(list)}</b> par maille.`).join("<br>") + `<br>Donc <b>Z = ${Z}</b> ${metal?"atome"+(Z>1?"s":"")+" par maille, soit "+Z+" motif"+(Z>1?"s":""):"formule"+(Z>1?"s":"")+" "+fmtF(X.f)+" par maille"}.`),
+      fieldsP(1.5,`e) Calculer la compacité de la structure, puis la masse volumique de ${fmtF(X.f)}.`,
+        [F("C","Compacité C (en %)",v=>near(v,C*100,0.02),fmtN(C*100,3)),F("rho","Masse volumique ρ (en g/cm³)",v=>near(v,rho,0.02),fmtN(rho,3))],
+        `V<sub>maille</sub> = a³ = ${fx(X.a)}³ = <b>${fmtN(V,4)} Å³</b>. Volume des ${metal?"atomes":"ions"} : ${sp.map(([s,list])=>`${spCount(list)} × 4/3 π × ${fmtN(radii[s],3)}³ = ${fmtN(spCount(list)*4/3*Math.PI*radii[s]**3,4)}`).join(" + ")} = ${fmtN(vat,4)} Å³. C = ${fmtN(vat,4)} / ${fmtN(V,4)} = <b>${fmtN(C*100,3)} %</b>.<br>Masse de la maille = Z × M / N<sub>A</sub> = ${Z} × ${fmtN(X.M,5)} / 6,022 × 10²³ = ${fmtN(Z*X.M/NA,4)} g. V<sub>maille</sub> = ${fmtN(V,4)} Å³ = ${fmtN(Vcm,4)} cm³ (1 Å³ = 10⁻²⁴ cm³). ρ = ${fmtN(Z*X.M/NA,4)} / ${fmtN(Vcm,4)} ≈ <b>${fmtN(rho,3)} g/cm³</b> (${fmtN(rho*1000,4)} kg/m³).`)]};
+}
+const EXAM_GENS = [exAtomes, exIons, exIso, exMole, exConfig, exCovalent, exLiaisons, exCristal];
+
+// ---------- Déroulement ----------
+let exam = null, examClock = null, exEndArmed = false;
+function newExam(fixed){
+  exam = {fixed, ex: EXAM_GENS.map((g,i)=>({n:i+1, ...g(fixed)})), start: Date.now(), dur: 60*60, finished:false, self:{}, view:null, saved:false};
+  exam.ex.forEach(e=>e.parts.forEach((p,j)=>{ p.id = `x${e.n}_${j}`; if(p.fields) p.fields.forEach(f=>f.id = `${p.id}_${f.id}`); }));
+  exEndArmed = false; renderExam(true); startClock();
+  $("panel-exam").scrollIntoView({behavior:"smooth", block:"start"});
+}
+const fmtTime = s => `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+function startClock(){
+  clearInterval(examClock);
+  const tick = ()=>{ if(!exam || exam.finished){ clearInterval(examClock); return; }
+    const rem = exam.dur - Math.floor((Date.now()-exam.start)/1000), t = $("exTime"), bar = $("exBar");
+    if(t) t.textContent = fmtTime(Math.max(rem,0));
+    if(rem<=0 && bar && !bar.classList.contains("over")){ bar.classList.add("over"); $("exMsg").textContent = "Temps écoulé : termine et passe à la correction."; } };
+  tick(); examClock = setInterval(tick, 1000);
+}
+function drawPad(id){
+  const cs = getComputedStyle(document.documentElement), col = v => cs.getPropertyValue(v).trim();
+  const pens = [["ink",col("--ink"),"Trait"],["accent",col("--accent"),"Violet"],["sub",col("--sub-p"),"Orange"],["accent2",col("--accent2"),"Vert"]];
+  return `<div class="pad" id="pad-${id}"><div class="pad-tools">${pens.map(([k,c,l],i)=>`<button type="button" class="chip pen" data-c="${c}" aria-pressed="${i===0}"><i style="background:${c}"></i>${l}</button>`).join("")}<button type="button" class="chip pen" data-c="erase" aria-pressed="false">Gomme</button><button type="button" class="chip clr">Tout effacer</button></div><canvas id="cv-${id}" width="840" height="560" aria-label="Zone de dessin"></canvas></div>`;
+}
+function wirePad(id){
+  const pad = $("pad-"+id), cv = $("cv-"+id), ctx = cv.getContext("2d");
+  const surface = () => getComputedStyle(document.documentElement).getPropertyValue("--surface").trim();
+  const blank = ()=>{ ctx.fillStyle = surface(); ctx.fillRect(0,0,cv.width,cv.height); };
+  blank();
+  let color = pad.querySelector(".pen").dataset.c, erase = false, down = false;
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  const pos = ev => { const r = cv.getBoundingClientRect(); return [(ev.clientX-r.left)*cv.width/r.width, (ev.clientY-r.top)*cv.height/r.height]; };
+  cv.onpointerdown = ev => { down = true; cv.setPointerCapture(ev.pointerId); const [x,y] = pos(ev); ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+0.1,y); ctx.strokeStyle = erase ? surface() : color; ctx.lineWidth = erase ? 28 : 3.2; ctx.stroke(); ev.preventDefault(); };
+  cv.onpointermove = ev => { if(!down) return; const [x,y] = pos(ev); ctx.strokeStyle = erase ? surface() : color; ctx.lineWidth = erase ? 28 : 3.2; ctx.lineTo(x,y); ctx.stroke(); };
+  cv.onpointerup = cv.onpointercancel = ()=>{ down = false; };
+  pad.querySelectorAll(".pen").forEach(b=>b.onclick=()=>{ pad.querySelectorAll(".pen").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); erase = b.dataset.c==="erase"; if(!erase) color = b.dataset.c; });
+  pad.querySelector(".clr").onclick = blank;
+}
+function partRun(p){
+  const head = `<p class="ex-q">${p.q} <small>${ptsLbl(p.pts)}</small></p>`;
+  if(p.kind==="fields") return `<div class="ex-part">${head}${p.fields.map(fieldHTML).join("")}</div>`;
+  if(p.kind==="free") return `<div class="ex-part">${head}<textarea id="${p.id}" placeholder="Ta réponse, comme sur la copie…"></textarea></div>`;
+  return `<div class="ex-part">${head}${p.hint?`<p class="hint">${p.hint}</p>`:""}${drawPad(p.id)}</div>`;
+}
+function renderExam(force){
+  const view = !exam ? "home" : exam.finished ? "done" : "run";
+  if(!force && exam && exam.view===view) return;
+  if(exam) exam.view = view;
+  const box = $("examBody");
+  if(view==="home"){
+    const exams = store.get("exams", []);
+    box.innerHTML = `<div class="ex-home">
+      <p>Le sujet suit le modèle de l'évaluation : <b>8 exercices</b> dans le même ordre et avec le même barème (3 + 2 + 2 + 2 + 2 + 3 + 4 + 6 = <b>24 points</b>), un chronomètre de <b>60 minutes</b> qui ne bloque pas la saisie. À chaque sujet, les atomes, ions, composés, molécules et structures cristallines changent.</p>
+      <ul><li><b>Calculs et réponses courtes</b> : tapées dans l'appli, corrigées automatiquement (la note est au prorata des réponses justes).</li>
+        <li><b>Définitions et explications</b> : tu rédiges dans une zone de texte ; à la correction, le corrigé type s'affiche à côté de ta réponse et tu t'attribues les points.</li>
+        <li><b>Schémas</b> (molécule, maille en 3D, projection) : tu dessines à la souris ; à la correction, le dessin attendu s'affiche à côté du tien.</li></ul>
+      <p class="hint">Le tableau périodique n'est pas affiché pendant l'examen : les données nécessaires sont dans l'énoncé, comme sur le sujet. Si tu fermes l'appli en cours d'examen, le sujet est perdu. ${exams.length ? `Tu as déjà enregistré ${exams.length} examen${exams.length>1?"s":""} : voir « Mes examens ».` : ""}</p>
+      <div class="actions"><button type="button" class="btn" id="exNew">Nouveau sujet</button><button type="button" class="btn ghost" id="exType">Sujet 0 · le sujet type</button></div>
+    </div>`;
+    $("exNew").onclick = ()=>newExam(false); $("exType").onclick = ()=>newExam(true);
+    return;
+  }
+  if(view==="run"){
+    box.innerHTML = `<div class="ex-bar" id="exBar"><span class="ex-time" id="exTime">60:00</span><span class="msg" id="exMsg">${exam.fixed?"Sujet 0 (sujet type)":"Sujet aléatoire"} · 8 exercices · 24 points · réponds dans l'ordre que tu veux</span><button type="button" class="btn small" id="exEnd">Terminer et corriger</button></div>
+      <div class="ex-sheet"><h3>Sciences des matériaux · Examen blanc <small>Durée : 60 min · 24 points</small></h3>
+      ${exam.ex.map(e=>`<section class="ex-ex" id="ex${e.n}"><h4>Exercice ${e.n} — ${e.title} <span>(${ptsLbl(e.pts)})</span></h4>${e.intro?`<div class="ex-intro">${e.intro}</div>`:""}${e.parts.map(partRun).join("")}</section>`).join("")}
+      <div class="actions"><button type="button" class="btn" id="exEnd2">Terminer et corriger</button></div></div>`;
+    exam.ex.forEach(e=>e.parts.filter(p=>p.kind==="draw").forEach(p=>wirePad(p.id)));
+    const end = ()=>{ if(!exEndArmed){ exEndArmed = true; $("exMsg").innerHTML = `<b>Tu es sûr ?</b> Clique encore une fois sur « Terminer » pour passer à la correction.`; $("exEnd").textContent = "Oui, terminer"; $("exEnd2").textContent = "Oui, terminer"; setTimeout(()=>{ if(exam && !exam.finished){ exEndArmed = false; if($("exEnd")){ $("exEnd").textContent = "Terminer et corriger"; $("exEnd2").textContent = "Terminer et corriger"; $("exMsg").textContent = "8 exercices · 24 points"; } } }, 6000); return; } finishExam(); };
+    $("exEnd").onclick = end; $("exEnd2").onclick = end;
+    return;
+  }
+  renderDone();
+}
+function finishExam(){
+  exam.end = Date.now(); exam.finished = true; clearInterval(examClock);
+  exam.ex.forEach(e=>e.parts.forEach(p=>{
+    if(p.kind==="fields"){ p.res = p.fields.map(f=>{ const el = $(f.id), v = el ? el.value : ""; return {f, v, ok: f.ok(v)}; }); const okN = p.res.filter(r=>r.ok).length; p.got = r4(p.pts*okN/p.res.length); }
+    else if(p.kind==="free"){ const el = $(p.id); p.ans = el ? el.value.trim() : ""; }
+    else { const cv = $("cv-"+p.id); p.img = cv ? cv.toDataURL("image/png") : null; }
+  }));
+  renderExam(true); $("panel-exam").scrollIntoView({behavior:"smooth", block:"start"});
+}
+const exScore = e => e.parts.reduce((a,p)=>a + (p.kind==="fields" ? p.got : (exam.self[p.id]||0)), 0);
+const exTotal = () => exam.ex.reduce((a,e)=>a+exScore(e), 0);
+function sgHTML(p){ const steps = []; for(let v=0; v<=p.pts+1e-9; v+=0.5) steps.push(v); return `<div class="sg"><span>Ta note pour cette question :</span>${steps.map(v=>`<button type="button" class="chip sg-btn" data-p="${p.id}" data-v="${v}" aria-pressed="${(exam.self[p.id]??null)===v}">${ptsTxt(v)}</button>`).join("")}<span>/ ${ptsTxt(p.pts)}</span></div>`; }
+function partDone(p){
+  const head = `<p class="ex-q">${p.q} <small>${ptsLbl(p.pts)}</small></p>`;
+  if(p.kind==="fields") return `<div class="ex-part">${head}<div class="ex-res">${p.res.map(r=>`<span>${r.f.label}</span><span class="v ${r.ok?"ok":"ko"}">${r.v.replace(/</g,"&lt;")}</span><span class="${r.ok?"ok":"ko"}">${r.ok?"✓":"→ "+r.f.ans}</span>`).join("")}</div>${p.model?`<div class="ex-col model"><h5>Corrigé</h5>${p.model}</div>`:""}<p class="ex-pts">${ptsTxt(p.got)} / ${ptsTxt(p.pts)} (${p.res.filter(r=>r.ok).length} réponse${p.res.filter(r=>r.ok).length>1?"s":""} juste${p.res.filter(r=>r.ok).length>1?"s":""} sur ${p.res.length})</p></div>`;
+  const you = p.kind==="free" ? `<p class="you">${p.ans.replace(/</g,"&lt;")}</p>` : (p.img ? `<img class="pad-img" src="${p.img}" alt="Ton dessin">` : `<p class="you"></p>`);
+  return `<div class="ex-part">${head}<div class="ex-cols"><div class="ex-col"><h5>Ta réponse</h5>${you}</div><div class="ex-col model"><h5>Corrigé</h5>${p.model}</div></div>${sgHTML(p)}</div>`;
+}
+function renderDone(){
+  const mins = Math.round((exam.end-exam.start)/60000);
+  $("examBody").innerHTML = `<div class="ex-bar done" id="exBar"><span class="ex-time" id="exTotal"></span><span class="msg" id="exMsg">Temps : ${mins} min. Les calculs sont corrigés ; pour les définitions et les dessins, compare avec le corrigé et attribue-toi les points.</span><button type="button" class="btn small" id="exSave">Enregistrer dans mes examens</button><button type="button" class="btn ghost small" id="exAgain">Nouveau sujet</button></div>
+    <div class="ex-sheet">${exam.ex.map(e=>`<section class="ex-ex" id="ex${e.n}"><h4>Exercice ${e.n} — ${e.title} <span class="ex-pts" id="exsub${e.n}"></span></h4>${e.intro?`<div class="ex-intro">${e.intro}</div>`:""}${e.parts.map(partDone).join("")}</section>`).join("")}</div>`;
+  document.querySelectorAll(".sg-btn").forEach(b=>b.onclick=()=>{ exam.self[b.dataset.p] = +b.dataset.v; document.querySelectorAll(`.sg-btn[data-p="${b.dataset.p}"]`).forEach(x=>x.setAttribute("aria-pressed", x===b)); updateExamTotals(); });
+  $("exSave").onclick = saveExam; $("exAgain").onclick = ()=>{ exam = null; renderExam(true); };
+  updateExamTotals();
+}
+function updateExamTotals(){
+  exam.ex.forEach(e=>{ const el = $("exsub"+e.n); if(el) el.textContent = `${ptsTxt(exScore(e))} / ${ptsTxt(e.pts)}`; });
+  const pend = exam.ex.flatMap(e=>e.parts).filter(p=>p.kind!=="fields" && exam.self[p.id]==null).length;
+  $("exTotal").innerHTML = `Note : ${ptsTxt(exTotal())} / 24${pend?` <small style="font-size:.8rem;color:var(--muted)">(${pend} question${pend>1?"s":""} à noter)</small>`:""}`;
+  if(exam.saved){ $("exSave").textContent = "Enregistré ✓"; $("exSave").disabled = true; }
+}
+function saveExam(){
+  const exams = store.get("exams", []);
+  const rec = {date: new Date().toISOString(), fixed: exam.fixed, score: exTotal(), max: 24, min: Math.round((exam.end-exam.start)/60000), detail: exam.ex.map(e=>[e.title, e.pts, exScore(e)])};
+  if(exam.saved){ exams[exams.length-1] = rec; } else exams.push(rec);
+  store.set("exams", exams); exam.saved = true; updateExamTotals(); renderExamHist();
+  $("exMsg").textContent = "Enregistré. Tu peux encore ajuster tes notes : clique de nouveau sur Enregistrer pour mettre à jour.";
+  $("exSave").textContent = "Enregistré ✓"; $("exSave").disabled = false;
+}
+let histArmed = false;
+function renderExamHist(){
+  const exams = store.get("exams", []);
+  if(!exams.length){ $("examHist").innerHTML = `<div class="ex-home"><p>Aucun examen enregistré pour l'instant. Termine un sujet dans l'onglet « Sujet », puis clique sur « Enregistrer dans mes examens ».</p></div>`; return; }
+  const titles = EXAM_GENS.map((g,i)=>["Atome","Ions","Isotopes","Mole","Config.","Covalente","Liaisons","Cristallo."][i]);
+  const best = Math.max(...exams.map(x=>x.score)), avg = exams.reduce((a,x)=>a+x.score,0)/exams.length;
+  $("examHist").innerHTML = `<div class="totals">${[[exams.length,"Examens passés"],[ptsTxt(best)+" / 24","Meilleure note"],[ptsTxt(Math.round(avg*4)/4)+" / 24","Moyenne"],[ptsTxt(exams[exams.length-1].score)+" / 24","Dernier examen"]].map(([v,l])=>`<div class="total"><b>${v}</b><span>${l}</span></div>`).join("")}</div>
+    <div class="tbl-wrap ex-hist"><table><thead><tr><th>Date</th><th>Sujet</th><th class="n">Note</th>${titles.map((t,i)=>`<th class="n" title="Exercice ${i+1}">${i+1}. ${t}<br><small>/ ${EXAM_GENS[i](true).pts}</small></th>`).join("")}<th class="n">Durée</th></tr></thead><tbody>
+    ${exams.slice().reverse().map(x=>`<tr><td>${new Date(x.date).toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"})} ${new Date(x.date).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</td><td>${x.fixed?"Sujet 0":"aléatoire"}</td><td class="n big">${ptsTxt(x.score)}</td>${x.detail.map(d=>`<td class="n">${ptsTxt(d[2])}</td>`).join("")}<td class="n">${x.min} min</td></tr>`).join("")}
+    </tbody></table></div>
+    <div class="reset">${histArmed ? `<span>Tous les examens enregistrés seront effacés.</span><button class="btn danger small" id="ehYes">Effacer</button><button class="btn ghost small" id="ehNo">Annuler</button>` : `<button class="btn ghost small" id="ehAsk">Effacer l'historique des examens</button>`}</div>`;
+  if(histArmed){ $("ehYes").onclick=()=>{ store.set("exams",[]); histArmed=false; renderExamHist(); }; $("ehNo").onclick=()=>{ histArmed=false; renderExamHist(); }; }
+  else $("ehAsk").onclick=()=>{ histArmed=true; renderExamHist(); };
+}
+
 // ---------- Bilan ----------
 let resetArmed = false;
 function renderBilan(){
   const all = Object.values(state.stats).reduce((a,s)=>({ok:a.ok+s.ok,total:a.total+s.total,best:Math.max(a.best,s.best)}),{ok:0,total:0,best:0});
-  $("totals").innerHTML = [[all.total,"Exercices faits"],[all.total?Math.round(100*all.ok/all.total)+" %":"–","Réussite"],[all.best,"Meilleure série"]]
+  const exams = store.get("exams", []), bestEx = exams.length ? Math.max(...exams.map(x=>x.score)) : null;
+  $("totals").innerHTML = [[all.total,"Exercices faits"],[all.total?Math.round(100*all.ok/all.total)+" %":"–","Réussite"],[all.best,"Meilleure série"],[exams.length,"Examens blancs"],[bestEx!=null?ptsTxt(bestEx)+" / 24":"–","Meilleure note"]]
     .map(([v,l])=>`<div class="total"><b>${v}</b><span>${l}</span></div>`).join("");
-  $("bilanRows").innerHTML = SECTIONS.map((sec,i)=>`<tr class="sec"><td colspan="4">Chapitre ${chapOf(sec.id).num} · Exercice ${SECTIONS.filter(x=>x.ch===sec.ch).indexOf(sec)+1} · ${sec.tab}</td></tr>` +
+  $("bilanRows").innerHTML = SECTIONS.filter(sec=>GAMES.some(g=>g.section===sec.id)).map((sec,i)=>`<tr class="sec"><td colspan="4">Chapitre ${chapOf(sec.id).num} · Exercice ${SECTIONS.filter(x=>x.ch===sec.ch).indexOf(sec)+1} · ${sec.tab}</td></tr>` +
     GAMES.filter(g=>g.section===sec.id).map(g=>{
       const s = state.stats[g.id]||{ok:0,total:0,best:0}, p = s.total?Math.round(100*s.ok/s.total):0;
       return `<tr><td>${g.title}</td><td class="n">${s.total}</td><td class="n">${s.total?p+" %":"–"}<span class="bar"><i style="width:${p}%"></i></span></td><td class="n">${s.best}</td></tr>`;
