@@ -126,9 +126,12 @@ kbd{font-family:var(--f-mono);font-size:.8rem;border:1px solid var(--line);borde
 .cell .z{font-family:var(--f-mono);font-size:clamp(.5rem,.9cqi,.72rem);color:var(--muted)}
 .cell .s{font-family:var(--f-display);font-weight:700;font-size:clamp(.85rem,1.75cqi,1.45rem);line-height:1}
 .cell .nm{font-size:clamp(.42rem,.66cqi,.62rem);color:var(--muted);max-width:100%;overflow-wrap:anywhere;text-align:center;line-height:1.05}
-.cell .ma{font-family:var(--f-mono);font-size:clamp(.42rem,.64cqi,.6rem);color:var(--ink);opacity:.8;line-height:1}
+.cell .ma{font-family:var(--f-mono);font-size:clamp(.42rem,.64cqi,.6rem);color:var(--ink);opacity:.8;line-height:1;white-space:nowrap}
+.cell .chi{font-family:var(--f-mono);font-size:clamp(.42rem,.64cqi,.6rem);color:var(--muted);line-height:1;white-space:nowrap}
 .cell .og{font-family:var(--f-mono);font-size:clamp(.42rem,.7cqi,.62rem);font-weight:700;color:var(--sub-p);white-space:nowrap;line-height:1}
 .pt.no-q .cell .og{display:none}
+/* C, N, P, S : une ligne de plus (groupement oxygéné), on resserre */
+.cell:has(.og){gap:0;padding-block:0} .cell:has(.og) .z{line-height:1} .cell:has(.og) .q:empty{display:none}
 @container (max-width:1150px){.cell{gap:0;padding:0 1px}.cell .s{line-height:.92}.cell .nm{line-height:1}}
 .cell.sel{outline:2px solid var(--accent);outline-offset:1px;background:var(--accent-soft)}
 .pt .ph{font-size:clamp(.5rem,.8cqi,.7rem);color:var(--muted);display:grid;place-items:center;border:1px dashed var(--line);border-radius:2px;text-align:center}
@@ -196,8 +199,6 @@ tr.sec td{font-family:var(--f-display);font-weight:700;background:var(--bg);colo
 .thumbs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
 .thumbs button{flex:none;width:112px;padding:0;border:2px solid var(--line);border-radius:3px;background:var(--bg);cursor:pointer;position:relative}
 .thumbs button[aria-current="true"]{border-color:var(--accent)}
-.thumbs img{width:100%;height:auto;aspect-ratio:1333/750;display:block}
-.thumbs span{position:absolute;right:3px;bottom:3px;font-family:var(--f-mono);font-size:.68rem;background:var(--surface);color:var(--ink);padding:0 4px;border-radius:2px}
 .linkbtn{font:inherit;font-weight:700;background:none;border:none;padding:0;margin-top:4px;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 
 /* Charges des ions dans le tableau périodique */
@@ -549,7 +550,11 @@ html:not(.is-app) .app-only{display:none}
 .cg-bar .z1{background:var(--accent2)} .cg-bar .z2{background:var(--sub-p)} .cg-bar .z3{flex:1;background:var(--sub-f)}
 .cg-pt{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-style:normal}
 .cg-pt::after{content:"";width:3px;height:30px;background:var(--ink)} .cg-pt b{font-family:var(--f-mono);font-size:.78rem;background:var(--surface);padding:0 4px;white-space:nowrap;transform:translateY(-14px)}
-.cg-ticks{position:relative;height:14px;font-family:var(--f-mono);font-size:.7rem;color:var(--muted)} .cg-ticks span{position:absolute;transform:translateX(-50%)} .cg-ticks span:first-child{transform:none}
+.cg-ticks{position:relative;height:14px;font-family:var(--f-mono);font-size:.7rem;color:var(--muted)} .cg-ticks span{position:absolute;transform:translateX(-50%)} .cg-ticks span:first-child{transform:none} .cg-ticks span:last-child{transform:translateX(-100%)}
+.chi-ranges{border-collapse:collapse;font-size:.88rem;margin:10px 0 4px;width:100%}
+.chi-ranges td{padding:4px 10px;border-top:1px solid var(--line);color:var(--muted);vertical-align:top}
+.chi-ranges td:first-child{font-family:var(--f-mono);white-space:nowrap;color:var(--ink)}
+.chi-ranges tr.on td{background:var(--accent-soft);color:var(--ink);font-weight:600}
 .pol-wrap{max-width:320px} .pol{width:100%;height:auto;display:block}
 .pol-bond{stroke:var(--muted);stroke-width:3} .pol-cloud{fill:var(--accent2);opacity:.3;transition:transform 1.4s ease} .pol.go .pol-cloud{transform:translateX(var(--sh))}
 .pol-atom.A{fill:var(--accent)} .pol-atom.B{fill:var(--sub-p)} .pol-sym{fill:#fff;font-family:var(--f-display);font-weight:800;font-size:17px;text-anchor:middle}
@@ -649,7 +654,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.20.0</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.20.1</span></p>
     </div>
   </header>
 
@@ -729,7 +734,7 @@ const PT_RAW = "H:Hydrogène:1.008,He:Hélium:4.003,Li:Lithium:6.94,Be:Bérylliu
 "Tl:Thallium:204.38,Pb:Plomb:207.2,Bi:Bismuth:208.980,Po:Polonium:209,At:Astate:210,Rn:Radon:222,Fr:Francium:223,Ra:Radium:226,Ac:Actinium:227,Th:Thorium:232.038,"+
 "Pa:Protactinium:231.036,U:Uranium:238.029,Np:Neptunium:237,Pu:Plutonium:244,Am:Américium:243,Cm:Curium:247,Bk:Berkélium:247,Cf:Californium:251,Es:Einsteinium:252,Fm:Fermium:257,"+
 "Md:Mendélévium:258,No:Nobélium:259,Lr:Lawrencium:266,Rf:Rutherfordium:267,Db:Dubnium:268,Sg:Seaborgium:269,Bh:Bohrium:270,Hs:Hassium:269,Mt:Meitnérium:278,Ds:Darmstadtium:281,"+
-"Rg:Roentgenium:282,Cn:Copernicium:285,Nh:Nihonium:286,Fl:Flérovium:289,Mc:Moscovium:290,Lv:Livermorium:293,Ts:Tennesse:294,Og:Oganesson:294";
+"Rg:Roentgenium:282,Cn:Copernicium:285,Nh:Nihonium:286,Fl:Flérovium:289,Mc:Moscovium:290,Lv:Livermorium:293,Ts:Tennessine:294,Og:Oganesson:294";
 const PT = PT_RAW.split(",").map((x,i)=>{const [s,n,m]=x.split(":");return {Z:i+1,s,n,M:+m};});
 const BY_SYM = Object.fromEntries(PT.map(e=>[e.s,e]));
 
@@ -831,26 +836,6 @@ function normIon(s){
   return t;
 }
 const ionKey = (sym,q) => sym + (Math.abs(q)>1?Math.abs(q):"") + (q>0?"+":"-");
-// Équation de dissociation : « Na2SO4 => 2 Na+ + SO4 2- »
-const escRe = t => t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
-function eqOk(v, c){
-  const t = deSub(deSup(String(v))).replace(/\^/g,"").replace(/[−–]/g,"-");
-  const m = t.split(/=>|⇒|->|→|=/); if(m.length!==2) return false;
-  const lhs = parseFormula(m[0].trim()), want = parseFormula(c.formula);
-  if(!lhs || Object.keys(lhs).length!==Object.keys(want).length || Object.keys(want).some(e=>lhs[e]!==want[e])) return false;
-  let rhs = " " + m[1] + " ";
-  const term = (sym,q) => {
-    const a = Math.abs(q), sg = q>0 ? "\\+" : "-";
-    const ch = a===1 ? `(?:1?${sg})` : `(?:${a}${sg}|${sg}${a})`;
-    return new RegExp(`(^|[\\s+])\\s*(\\d*)\\s*${escRe(sym)}\\s*${ch}(?=[\\s+]|$)`);
-  };
-  for(const [sym,q,n] of [[c.cs,c.cq,c.nc],[c.as,c.aq,c.na]]){
-    const r = term(sym,q).exec(rhs); if(!r) return false;
-    if((r[2]===""?1:+r[2]) !== n) return false;
-    rhs = rhs.slice(0,r.index) + r[1] + rhs.slice(r.index + r[0].length);
-  }
-  return /^[\s+]*$/.test(rhs);
-}
 function chargeOk(v, q){
   const t = String(v).replace(/\s/g,"").replace(/[−–]/g,"-");
   if(t==="+" || t==="-") return (t==="+"?1:-1)===q;
@@ -1074,7 +1059,7 @@ const GAMES = [
    explain: c => `${massDetail(c.f)}<br><code>n = m / M = ${fmtN(c.m)} / ${fmtN(c.M,6)}</code> ≈ <b>${fmtN(c.nm,4)} mol</b>. Tolérance : 1 %.`},
 
   {id:"pesee", section:"qte", tab:"Pesée des précurseurs", title:"Pesée des précurseurs",
-   desc:"Pour synthétiser une masse m du composé, quelle masse de chaque élément faut-il peser ? (exercice 3 du cours)",
+   desc:"Pour synthétiser une masse m du composé, quelle masse de chaque élément faut-il peser ?",
    q:"Calcule M, n puis la masse de chaque précurseur",
    gen(){
      const list = SUBSTANCES.filter(([f])=>Object.keys(parseFormula(f)).length>=2 && Object.keys(parseFormula(f)).length<=4);
@@ -1124,7 +1109,7 @@ const GAMES = [
      `<br>Ordre de Klechkowski : ${ORDER.slice(0,15).join(" ")}`},
 
   {id:"config", section:"quant", tab:"Configuration électronique", title:"Configuration électronique",
-   desc:"Donne la configuration électronique d'un atome ou d'un ion (exercice du cours).",
+   desc:"Donne la configuration électronique d'un atome ou d'un ion.",
    q:"Écris la configuration électronique",
    gen(){
      const ions = [["Na",1],["Mg",2],["Al",3],["K",1],["Ca",2],["F",-1],["Cl",-1],["O",-2],["S",-2],["N",-3],["P",-3],["Br",-1],
@@ -1228,7 +1213,7 @@ const GAMES = [
    }},
 ];
 
-// Diapos du cours associées à chaque jeu (numéros de page du PDF « Sciences des matériaux »)
+// Fiches de cours (clés de CUSTOM) associées à chaque jeu
 const SLIDES = {
   struct:["c_atome","c_iso"], inverse:["c_atome","c_iso"], ions:["methode","c_ion"], composes:["methode","poly","indices","c_ion","c_dissol"],
   "masse-molaire":["c_iso","c_mole"], quantite:["c_mole"], pesee:["c_mole","c_pesee"],
@@ -2355,6 +2340,11 @@ const CHI = {H:2.20,Li:0.98,Be:1.57,B:2.04,C:2.55,N:3.04,O:3.44,F:3.98,Na:0.93,M
   Ac:1.1,Th:1.3,Pa:1.5,U:1.38,Np:1.36,Pu:1.28,Am:1.13,Cm:1.28,Bk:1.3,Cf:1.3,Es:1.3,Fm:1.3,Md:1.3,No:1.3,Lr:1.3};
 const chiTxt = x => x.toFixed(2).replace(".",",");
 const bondClass = d => d<=0.4 ? "covalente non polarisée" : d<1.7 ? "covalente polarisée" : "ionique";
+// Intervalles de Δχ pour chaque type de liaison (3,3 ≈ écart maximal, entre F et Cs/Fr)
+const CHI_RANGES = [["covalente non polarisée","[0 ; 0,4]","partage équitable"],["covalente polarisée","]0,4 ; 1,7[","partage inégal, pôles δ+ et δ−"],["ionique","[1,7 ; 3,3]","transfert d'électrons"]];
+const chiRanges = d => `<table class="chi-ranges"><tbody>${CHI_RANGES.map(([n,iv,how])=>`<tr${d!=null&&bondClass(d)===n?` class="on"`:""}><td>Δχ ∈ <b>${iv}</b></td><td>liaison ${n}</td><td>${how}</td></tr>`).join("")}</tbody></table>`;
+// Charges des deux ions d'une liaison ionique (Mg–O → O²⁻ et Mg²⁺)
+const ionCharge = (s, sign) => ((CHARGES[s]||[]).find(q=>Math.sign(q)===sign)) || sign;
 const chiColor = x => { const t = Math.max(0, Math.min(1, (x-0.7)/3.3)); return `hsl(${Math.round(215-215*t)} 65% 48%)`; };
 let loopTimers = [];
 const loop = (fn, ms) => { const tick = ()=>{ fn(); loopTimers.push(setTimeout(tick, ms)); }; tick(); };
@@ -2372,7 +2362,7 @@ function polarSVG(a, b, d){
     <text x="70" y="24" class="pol-d">${lab("a")}</text><text x="190" y="24" class="pol-d">${lab("b")}</text>
     <text x="130" y="112" class="pol-cap">${cap}</text></svg>`;
 }
-const chiGauge = d => `<div class="chi-gauge"><div class="cg-bar"><span class="z1" style="width:${(0.4/3.3*100).toFixed(1)}%">non pol.</span><span class="z2" style="width:${(1.3/3.3*100).toFixed(1)}%">polarisée</span><span class="z3">ionique</span></div><i class="cg-pt" style="left:${(Math.min(d,3.3)/3.3*100).toFixed(1)}%"><b>Δχ = ${chiTxt(d)}</b></i><div class="cg-ticks"><span>0</span><span style="left:${(0.4/3.3*100).toFixed(1)}%">0,4</span><span style="left:${(1.7/3.3*100).toFixed(1)}%">1,7</span></div></div>`;
+const chiGauge = d => `<div class="chi-gauge"><div class="cg-bar"><span class="z1" style="width:${(0.4/3.3*100).toFixed(1)}%">non pol.</span><span class="z2" style="width:${(1.3/3.3*100).toFixed(1)}%">polarisée</span><span class="z3">ionique</span></div><i class="cg-pt" style="left:${(Math.min(d,3.3)/3.3*100).toFixed(1)}%"><b>Δχ = ${chiTxt(d)}</b></i><div class="cg-ticks"><span>0</span><span style="left:${(0.4/3.3*100).toFixed(1)}%">0,4</span><span style="left:${(1.7/3.3*100).toFixed(1)}%">1,7</span><span style="left:100%">3,3</span></div></div>`;
 
 const BOND_PAIRS = [["H","H"],["C","H"],["C","C"],["N","H"],["O","H"],["C","O"],["H","F"],["H","Cl"],["Na","Cl"],["K","F"],["Mg","O"],["Ca","Cl"],
   ["Li","F"],["C","Cl"],["S","H"],["N","N"],["Si","O"],["Al","O"],["Cs","F"],["B","H"],["P","H"],["C","N"],["C","F"],["Al","Cl"],["Zn","S"],
@@ -2380,7 +2370,7 @@ const BOND_PAIRS = [["H","H"],["C","H"],["C","C"],["N","H"],["O","H"],["C","O"],
 
 const BOND_TYPES = {
   cov:{n:"covalente", f:"forte", how:"les deux atomes <b>partagent</b> un ou plusieurs doublets d'électrons pour compléter leur couche externe", ex:"H₂O, CH₄, N₂, diamant"},
-  ion:{n:"ionique", f:"forte", how:"un atome <b>donne</b> ses électrons à l'autre (Δχ ≥ 1,7) ; les ions + et − s'attirent", ex:"NaCl, MgO, CaF₂"},
+  ion:{n:"ionique", f:"forte", how:"un atome <b>donne</b> ses électrons à l'autre (Δχ ∈ [1,7 ; 3,3]) ; les ions + et − s'attirent", ex:"NaCl, MgO, CaF₂"},
   met:{n:"métallique", f:"forte", how:"les électrons de valence sont <b>mis en commun par tout le morceau de métal</b> : un « gaz d'électrons » circule entre les ions", ex:"Fe, Cu, Al, laiton"},
   hyd:{n:"hydrogène", f:"faible", how:"un H lié à un atome très électronégatif (O, N, F) porte un <b>δ+</b> et s'approche du <b>doublet non liant</b> d'une molécule voisine", ex:"eau liquide, HF, nylon"},
   vdw:{n:"Van der Waals", f:"faible", how:"les pôles <b>δ+ et δ−</b> de molécules voisines s'attirent ; très faible, mais nombreuse dans les grosses molécules", ex:"acétone, CO₂ solide, polyéthylène"}};
@@ -2400,7 +2390,7 @@ const BOND_CASES = [
   ["Ce qui lie les molécules d'alcool (groupe O–H) entre elles","hyd"],["Ce qui lie les atomes d'or d'une bague","met"]];
 
 const STATES = ["gaz","liquide","solide amorphe","solide monocristallin","solide polycristallin"];
-const INTER = ["aucune ou très faible","lâche, mais les entités restent en contact","forte et rigide"];
+const INTER = ["aucune ou très faible","faible : les entités restent en contact mais glissent","forte et rigide"];
 const STATE_CASES = [
   ["De la vapeur d'eau : des molécules indépendantes qui se déplacent dans tout le volume disponible",0,0],
   ["Du méthane à température ambiante : des molécules quasi indépendantes qui bougent de façon chaotique",0,0],
@@ -2459,7 +2449,7 @@ const CLASS_CASES = [["acier",0,0],["fonte",0,0],["laiton",0,0],["bronze",0,0],[
   ["béton armé (béton + tiges d'acier)",3,3],["pneu (élastomère + fils d'acier)",3,3],["fibre de verre + polyester",3,3],["béton + fibres de lin",3,3],["carbone + époxy",3,3],
   ["bois",4,2],["laine",4,2],["coton",4,2],["cuir",4,2],["os",4,2],["toile d'araignée",4,2],["cheveux",4,2]];
 const CLASS_WHY = ["liaisons métalliques : électrons délocalisés, ductile, bon conducteur, sensible à la corrosion",
-  "liaisons fortes ioniques, covalentes ou iono-covalentes : dur, réfractaire, fragile, isolant",
+  "liaisons fortes et directionnelles (ioniques, covalentes, ou un mélange des deux) : dur, résiste à la chaleur, cassant, isolant",
   "longues chaînes covalentes (macromolécules) reliées par des liaisons faibles (hydrogène, Van der Waals) : léger, sensible à la température",
   "association de deux matériaux de classes différentes pour combiner leurs propriétés",
   "d'origine animale ou végétale : chaînes carbonées covalentes et liaisons faibles, parfois proche des céramiques (os)"];
@@ -2470,11 +2460,11 @@ const POLY_TYPES = ["thermoplastique semi-cristallin","thermoplastique amorphe",
 const POLY_STRUCT = ["chaînes linéaires ou ramifiées, non reliées","chaînes reliées par quelques liaisons faibles","chaînes reliées par quelques liaisons fortes","réseau tridimensionnel fortement réticulé"];
 const POLY_HEAT = ["ramollit : les chaînes glissent et on peut le remettre en forme","brûle sans ramollir : les chaînes ne sont pas mobiles"];
 const POLY_CASES = [
-  ["Rigide, plutôt opaque, avec une température de fusion et une température de transition vitreuse ; des zones cristallines dans une matrice amorphe",0,0,0],
-  ["Souple, plutôt translucide, une température de transition vitreuse mais pas de température de fusion ; chaînes enchevêtrées sans ordre",1,0,0],
-  ["Extrêmement élastique, fragile, possède une température de transition vitreuse ; chaînes reliées par des points de réticulation faibles",2,1,0],
-  ["Extrêmement élastique, fragile, brûle sans fondre ; chaînes reliées par quelques liaisons fortes",3,2,1],
-  ["Dur, rigide, fragile, brûle sans fondre ; chaînes reliées en un réseau tridimensionnel dense",4,3,1],
+  ["Raide et souvent laiteux ; il fond à une température précise et se ramollit déjà un peu avant. Ses chaînes sont en partie rangées en petits cristaux, le reste en désordre",0,0,0],
+  ["Plus souple et souvent transparent ; il se ramollit progressivement sans point de fusion net. Ses chaînes sont emmêlées comme des spaghettis, sans aucun rangement",1,0,0],
+  ["S'étire énormément et revient à sa forme, mais se refond si on le chauffe : ses chaînes ne sont accrochées entre elles que par des liaisons faibles",2,1,0],
+  ["S'étire énormément et revient à sa forme ; chauffé, il ne fond pas, il finit par brûler : ses chaînes sont pontées par quelques liaisons fortes",3,2,1],
+  ["Très dur, cassant, ne fond jamais (il brûle) : ses chaînes sont soudées en un réseau 3D serré",4,3,1],
   ["Un sac en polyéthylène : des chaînes linéaires avec des zones cristallines, qui glissent quand on chauffe",0,0,0],
   ["Le caoutchouc vulcanisé d'un pneu : chaînes reliées par des ponts de soufre (liaisons fortes), très élastique, ne fond pas",3,2,1],
   ["Une résine époxy durcie : réseau 3D dense, dur et fragile, carbonise à la chaleur",4,3,1],
@@ -2494,7 +2484,7 @@ const CH2_GAMES = [
      F("dchi","Différence d'électronégativité Δχ", v=>isFinite(parseNum(v)) && Math.abs(parseNum(v)-c.d)<0.011, chiTxt(c.d)),
      F("cls","Type de liaison", selOk(c.cls), c.cls, "select", ["covalente non polarisée","covalente polarisée","ionique"]),
      F("neg","Atome qui attire le plus les électrons (pôle δ−)", selOk(c.neg||"aucun : partage équitable"), c.neg||"aucun : partage équitable", "select", [...new Set([c.a,c.b])].concat("aucun : partage équitable"))],
-   explain: c => `Δχ = |${chiTxt(c.ca)} − ${chiTxt(c.cb)}| = <b>${chiTxt(c.d)}</b>. ${c.d<=0.4 ? "Δχ ≤ 0,4 : les électrons sont partagés équitablement, la liaison est <b>covalente non polarisée</b>." : c.d<1.7 ? `0,4 < Δχ < 1,7 : les électrons restent partagés mais glissent vers <b>${c.neg}</b>, plus électronégatif, qui porte un δ− (l'autre un δ+). Liaison <b>covalente polarisée</b>.` : `Δχ ≥ 1,7 : <b>${c.neg}</b> attire tellement les électrons qu'il les prend : transfert, liaison <b>ionique</b> entre ${ionHTML(c.neg,-1)} et ${ionHTML(c.neg===c.a?c.b:c.a,1)}.`}${chiGauge(c.d)}<div class="pol-wrap">${polarSVG(c.a,c.b,c.d)}</div>`},
+   explain: c => { const oth = c.neg===c.a?c.b:c.a; return `Δχ = |${chiTxt(c.ca)} − ${chiTxt(c.cb)}| = <b>${chiTxt(c.d)}</b>. ${c.d<=0.4 ? "Δχ ∈ [0 ; 0,4] : les électrons sont partagés équitablement, la liaison est <b>covalente non polarisée</b>." : c.d<1.7 ? `Δχ ∈ ]0,4 ; 1,7[ : les électrons restent partagés mais glissent vers <b>${c.neg}</b>, plus électronégatif, qui porte un δ− (l'autre un δ+). Liaison <b>covalente polarisée</b>.` : `Δχ ∈ [1,7 ; 3,3] : <b>${c.neg}</b> attire tellement les électrons qu'il les prend : transfert, liaison <b>ionique</b> entre ${ionHTML(c.neg,ionCharge(c.neg,-1))} et ${ionHTML(oth,ionCharge(oth,1))}.`}${chiRanges(c.d)}${chiGauge(c.d)}<div class="pol-wrap">${polarSVG(c.a,c.b,c.d)}</div>`; }},
 
   {id:"famille", section:"liaisons", tab:"Reconnaître la liaison", title:"Reconnaître la liaison",
    desc:"Covalente, ionique, métallique, hydrogène ou Van der Waals ? À partir de la situation décrite, retrouve la liaison en jeu et sa force.",
@@ -2512,9 +2502,9 @@ const CH2_GAMES = [
    gen(){ const [desc,s,i] = pickFresh(STATE_CASES, x=>x[0]); return {desc,s,i}; },
    show: c => ({wide:true, html:`<p class="situation">${c.desc}</p>`}),
    fields: c => [F("st","État", selOk(STATES[c.s]), STATES[c.s], "select", STATES), F("in","Interaction entre les atomes ou molécules", selOk(INTER[c.i]), INTER[c.i], "select", INTER)],
-   explain: c => ["<b>Gaz</b> : entités quasi indépendantes, mouvement chaotique dans tout le volume.","<b>Liquide</b> : interaction lâche, les molécules restent proches mais mobiles : le liquide se déforme et prend la forme du récipient.",
-     "<b>Solide amorphe</b> : squelette rigide d'atomes fortement liés, mais <b>sans ordre</b> à longue distance (verre, polymère amorphe).","<b>Solide monocristallin</b> : un seul bloc avec un arrangement <b>périodique</b> dans les trois directions.",
-     "<b>Solide polycristallin</b> : un assemblage de nombreux petits monocristaux (grains) séparés par des joints de grains ; c'est le cas de presque tous les métaux."][c.s]},
+   explain: c => ["<b>Gaz</b> : presque aucune attraction entre les entités, qui foncent dans tous les sens et occupent tout le volume disponible.","<b>Liquide</b> : les molécules s'attirent assez pour rester au contact, mais pas assez pour se figer : elles glissent, et le liquide épouse la forme du récipient.",
+     "<b>Solide amorphe</b> : atomes bloqués à leur place par des liaisons fortes, mais rangés <b>au hasard</b>, sans motif qui se répète (verre, polymère amorphe).","<b>Solide monocristallin</b> : tout l'échantillon est un seul cristal, le même motif se répète <b>sans interruption</b> dans les trois directions.",
+     "<b>Solide polycristallin</b> : une mosaïque de petits cristaux (les grains), chacun orienté différemment, avec des joints de grains entre eux ; c'est le cas de presque tous les métaux."][c.s]},
 
   {id:"courbe", section:"etats", tab:"Courbes d'énergie", title:"Lire une courbe d'énergie de liaison",
    desc:"Trois courbes Ep(r) sont tracées. La profondeur du puits donne la force de la liaison (rigidité, température de fusion) ; la position r₀ du minimum donne la distance entre atomes (compacité).",
@@ -2600,8 +2590,8 @@ function buildFamilles(){
     <div class="m-step">
       <h3><span class="m-num">2</span> Trois liaisons fortes</h3>
       <div class="fc-cards fc-3">
-        <div class="fc-card pos">${mini("", `<circle cx="32" cy="35" r="16" class="ia"/><circle cx="68" cy="35" r="16" class="ib"/><circle cx="46" cy="35" r="3" class="ie"/><circle cx="54" cy="35" r="3" class="ie"/>`)}<b>Covalente</b><span>Partage d'un doublet (simple), deux (double) ou trois (triple). La plus résistante. Entre non-métaux, Δχ &lt; 1,7.</span><small>H₂O, CO₂, N₂, diamant</small></div>
-        <div class="fc-card pos">${mini("", `<circle cx="30" cy="35" r="13" class="ia"/><text x="30" y="40" class="it">+</text><circle cx="70" cy="35" r="18" class="ib"/><text x="70" y="40" class="it">−</text><path d="M40 20 Q50 8 60 18" class="iarr"/>`)}<b>Ionique</b><span>Transfert d'électrons du moins électronégatif vers le plus électronégatif (Δχ ≥ 1,7). Les ions + et − s'attirent.</span><small>NaCl, MgO, CaF₂</small></div>
+        <div class="fc-card pos">${mini("", `<circle cx="32" cy="35" r="16" class="ia"/><circle cx="68" cy="35" r="16" class="ib"/><circle cx="46" cy="35" r="3" class="ie"/><circle cx="54" cy="35" r="3" class="ie"/>`)}<b>Covalente</b><span>Partage d'un doublet (simple), deux (double) ou trois (triple). La plus résistante. Entre non-métaux : non polarisée si Δχ ∈ [0 ; 0,4], polarisée si Δχ ∈ ]0,4 ; 1,7[.</span><small>H₂O, CO₂, N₂, diamant</small></div>
+        <div class="fc-card pos">${mini("", `<circle cx="30" cy="35" r="13" class="ia"/><text x="30" y="40" class="it">+</text><circle cx="70" cy="35" r="18" class="ib"/><text x="70" y="40" class="it">−</text><path d="M40 20 Q50 8 60 18" class="iarr"/>`)}<b>Ionique</b><span>Transfert d'électrons du moins électronégatif vers le plus électronégatif (Δχ ∈ [1,7 ; 3,3]). Les ions + et − s'attirent.</span><small>NaCl, MgO, CaF₂</small></div>
         <div class="fc-card pos">${mini("", `${[20,42,64,86].map(x=>[22,48].map(y=>`<circle cx="${x}" cy="${y}" r="7" class="ia"/>`).join("")).join("")}${[[31,35],[53,30],[75,40],[60,58],[40,14]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2.6" class="ie"/>`).join("")}`)}<b>Métallique</b><span>Les électrons externes des atomes métalliques sont mis en commun par tout l'échantillon : un gaz d'électrons libres, d'où la conduction électrique.</span><small>Fe, Cu, Al, Zn</small></div>
       </div>
     </div>
@@ -2627,6 +2617,7 @@ function buildChi(){
     </div>
     <div class="m-step">
       <h3><span class="m-num">2</span> Δχ classe la liaison : choisis deux atomes</h3>
+      <div id="chiRng"></div>
       <div class="m-pick"><label>Atome 1 <select id="chiA">${opts(chiPair[0])}</select></label><label>Atome 2 <select id="chiB">${opts(chiPair[1])}</select></label></div>
       <div class="chi-out"><div id="chiTxt" class="fc-calc"></div><div class="pol-wrap" id="chiSvg"></div></div>
       <p class="m-rule">Une liaison covalente <b>polarisée</b> crée des pôles δ+ et δ− : c'est la source des liaisons faibles entre molécules. La polarité d'une molécule entière dépend aussi de sa <b>forme</b> et de ses <b>doublets non liants</b> : CO₂ est linéaire, ses deux dipôles s'annulent ; H₂O est coudée, elle est polaire.</p>
@@ -2634,6 +2625,7 @@ function buildChi(){
   const run = ()=>{
     stopMethod(); chiPair = [$("chiA").value, $("chiB").value]; const [a,b] = chiPair, d = Math.round(Math.abs(CHI[a]-CHI[b])*100)/100;
     $("chiTxt").innerHTML = `<p>Δχ = |${chiTxt(CHI[a])} − ${chiTxt(CHI[b])}| = <b>${chiTxt(d)}</b> → liaison <b>${bondClass(d)}</b>${d>0.4&&d<1.7?` ; ${CHI[a]>CHI[b]?a:b} porte le δ−`:d>=1.7?` ; ${CHI[a]>CHI[b]?a:b} devient l'anion`:""}.</p>${chiGauge(d)}`;
+    $("chiRng").innerHTML = chiRanges(d);
     $("chiSvg").innerHTML = polarSVG(a,b,d); later(()=>$("chiSvg").querySelector("svg").classList.add("go"), 300);
   };
   $("chiA").onchange = run; $("chiB").onchange = run; run();
@@ -2718,8 +2710,8 @@ function buildEtats(){
       <p class="m-lead">Plus les interactions entre les entités sont fortes par rapport à l'agitation thermique, plus la matière est condensée et ordonnée.</p>
       <div class="et-grid">
         <figure class="et-fig"><svg id="etG" viewBox="0 0 120 120"></svg><figcaption><b>Gaz</b><br>aucune interaction</figcaption></figure>
-        <figure class="et-fig"><svg id="etL" viewBox="0 0 120 120"></svg><figcaption><b>Liquide</b><br>interaction lâche</figcaption></figure>
-        <figure class="et-fig"><svg id="etS" viewBox="0 0 120 120"></svg><figcaption><b>Solide</b><br>squelette rigide</figcaption></figure>
+        <figure class="et-fig"><svg id="etL" viewBox="0 0 120 120"></svg><figcaption><b>Liquide</b><br>au contact, mobiles</figcaption></figure>
+        <figure class="et-fig"><svg id="etS" viewBox="0 0 120 120"></svg><figcaption><b>Solide</b><br>atomes figés</figcaption></figure>
       </div>
     </div>
     <div class="m-step">
@@ -2963,13 +2955,13 @@ const REL_OPTS = ["a = 2r","a√3 = 4r","a√2 = 4r"];
 const IONICS = [["chlorure de sodium","NaCl",4,0.564,58.44],["chlorure de césium","CsCl",1,0.411,168.36],["oxyde de magnésium","MgO",4,0.421,40.30],["chlorure de potassium","KCl",4,0.629,74.55],["titanate de strontium","SrTiO3",1,0.3905,183.49]];
 const NA = 6.022e23;
 
-const VOCAB = [["Entité géométrique élémentaire : un repère (a, b, c) et la position des atomes dedans ; répétée dans les trois directions, elle reconstitue tout le cristal","maille"],
-  ["Ensemble des points de l'espace qui ont exactement le même environnement atomique","nœuds"],["L'ensemble des nœuds, décrit par la base (a, b, c)","réseau"],
-  ["Les atomes (et leurs coordonnées) à placer sur chaque nœud du réseau","motif"],["Un seul bloc dans lequel l'arrangement des atomes est périodique dans les trois directions","monocristal"],
-  ["Un assemblage de nombreux petits monocristaux de tailles variées","polycristal"],["Chacun des petits monocristaux d'un polycristal (de 1 à 2 nm jusqu'à 10 cm)","grain"],
+const VOCAB = [["Le plus petit « bloc de construction » du cristal : trois vecteurs a, b, c et les atomes qu'ils contiennent. En l'empilant dans toutes les directions, on retrouve le cristal entier","maille"],
+  ["Points du cristal où, si l'on se plaçait, on verrait autour de soi exactement le même paysage d'atomes","nœuds"],["L'ensemble des nœuds, décrit par la base (a, b, c)","réseau"],
+  ["Les atomes (et leurs coordonnées) à placer sur chaque nœud du réseau","motif"],["Un cristal d'un seul tenant : le même motif se répète sans interruption d'un bout à l'autre de l'échantillon","monocristal"],
+  ["Un solide fait de nombreux petits cristaux collés les uns aux autres, chacun orienté à sa façon","polycristal"],["Un des petits cristaux qui composent un polycristal ; sa taille va du nanomètre à plusieurs centimètres","grain"],
   ["Surface qui sépare deux grains d'orientations différentes","joint de grains"],["Les longueurs a, b, c et les angles α, β, γ qui définissent la maille","paramètres de maille"],
-  ["Fraction du volume de la maille réellement occupée par les atomes, supposés être des sphères dures","compacité"],
-  ["Changement de structure cristalline sans changement de composition (fer α → fer γ à 912 °C)","transformation allotropique"],
+  ["Part de la maille remplie par les atomes (vus comme des boules qui se touchent) ; le reste est du vide","compacité"],
+  ["Le même élément change d'empilement atomique, sa composition restant identique (fer α → fer γ à 912 °C)","transformation allotropique"],
   ["Solide sans arrangement périodique des atomes (verre)","amorphe"],["Les 7 familles de mailles définies par les relations entre a, b, c, α, β, γ","systèmes cristallins"],
   ["Les 14 façons de disposer les nœuds dans les 7 systèmes (P, I, F, C)","réseaux de Bravais"],["Masse de la maille divisée par son volume : Z·M / (N_A·V)","masse volumique"]];
 const VOCAB_TERMS = VOCAB.map(v=>v[1]).sort((x,y)=>x.localeCompare(y));
@@ -3059,7 +3051,7 @@ function buildCristal(){
   $("slCustom").innerHTML = `
     <div class="m-step">
       <h3><span class="m-num">1</span> Qu'est-ce qu'un cristal ?</h3>
-      <p class="m-lead">La cristallographie étudie la <b>matière cristalline</b> à l'échelle atomique : les matériaux dont l'arrangement des atomes est <b>périodique</b>, c'est-à-dire qu'il se répète à l'identique dans les trois directions de l'espace. C'est le cas des <b>métaux et alliages</b>, des <b>céramiques</b> et de certains composites. Un verre ou un polymère amorphe, eux, n'ont pas d'ordre à longue distance : ils sont hors du champ de la cristallographie.</p>
+      <p class="m-lead">La cristallographie décrit comment les atomes sont rangés dans un <b>cristal</b>. Elle s'intéresse aux solides où un même motif d'atomes se répète <b>périodiquement</b>, à l'identique, dans les trois directions : presque tous les <b>métaux</b>, la plupart des <b>céramiques</b>, et certains composites. Un verre ou un polymère amorphe, eux, n'ont pas d'ordre à longue distance : ils sont hors du champ de la cristallographie.</p>
     </div>
     <div class="m-step">
       <h3><span class="m-num">2</span> Monocristal ou polycristal</h3>
@@ -3078,7 +3070,7 @@ function buildCristal(){
     if(k==="mono"){ let s=""; for(let i=0;i<8;i++) for(let j=0;j<8;j++){ const x = 12+i*19.5+(j%2)*0, y = 12+j*19.5; s += `<circle cx="${x}" cy="${y}" r="4.5" class="et-p"/>`; } $("crFig").innerHTML = `<svg viewBox="0 0 160 160">${s}</svg>`;
       $("crTxt").innerHTML = `<p class="st1"><b>Monocristal</b> : un seul bloc, un seul réseau périodique de bout en bout. Rare dans la nature à grande taille (galène, calcite, quartz) ; fabriqué industriellement pour le silicium des cellules photovoltaïques ou les aubes de turbine.</p>`; }
     else { $("crFig").innerHTML = grainsSVG("crPoly");
-      $("crTxt").innerHTML = `<p class="st1"><b>Polycristal</b> : un assemblage de petits monocristaux appelés <b>grains</b> (ou cristallites), chacun avec sa propre orientation, séparés par des <b>joints de grains</b>. La taille des grains va de 1–2 nm à 10 cm. Presque tous les métaux courants sont polycristallins.</p><p class="st1">Les joints de grains freinent les dislocations : des grains fins rendent un métal plus résistant.</p>`; } };
+      $("crTxt").innerHTML = `<p class="st1"><b>Polycristal</b> : une mosaïque de petits cristaux, les <b>grains</b> (ou cristallites), chacun orienté à sa façon ; la frontière entre deux grains est un <b>joint de grains</b>. Selon le matériau, un grain mesure de quelques nanomètres à plusieurs centimètres. Presque tous les métaux courants sont polycristallins.</p><p class="st1">Les joints de grains freinent les dislocations : des grains fins rendent un métal plus résistant.</p>`; } };
   $("crList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>show(b.dataset.k)); show("poly");
 }
 
@@ -3283,10 +3275,10 @@ const massTxt = e => Number.isInteger(e.M) ? `[${e.M}]` : (Math.round(e.M*100+1e
 const mainQ = s => s==="C" ? null : CHARGES[s] ? CHARGES[s][0] : null;   // le carbone ne forme pas d'ion simple
 function renderPT(gridId, detailId, legendId){
   $(gridId).innerHTML = PT.map(e=>{const [r,c]=posOf(e.Z);
-    return `<button type="button" class="cell" data-z="${e.Z}" title="${e.n} · Z = ${e.Z} · M = ${String(e.M).replace(".",",")} g/mol" style="grid-row:${r};grid-column:${c};--fam:var(--fam-${famOf(e.Z)})"><span class="z">${e.Z}</span><span class="s">${e.s}</span><span class="nm">${e.n}</span><span class="ma">${massTxt(e)}</span><span class="q ${mainQ(e.s)!=null?chCls([mainQ(e.s)]):""}">${mainQ(e.s)!=null?chStr([mainQ(e.s)]):""}</span>${OXO[e.s]?`<span class="og">${OXO[e.s]}</span>`:""}</button>`;}).join("")
+    return `<button type="button" class="cell" data-z="${e.Z}" title="${e.n} · Z = ${e.Z} · M = ${String(e.M).replace(".",",")} g/mol${CHI[e.s]?` · χ = ${chiTxt(CHI[e.s])}`:""}" style="grid-row:${r};grid-column:${c};--fam:var(--fam-${famOf(e.Z)})"><span class="z">${e.Z}</span><span class="s">${e.s}</span><span class="nm">${e.n}</span><span class="ma">M = ${massTxt(e)}</span>${CHI[e.s]?`<span class="chi">χ = ${chiTxt(CHI[e.s])}</span>`:""}<span class="q ${mainQ(e.s)!=null?chCls([mainQ(e.s)]):""}">${mainQ(e.s)!=null?chStr([mainQ(e.s)]):""}</span>${OXO[e.s]?`<span class="og">${OXO[e.s]}</span>`:""}</button>`;}).join("")
     + `<div class="ph" style="grid-row:6;grid-column:3">57–71</div><div class="ph" style="grid-row:7;grid-column:3">89–103</div><div class="spacer" style="grid-row:8;grid-column:1"></div>`;
   $(legendId).innerHTML = FAMS.map(([k,l])=>`<span><i style="--fam:var(--fam-${k})"></i>${l}</span>`).join("")
-    + `<label class="q-toggle"><input type="checkbox" class="qBox" ${showQ?"checked":""}> Charge principale des ions (les autres au clic) : <b class="pos">+ perd des électrons</b> · <b class="neg">− en gagne</b> · <b class="zero">0 gaz noble</b> · <b class="oxo">+5 PO₄ : charge de l'atome dans un groupement avec l'oxygène</b> · <b class="mass">55,85 : masse molaire en g/mol ([98] : élément sans isotope stable)</b></label>`;
+    + `<label class="q-toggle"><input type="checkbox" class="qBox" ${showQ?"checked":""}> Charge principale des ions (les autres au clic) : <b class="pos">+ perd des électrons</b> · <b class="neg">− en gagne</b> · <b class="zero">0 gaz noble</b> · <b class="oxo">+5 PO₄ : charge de l'atome dans un groupement avec l'oxygène</b> · <b class="mass">M = 55,85 : masse molaire en g/mol ([98] : élément sans isotope stable)</b> · <b class="mass">χ = 1,83 : électronégativité (échelle de Pauling)</b></label>`;
   $(legendId).querySelector(".qBox").onchange = ev => setQ(ev.target.checked);
   $(gridId).onclick = ev=>{
     const b = ev.target.closest(".cell"); if(b) selectCell(gridId, detailId, +b.dataset.z);
