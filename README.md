@@ -35,7 +35,7 @@ Le tableau périodique (118 éléments, familles, masses molaires, charges usuel
 Onglet **Releases** du dépôt :
 - `LaboAtomes-Setup-x.y.z.exe` : installeur Windows
 - `LaboAtomes-Portable-x.y.z.exe` : version Windows sans installation (double-clic)
-- `LaboAtomes-x.y.z-mac.dmg` : macOS (version universelle, Mac Intel et Apple Silicon M1/M2/M3…). Le Mac n'est plus construit automatiquement (une minute Mac compte pour 10 dans le quota GitHub) : onglet **Actions → Construire et publier l'application → Run workflow**, cocher « Construire aussi la version Mac ».
+- `LaboAtomes-x.y.z-mac.dmg` : macOS (version universelle, Mac Intel et Apple Silicon M1/M2/M3…). Construit à chaque publication : le dépôt est public, les minutes GitHub Actions sont gratuites. Pour ajouter le `.dmg` à une release déjà existante : onglet **Actions → Construire et publier l'application → Run workflow**.
 - `.AppImage` pour Linux
 
 Windows peut afficher « Windows a protégé votre ordinateur » car l'appli n'est pas signée : cliquer sur **Informations complémentaires** puis **Exécuter quand même**.

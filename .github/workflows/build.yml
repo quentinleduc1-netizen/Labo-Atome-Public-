@@ -3,16 +3,19 @@ name: Construire et publier l'application
 # À chaque envoi sur main : l'appli est construite (Windows, Mac, Linux).
 # Si la version de package.json n'a pas encore de release, la release vX.Y.Z est créée
 # et chaque machine y dépose directement ses fichiers (.exe, .dmg, .AppImage).
-# Aucun fichier intermédiaire n'est stocké dans GitHub Actions (pas de quota consommé).
+# Aucun fichier intermédiaire n'est stocké dans GitHub Actions.
+# Le dépôt est public : les minutes GitHub Actions sont gratuites et illimitées, Mac compris.
+# « Run workflow » (lancement manuel) reconstruit la version courante et ajoute les fichiers
+# manquants à sa release, même si elle existe déjà (utile pour ajouter le .dmg après coup).
 on:
   push:
     branches: [main]
   workflow_dispatch:
     inputs:
       mac:
-        description: "Construire aussi la version Mac (.dmg) — coûte 10 fois plus de minutes"
+        description: "Construire aussi la version Mac (.dmg)"
         type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: write
@@ -55,8 +58,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Mac désactivé par défaut (une minute Mac compte pour 10) : le cocher dans « Run workflow »
-        os: ${{ fromJSON(inputs.mac && '["windows-latest","ubuntu-latest","macos-latest"]' || '["windows-latest","ubuntu-latest"]') }}
+        # Mac construit à chaque push ; en lancement manuel, décocher « mac » pour s'en passer
+        os: ${{ fromJSON((github.event_name == 'push' || inputs.mac) && '["windows-latest","ubuntu-latest","macos-latest"]' || '["windows-latest","ubuntu-latest"]') }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -68,7 +71,7 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
       - name: Déposer les fichiers dans la release
-        if: needs.check.outputs.release == 'true'
+        if: needs.check.outputs.release == 'true' || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ needs.check.outputs.version }}
