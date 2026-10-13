@@ -705,6 +705,14 @@ html:not(.is-app) .app-only{display:none}
 .ex-fig{display:flex;flex-wrap:wrap;gap:12px;align-items:center} .ex-fig svg.lw{max-width:340px}
 .ex-hist td.n{text-align:right;font-family:var(--f-mono)} .ex-hist .big{font-size:1.05rem;font-weight:700;color:var(--accent)}
 .ex-data{margin:0;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:3px;font-size:.9rem}
+.ex-part .trap{margin:0;padding:8px 12px;border-left:4px solid var(--sub-f);background:var(--bg);font-size:.93rem}
+.ex-res .fc-nuc b{font-size:1.1rem} .ex-res .fc-nuc .fc-az{font-size:.7rem} .row label .fc-nuc{vertical-align:middle}
+
+/* Fiche « De l'énoncé à la maille » */
+.en-txt{margin:0;padding:12px 16px;background:var(--surface);border:1.5px solid var(--line);border-radius:3px;font-family:var(--f-display);font-size:1.05rem;line-height:1.7}
+.en-w{background:var(--accent-soft);color:inherit;padding:1px 4px;border-radius:3px;border-bottom:2px solid var(--accent);cursor:pointer}
+.en-w.sys{border-bottom-color:var(--accent2)} .en-w.on{background:var(--accent);color:var(--surface)} .en-w.sys.on{background:var(--accent2)}
+.en-tab .linkbtn{text-align:left;margin:0} .en-tab .linkbtn.on{color:var(--sub-f)}
 </style>
 </head><body>
 <div class="wrap">
@@ -712,7 +720,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.22.0</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.0</span></p>
     </div>
   </header>
 
@@ -1291,8 +1299,8 @@ const SLIDES = {
   etat:["c2_etats"], courbe:["c2_energie"], equilibre:["c2_energie"],
   tendance:["c2_energie","c2_props"], ductile:["c2_props","c2_classes"],
   classe:["c2_classes","c2_metaux","c2_ceram","c2_poly"], alliage:["c2_metaux"], polymere:["c2_poly"],
-  vocab:["c3_cristal","c3_maille","c3_sys"], maille:["c3_maille","c3_cub","c3_proj"], projection:["c3_proj","c3_cub"], parametre:["c3_cub","c3_compa"],
-  compacite:["c3_cub","c3_compa"], "masse-vol":["c3_compa"], reseau:["c3_maille","c3_sys"],
+  vocab:["c3_cristal","c3_maille","c3_sys"], maille:["c3_maille","c3_enonce","c3_cub","c3_proj"], projection:["c3_enonce","c3_proj","c3_cub"], parametre:["c3_cub","c3_compa"],
+  compacite:["c3_cub","c3_compa"], "masse-vol":["c3_enonce","c3_compa"], reseau:["c3_maille","c3_sys"],
 };
 
 // Composés du jeu « Mécanique des liaisons » : [formule, A, B, nombre de B, électrons par liaison A–B, type]
@@ -3076,7 +3084,7 @@ function cellSVG(o){
   const pts = [];
   atoms.forEach(([sp,list,cls,r])=>list.forEach(p=>expandPos(p).forEach(q=>pts.push({q,sp,cls,r:r||rad,kind:posKind(p)}))));
   pts.sort((u,v)=>(u.q[0]-v.q[0]) || (u.q[2]-v.q[2]));
-  const AT = pts.map(({q,sp,cls,r,kind})=>{ const [x,y] = S(pr(P3(...q))); const on = hl===kind || (hlz && hlz.includes(q[2]===1?0:q[2])); return `<circle class="cl-at ${cls}${on?" hl":""}" data-kind="${kind}" cx="${x}" cy="${y}" r="${(r*sc).toFixed(1)}"><title>${sp} (${q.map(v=>v===.5?"½":v===.25?"¼":v===.75?"¾":v).join(" ; ")})</title></circle>`; }).join("");
+  const AT = pts.map(({q,sp,cls,r,kind})=>{ const [x,y] = S(pr(P3(...q))); const on = (Array.isArray(hl) ? hl.includes(kind) : hl===kind) || (hlz && hlz.includes(q[2]===1?0:q[2])); return `<circle class="cl-at ${cls}${on?" hl":""}" data-kind="${kind}" cx="${x}" cy="${y}" r="${(r*sc).toFixed(1)}"><title>${sp} (${q.map(v=>v===.5?"½":v===.25?"¼":v===.75?"¾":v).join(" ; ")})</title></circle>`; }).join("");
   let AX = "";
   if(axes){ const O = S(pr(P3(0,0,0))), ea = S(pr(P3(.45,0,0))), eb = S(pr(P3(0,.45,0))), ec = S(pr(P3(0,0,.45)));
     AX = `<line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${ea[0]}" y2="${ea[1]}"/><text class="cl-axt" x="${ea[0]}" y="${+ea[1]+12}">a</text><line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${eb[0]}" y2="${eb[1]}"/><text class="cl-axt" x="${+eb[0]+6}" y="${+eb[1]+4}">b</text><line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${ec[0]}" y2="${ec[1]}"/><text class="cl-axt" x="${+ec[0]-10}" y="${ec[1]}">c</text>`; }
@@ -3419,6 +3427,99 @@ function playProj(){
   later(()=>drawProj(), 200 + lv.length*1500);
 }
 
+// ---------- Fiche « De l'énoncé à la maille » : traduire les mots du sujet en positions dans le cube ----------
+const POS_ALL = {sommets:[[0,0,0]], "centre de la maille":[[.5,.5,.5]], "centre des faces":[[.5,.5,0],[.5,0,.5],[0,.5,.5]], "milieu des arêtes":[[.5,0,0],[0,.5,0],[0,0,.5]],
+  "intérieur":[[.25,.25,.25],[.75,.75,.25],[.75,.25,.75],[.25,.75,.75],[.75,.75,.75],[.25,.25,.75],[.25,.75,.25],[.75,.25,.25]]};
+const EN_WORDS = [
+  ["« cubique simple » (P)", "des nœuds aux 8 sommets, rien d'autre", ["sommets"], "1 par maille"],
+  ["« cubique centré » (I)", "les sommets + le centre du cube", ["sommets","centre de la maille"], "1 + 1 = 2"],
+  ["« cubique à faces centrées » (F)", "les sommets + le centre des 6 faces", ["sommets","centre des faces"], "1 + 3 = 4"],
+  ["« aux sommets »", "8 positions, (0 ; 0 ; 0) et ses images ; chacune est partagée entre 8 mailles", ["sommets"], "8 × 1/8 = 1"],
+  ["« au centre de la maille »", "1 position, (½ ; ½ ; ½), entièrement dans la maille", ["centre de la maille"], "1 × 1 = 1"],
+  ["« au centre des faces »", "6 positions, (½ ; ½ ; 0)… ; chacune est partagée entre 2 mailles", ["centre des faces"], "6 × 1/2 = 3"],
+  ["« au milieu des arêtes »", "12 positions, (½ ; 0 ; 0)… ; chacune est partagée entre 4 mailles", ["milieu des arêtes"], "12 × 1/4 = 3"],
+  ["« dans les sites tétraédriques », (¼ ; ¼ ; ¼)…", "8 positions à l'intérieur du cube, au quart des diagonales", ["intérieur"], "8 × 1 = 8"]];
+const EN_CASES = [
+  {f:"CsCl", seg:["Le chlorure de césium CsCl cristallise dans une structure ",{w:"cubique simple"},". Le chlore est placé ",{k:0,w:"aux sommets"}," de la maille et le césium ",{k:1,w:"au centre de la maille"},"."],
+   steps:[{sp:"Cl",cls:"cB",r:.12,kind:"sommets"},{sp:"Cs",cls:"cA",r:.1,kind:"centre de la maille"}]},
+  {f:"NaCl", seg:["Le chlorure de sodium NaCl cristallise dans une structure ",{w:"cubique à faces centrées"},". Le chlore occupe ",{k:0,w:"les sommets"}," et ",{k:1,w:"le centre des faces"}," ; le sodium occupe ",{k:2,w:"le milieu des arêtes"}," et ",{k:3,w:"le centre de la maille"},"."],
+   steps:[{sp:"Cl",cls:"cB",r:.12,kind:"sommets"},{sp:"Cl",cls:"cB",r:.12,kind:"centre des faces"},{sp:"Na",cls:"cA",r:.07,kind:"milieu des arêtes"},{sp:"Na",cls:"cA",r:.07,kind:"centre de la maille"}]},
+  {f:"Fe", seg:["Le fer α cristallise dans une structure ",{w:"cubique centrée"}," : un atome ",{k:0,w:"à chaque sommet"}," et un atome ",{k:1,w:"au centre de la maille"},"."],
+   steps:[{sp:"Fe",cls:"cA",r:.09,kind:"sommets"},{sp:"Fe",cls:"cA",r:.09,kind:"centre de la maille"}]},
+  {f:"Cu", seg:["Le cuivre cristallise dans une structure ",{w:"cubique à faces centrées"}," : un atome ",{k:0,w:"à chaque sommet"}," et un atome ",{k:1,w:"au centre de chaque face"},"."],
+   steps:[{sp:"Cu",cls:"cA",r:.09,kind:"sommets"},{sp:"Cu",cls:"cA",r:.09,kind:"centre des faces"}]},
+  {f:"Po", seg:["Le polonium cristallise dans une structure ",{w:"cubique simple"}," : un atome ",{k:0,w:"à chaque sommet"}," de la maille, et c'est tout."],
+   steps:[{sp:"Po",cls:"cA",r:.09,kind:"sommets"}]},
+  {f:"CaF2", seg:["La fluorine CaF₂ cristallise dans une structure cubique. Les ions Ca²⁺ forment un réseau ",{w:"cubique à faces centrées"}," (",{k:0,w:"sommets"}," et ",{k:1,w:"centre des faces"},") ; les ions F⁻ occupent ",{k:2,w:"les huit sites tétraédriques (¼ ; ¼ ; ¼)…"},", à l'intérieur de la maille."],
+   steps:[{sp:"Ca",cls:"cA",r:.1,kind:"sommets"},{sp:"Ca",cls:"cA",r:.1,kind:"centre des faces"},{sp:"F",cls:"cB",r:.075,kind:"intérieur"}]},
+  {f:"SrTiO3", seg:["La pérovskite SrTiO₃ cristallise dans une structure ",{w:"cubique simple"},". Le strontium est ",{k:0,w:"aux sommets"},", le titane ",{k:1,w:"au centre de la maille"}," et l'oxygène ",{k:2,w:"au centre des faces"},"."],
+   steps:[{sp:"Sr",cls:"cA",r:.11,kind:"sommets"},{sp:"Ti",cls:"cC",r:.07,kind:"centre de la maille"},{sp:"O",cls:"cB",r:.09,kind:"centre des faces"}]}];
+const EN_DEMO = [["nœud", Object.values(POS_ALL).flat(), "cN", 0.055]];
+const enAtoms = (steps, k) => { const by = {}; steps.slice(0, k+1).forEach(s=>{ by[s.sp] = by[s.sp] || [s.sp, [], s.cls, s.r]; by[s.sp][1].push(...POS_ALL[s.kind]); }); return Object.values(by); };
+let enIdx = 0;
+function buildEnonce(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> La formule ne dit pas la structure : c'est l'énoncé qui la donne</h3>
+      <p class="m-lead">CsCl et NaCl ont la même formule AB, mais pas la même maille. Pour savoir quel cube dessiner, on lit l'<b>énoncé</b> : il donne le système (« cubique simple », « centré », « à faces centrées ») et la place de chaque espèce (« aux sommets », « au centre des faces »…). Pour les métaux, il faut connaître quelques structures par cœur (étape 4). La formule sert ensuite à <b>vérifier</b> le comptage.</p>
+      <p class="m-lead">Clique sur une expression pour voir où elle place les atomes :</p>
+      <div class="cu-wrap"><div class="cl-show" id="enDemo"></div>
+        <table class="fc-tab en-tab"><thead><tr><th>Dans l'énoncé</th><th>Ce qu'il faut dessiner</th><th>Compte pour</th></tr></thead><tbody>
+          ${EN_WORDS.map((w,i)=>`<tr><td><button type="button" class="linkbtn en-word" data-i="${i}">${w[0]}</button></td><td>${w[1]}</td><td>${w[3]}</td></tr>`).join("")}
+        </tbody></table></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Construire la maille pas à pas, comme sur la copie</h3>
+      <div class="m-chips" id="enList">${EN_CASES.map((c,i)=>`<button type="button" class="chip" data-i="${i}">${fmtF(c.f)}</button>`).join("")}</div>
+      <p class="en-txt" id="enTxt"></p>
+      <div class="cu-wrap"><div class="cl-show" id="enFig"></div><div class="fc-calc" id="enOut"></div></div>
+      <div class="m-pick"><button type="button" class="btn small" id="enGo">▶ Dessiner étape par étape</button><span>ou clique sur un mot surligné de l'énoncé</span></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> Vérifier avec la formule</h3>
+      <p class="fc-def"><b>Règle :</b> le nombre d'atomes de chaque espèce par maille doit être <em>dans le rapport de la formule</em>. 1 Cs pour 1 Cl → CsCl ✓ ; 4 Na pour 4 Cl → NaCl ✓ ; 4 Ca pour 8 F → CaF₂ ✓. Si le rapport ne colle pas, un atome est mal placé ou mal compté. Le nombre de formules par maille (Z) est le nombre de fois que la formule rentre dans la maille : Z = 1 pour CsCl, Z = 4 pour NaCl et CaF₂.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">4</span> Les métaux à connaître</h3>
+      <table class="fc-tab"><thead><tr><th>Structure</th><th>Atomes par maille</th><th>Exemples</th></tr></thead><tbody>
+        <tr><td><b>Cubique simple</b> (P)</td><td>1</td><td>polonium (le seul métal courant)</td></tr>
+        <tr><td><b>Cubique centré</b> (I)</td><td>2</td><td>${METALS.filter(m=>m[2]==="CC").map(m=>m[0]).join(", ")}</td></tr>
+        <tr><td><b>Cubique à faces centrées</b> (F)</td><td>4</td><td>${METALS.filter(m=>m[2]==="CFC").map(m=>m[0]).join(", ")}</td></tr>
+      </tbody></table>
+      <p class="m-lead">Le fer change de structure à 912 °C : fer α cubique centré en dessous, fer γ cubique à faces centrées au-dessus (transformation allotropique). Si l'énoncé donne la structure, inutile de la retenir ; s'il ne la donne pas, c'est qu'elle est à connaître.</p>
+    </div>`;
+  const demo = kinds => { $("enDemo").innerHTML = cellSVG({atoms:EN_DEMO, size:170, hl:kinds}); };
+  $("slCustom").querySelectorAll(".en-word").forEach(b=>b.onclick=()=>{ $("slCustom").querySelectorAll(".en-word").forEach(x=>x.classList.remove("on")); b.classList.add("on"); demo(EN_WORDS[+b.dataset.i][2]); });
+  demo(null);
+  $("enList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ stopMethod(); enIdx = +b.dataset.i; drawEnonce(-2); });
+  $("enGo").onclick = playEnonce;
+  drawEnonce(-2);
+}
+// k = -2 : énoncé seul ; -1 : le cube ; 0… : les étapes ; steps.length : maille complète et vérification
+function drawEnonce(k){
+  const c = EN_CASES[enIdx], n = c.steps.length;
+  $("enList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", +b.dataset.i===enIdx));
+  $("enTxt").innerHTML = c.seg.map(s=>typeof s==="string" ? s : `<mark class="en-w${s.k==null?" sys":""}${(s.k==null?-1:s.k)===k?" on":""}" data-k="${s.k==null?-1:s.k}">${s.w}</mark>`).join("");
+  $("enTxt").querySelectorAll(".en-w").forEach(m=>m.onclick=()=>{ stopMethod(); drawEnonce(+m.dataset.k); });
+  const atoms = k<0 ? [] : enAtoms(c.steps, Math.min(k, n-1)), legend = `<small>${enAtoms(c.steps, n-1).map(a=>`<i class="cl-key ${a[2]}"></i>${a[0]}`).join(" · ")}</small>`;
+  $("enFig").innerHTML = k===-2 ? `<div class="cl-cap">${legend}</div>` : cellSVG({atoms, size:180, hl: (k>=0 && k<n) ? c.steps[k].kind : null}) + `<div class="cl-cap">${legend}</div>`;
+  let txt;
+  if(k===-2) txt = `<p>Lis l'énoncé et repère les mots surlignés : le <b>système</b>, puis la <b>place</b> de chaque espèce.</p>`;
+  else if(k===-1) txt = `<p><b>1.</b> « ${c.seg.find(s=>s.k==null && typeof s!=="string").w} » : on dessine un <b>cube</b> en perspective (a = b = c, angles droits). Rien d'autre pour l'instant.</p>`;
+  else if(k<n){ const s = c.steps[k], w = EN_WORDS.find(x=>x[2].length===1 && x[2][0]===s.kind);
+    txt = `<p><b>${k+2}.</b> ${s.sp} « ${c.seg.find(x=>x.k===k).w} » → ${w[1]}. Compte pour <b>${w[3]}</b>.</p>`; }
+  else { const all = enAtoms(c.steps, n-1), counts = all.map(a=>[a[0], a[1].length]), g = counts.reduce((x,[,v])=>gcd(x,v), 0), form = parseFormula(c.f);
+    const ok = counts.every(([s,v])=>form[s]===v/g), cnt = Object.fromEntries(counts);
+    txt = counts.length===1 ? `<p><b>${n+2}.</b> Comptage : <b>${counts[0][1]}</b> ${counts[0][0]} par maille. Un métal pur : pas de formule à vérifier, Z = <b>${counts[0][1]}</b> atome${counts[0][1]>1?"s":""} par maille.</p>`
+      : `<p><b>${n+2}.</b> Comptage : ${counts.map(([s,v])=>`<b>${v}</b> ${s}`).join(", ")} par maille → rapport ${counts.map(([s,v])=>v/g).join(" : ")}, soit ${fmtF(Object.keys(form).map(s=>s+(cnt[s]/g>1?cnt[s]/g:"")).join(""))} ${ok ? `= <b>${fmtF(c.f)}</b> ✓` : "✗"}. Z = <b>${g}</b> formule${g>1?"s":""} par maille.</p>`; }
+  $("enOut").innerHTML = txt;
+}
+function playEnonce(){
+  stopMethod(); const n = EN_CASES[enIdx].steps.length;
+  drawEnonce(-1);
+  for(let k=0;k<=n;k++) later(()=>drawEnonce(k), 1400 + k*1700);
+}
+
 const CUSTOM = {
   methode: {title:"<b>Méthode</b> · trouver la charge des ions", label:"Méthode", thumb:"Na⁺ Cl⁻", build: buildMethod},
   poly:    {title:"<b>Charge d'un groupement d'atomes</b> · CO₃, SO₄, NO₃…", label:"Groupements", thumb:"CO₃²⁻", build: buildPoly},
@@ -3456,6 +3557,7 @@ const CUSTOM = {
   c3_compa:  {title:"<b>Compacité et masse volumique</b> · calculs pas à pas", label:"Compacité", thumb:"C · ρ", build: buildCompacite},
   c3_sys:    {title:"<b>Systèmes cristallins</b> · les 14 réseaux de Bravais", label:"Bravais", thumb:"7 · 14", build: buildSystemes},
   c3_proj:   {title:"<b>Projection sur le plan (001)</b> · la maille vue de dessus, avec les cotes", label:"Projection", thumb:"0;1 ½", build: buildProj},
+  c3_enonce: {title:"<b>De l'énoncé à la maille</b> · quel cube dessiner, et où placer les atomes", label:"Énoncé → maille", thumb:"CsCl ?", build: buildEnonce},
   video:   {title:"<b>Vidéo</b> · les nombres quantiques et la configuration électronique", label:"Vidéo", thumb:"▶", build: buildVideo},
 };
 
@@ -3468,7 +3570,9 @@ const ptsLbl = p => `${ptsTxt(p)} pt${p>1?"s":""}`;
 const freeP = (pts, q, model) => ({kind:"free", pts, q, model});
 const drawP = (pts, q, model, hint) => ({kind:"draw", pts, q, model, hint});
 const fieldsP = (pts, q, fields, model="") => ({kind:"fields", pts, q, fields, model});
-const supA = e => `<sup>${e.A}</sup>${e.s}`;
+const supA = e => nucl(e.s, e.A, e.Z);   // notation complète dans chaque ligne de réponse, comme sur le sujet
+// Erreur classique : donner A (le nombre du haut) à la place de Z (le nombre du bas)
+const trapAZ = e => v => isInt(v, e.A) ? `<b>Ton erreur :</b> ${e.A} est le nombre du haut, A, le nombre de masse (protons + neutrons). Les protons, c'est Z, le nombre du bas : ${e.Z}. Repère : Z est toujours le plus petit des deux, et c'est le numéro de la case dans le tableau périodique.` : null;
 const DEF_NOTATION = `Dans ${nucl("X","A","Z")} : <b>X</b> est le symbole de l'élément ; <b>Z</b> le numéro atomique, c'est-à-dire le nombre de protons du noyau (et le nombre d'électrons de l'atome neutre) ; <b>A</b> le nombre de masse, c'est-à-dire le nombre de nucléons (protons + neutrons). Le nombre de neutrons vaut N = A − Z.`;
 
 function exAtomes(fixed){
@@ -3479,7 +3583,7 @@ function exAtomes(fixed){
   return {title:"Structure de l'atome", pts:3, intro:`On considère les atomes ${at.map(e=>nucl(e.s,e.A,e.Z)).join(" et ")}.`,
     parts:[freeP(1, "a) Que représentent X, A et Z dans la notation ?", DEF_NOTATION),
       fieldsP(2, "b) Pour chacun des deux atomes, donner le nom de l'élément, le nombre de protons, d'électrons et de neutrons.",
-        at.flatMap((e,i)=>[F(`nom${i}`,`${supA(e)} : nom de l'élément`,v=>norm(v)===norm(e.n),e.n,"text"),F(`p${i}`,`${supA(e)} : protons`,v=>isInt(v,e.Z),e.Z),F(`e${i}`,`${supA(e)} : électrons`,v=>isInt(v,e.Z),e.Z),F(`n${i}`,`${supA(e)} : neutrons`,v=>isInt(v,e.N),e.N)]),
+        at.flatMap((e,i)=>[F(`nom${i}`,`${supA(e)} : nom de l'élément`,v=>norm(v)===norm(e.n),e.n,"text"),Object.assign(F(`p${i}`,`${supA(e)} : protons`,v=>isInt(v,e.Z),e.Z),{trap:trapAZ(e)}),Object.assign(F(`e${i}`,`${supA(e)} : électrons`,v=>isInt(v,e.Z),e.Z),{trap:trapAZ(e)}),F(`n${i}`,`${supA(e)} : neutrons`,v=>isInt(v,e.N),e.N)]),
         at.map(e=>`${nucl(e.s,e.A,e.Z)} <b>${e.n}</b> : Z = ${e.Z} protons et ${e.Z} électrons (atome neutre) ; N = A − Z = ${e.A} − ${e.Z} = ${e.N} neutrons.`).join("<br>"))]};
 }
 function exIons(fixed){
@@ -3501,7 +3605,7 @@ function exIso(fixed){
   return {title:"Isotopes", pts:2, intro:`On considère les atomes ${at.map(e=>nucl(e.s,e.A,e.Z)).join(" et ")}.`,
     parts:[freeP(0.5,"a) Définir le terme isotope.",`Des <b>isotopes</b> sont des atomes d'un même élément (même Z, donc même nombre de protons et d'électrons) qui diffèrent par leur nombre de neutrons, donc par leur nombre de masse A.`),
       fieldsP(1.5,"b) Ces deux atomes sont-ils des isotopes ? Justifier et donner, pour chacun, le nombre de protons, d'électrons et de neutrons.",
-        [F("iso","Sont-ils des isotopes ?",selOk(same?"oui":"non"),same?"oui":"non","select",["oui","non"])].concat(at.flatMap((e,i)=>[F(`p${i}`,`${supA(e)} : protons`,v=>isInt(v,e.Z),e.Z),F(`e${i}`,`${supA(e)} : électrons`,v=>isInt(v,e.Z),e.Z),F(`n${i}`,`${supA(e)} : neutrons`,v=>isInt(v,e.N),e.N)])),
+        [F("iso","Sont-ils des isotopes ?",selOk(same?"oui":"non"),same?"oui":"non","select",["oui","non"])].concat(at.flatMap((e,i)=>[Object.assign(F(`p${i}`,`${supA(e)} : protons`,v=>isInt(v,e.Z),e.Z),{trap:trapAZ(e)}),Object.assign(F(`e${i}`,`${supA(e)} : électrons`,v=>isInt(v,e.Z),e.Z),{trap:trapAZ(e)}),F(`n${i}`,`${supA(e)} : neutrons`,v=>isInt(v,e.N),e.N)])),
         (same ? `<b>Oui</b> : même Z = ${at[0].Z} (même élément, ${at[0].n.toLowerCase()}) mais A différent (${at[0].A} et ${at[1].A}), donc un nombre de neutrons différent.` : `<b>Non</b> : ils ont le même nombre de masse A = ${at[0].A} mais des Z différents (${at[0].Z} et ${at[1].Z}) : ce sont deux éléments différents (${at[0].n.toLowerCase()} et ${at[1].n.toLowerCase()}). Même A ne suffit pas : des isotopes ont le même Z.`) + "<br>" + at.map(e=>`${nucl(e.s,e.A,e.Z)} : ${e.Z} protons, ${e.Z} électrons, ${e.A} − ${e.Z} = ${e.N} neutrons.`).join(" · "))]};
 }
 function exMole(fixed){
@@ -3672,7 +3776,7 @@ const exTotal = () => exam.ex.reduce((a,e)=>a+exScore(e), 0);
 function sgHTML(p){ const steps = []; for(let v=0; v<=p.pts+1e-9; v+=0.5) steps.push(v); return `<div class="sg"><span>Ta note pour cette question :</span>${steps.map(v=>`<button type="button" class="chip sg-btn" data-p="${p.id}" data-v="${v}" aria-pressed="${(exam.self[p.id]??null)===v}">${ptsTxt(v)}</button>`).join("")}<span>/ ${ptsTxt(p.pts)}</span></div>`; }
 function partDone(p){
   const head = `<p class="ex-q">${p.q} <small>${ptsLbl(p.pts)}</small></p>`;
-  if(p.kind==="fields") return `<div class="ex-part">${head}<div class="ex-res">${p.res.map(r=>`<span>${r.f.label}</span><span class="v ${r.ok?"ok":"ko"}">${r.v.replace(/</g,"&lt;")}</span><span class="${r.ok?"ok":"ko"}">${r.ok?"✓":"→ "+r.f.ans}</span>`).join("")}</div>${p.model?`<div class="ex-col model"><h5>Corrigé</h5>${p.model}</div>`:""}<p class="ex-pts">${ptsTxt(p.got)} / ${ptsTxt(p.pts)} (${p.res.filter(r=>r.ok).length} réponse${p.res.filter(r=>r.ok).length>1?"s":""} juste${p.res.filter(r=>r.ok).length>1?"s":""} sur ${p.res.length})</p></div>`;
+  if(p.kind==="fields") return `<div class="ex-part">${head}<div class="ex-res">${p.res.map(r=>`<span>${r.f.label}</span><span class="v ${r.ok?"ok":"ko"}">${r.v.replace(/</g,"&lt;")}</span><span class="${r.ok?"ok":"ko"}">${r.ok?"✓":"→ "+r.f.ans}</span>`).join("")}</div>${[...new Set(p.res.filter(r=>!r.ok && r.f.trap).map(r=>r.f.trap(r.v)).filter(Boolean))].map(t=>`<p class="trap">${t}</p>`).join("")}${p.model?`<div class="ex-col model"><h5>Corrigé</h5>${p.model}</div>`:""}<p class="ex-pts">${ptsTxt(p.got)} / ${ptsTxt(p.pts)} (${p.res.filter(r=>r.ok).length} réponse${p.res.filter(r=>r.ok).length>1?"s":""} juste${p.res.filter(r=>r.ok).length>1?"s":""} sur ${p.res.length})</p></div>`;
   const you = p.kind==="free" ? `<p class="you">${p.ans.replace(/</g,"&lt;")}</p>` : (p.img ? `<img class="pad-img" src="${p.img}" alt="Ton dessin">` : `<p class="you"></p>`);
   return `<div class="ex-part">${head}<div class="ex-cols"><div class="ex-col"><h5>Ta réponse</h5>${you}</div><div class="ex-col model"><h5>Corrigé</h5>${p.model}</div></div>${sgHTML(p)}</div>`;
 }
