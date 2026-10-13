@@ -647,6 +647,32 @@ html:not(.is-app) .app-only{display:none}
 .vl-rows{display:flex;flex-direction:column;gap:2px;margin:6px 0;padding:6px 10px;background:var(--surface);border:1px solid var(--line);font-family:var(--f-mono);font-size:.9rem}
 .vl-row.val{background:var(--accent-soft);border-left:3px solid var(--accent);padding-left:6px;margin-left:-9px}
 .case-tip{color:var(--sub-p);font-size:.78rem;display:block;line-height:1.2}
+
+/* Définitions à retenir : la formulation attendue à l'examen */
+.fc-def{margin:0;padding:10px 14px;border:1.5px solid var(--sub-f);border-left-width:6px;background:var(--bg);font-size:.95rem;border-radius:3px;max-width:80ch}
+.fc-def b{font-family:var(--f-display)} .fc-def em{font-style:normal;color:var(--accent);font-weight:700}
+
+/* Schéma de Lewis : les atomes écartés (points) se rapprochent et les doublets deviennent des traits */
+.lw-wrap{display:grid;grid-template-columns:minmax(0,360px) 1fr;gap:16px;align-items:center} @media (max-width:640px){.lw-wrap{grid-template-columns:1fr}}
+.lw{width:100%;height:auto;background:var(--surface);border:1px solid var(--line);border-radius:3px}
+.lw-sym{font-family:var(--f-display);font-weight:700;font-size:26px;text-anchor:middle;fill:var(--ink)}
+.lw-sym.A{fill:var(--accent)} .lw-sym.B{fill:var(--sub-p)}
+.lw-atom{transform:translate(var(--dx),var(--dy));transition:transform 1.1s cubic-bezier(.5,0,.3,1)} .lw.go .lw-atom{transform:none}
+.lw-dot{fill:var(--ink);transition:opacity .5s .5s} .lw-dot.A{fill:var(--accent)} .lw-dot.B{fill:var(--sub-p)} .lw.go .lw-dot{opacity:0}
+.lw-lines{opacity:0;transition:opacity .6s .9s} .lw.go .lw-lines{opacity:1}
+.lw-bond{stroke:var(--ink);stroke-width:2.6;stroke-linecap:round} .lw-lp{stroke:var(--accent2);stroke-width:3.2;stroke-linecap:round}
+.lw-cap{font-size:11px;fill:var(--muted);text-anchor:middle}
+.lw-key{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--muted)} .lw-key i{display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:5px;border-radius:2px} .lw-key .kb{background:var(--ink)} .lw-key .kl{background:var(--accent2)}
+@media (prefers-reduced-motion:reduce){.lw-atom,.lw-dot,.lw-lines{transition:none}}
+
+/* Projection d'une maille sur le plan (001) */
+.pj{display:block;height:auto;max-width:100%} .pj-sq{fill:var(--surface);stroke:var(--ink);stroke-width:1.5}
+.pj-at{stroke:var(--surface);stroke-width:1;transition:opacity .4s} .pj-at.cA{fill:var(--accent)} .pj-at.cB{fill:var(--sub-p)} .pj-at.cC{fill:var(--accent2)} .pj-at.cN{fill:var(--accent)}
+.pj.has-hl .pj-at:not(.hl){opacity:.22} .pj-at.hl{stroke:var(--sub-f);stroke-width:3}
+.pj.has-hl .pj-cote:not(.hl){opacity:.35} .pj-cote{font-family:var(--f-mono);font-size:10px;font-weight:700;fill:var(--ink);transition:opacity .4s}
+.pj-cote.cA{fill:var(--accent)} .pj-cote.cB{fill:var(--sub-p)} .pj-cote.cC{fill:var(--accent2)}
+.pj-ax{stroke:var(--accent2);stroke-width:2} .pj-axt{font-family:var(--f-mono);font-weight:700;font-size:12px;fill:var(--accent2)}
+.pj-lv{padding:4px 8px;border-left:3px solid transparent} .pj-lv.on{border-left-color:var(--sub-f);background:var(--accent-soft)}
 </style>
 </head><body>
 <div class="wrap">
@@ -654,7 +680,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.20.2</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.21.0</span></p>
     </div>
   </header>
 
@@ -1218,12 +1244,12 @@ const SLIDES = {
   struct:["c_atome","c_iso"], inverse:["c_atome","c_iso"], ions:["methode","c_ion"], composes:["methode","poly","indices","c_ion","c_dissol"],
   "masse-molaire":["c_iso","c_mole"], quantite:["c_mole"], pesee:["c_mole","c_pesee"],
   "sous-couche":["klech","c_quant","c_cases","video"], klechkowski:["klech","c_cases","video"], config:["klech","c_quant","c_cases","c_blocs","cation","video"],
-  valence:["liaison","c_stab","c_pred"], formule:["liaison","c_stab","c_pred"], mecanique:["liaison","c_stab","c_pred"],
+  valence:["liaison","c_stab","c_pred","lewis"], formule:["liaison","c_stab","c_pred","lewis"], mecanique:["liaison","lewis","c_stab","c_pred"],
   electroneg:["c2_familles","liaison","c2_chi"], famille:["c2_familles","c2_chi","c2_metal","c2_hydro","c2_vdw"],
   etat:["c2_etats"], courbe:["c2_energie"], equilibre:["c2_energie"],
   tendance:["c2_energie","c2_props"], ductile:["c2_props","c2_classes"],
   classe:["c2_classes","c2_metaux","c2_ceram","c2_poly"], alliage:["c2_metaux"], polymere:["c2_poly"],
-  vocab:["c3_cristal","c3_maille","c3_sys"], maille:["c3_maille","c3_cub"], parametre:["c3_cub","c3_compa"],
+  vocab:["c3_cristal","c3_maille","c3_sys"], maille:["c3_maille","c3_cub","c3_proj"], projection:["c3_proj","c3_cub"], parametre:["c3_cub","c3_compa"],
   compacite:["c3_cub","c3_compa"], "masse-vol":["c3_compa"], reseau:["c3_maille","c3_sys"],
 };
 
@@ -1886,6 +1912,7 @@ function buildBond(){
       <p class="m-lead">Un atome veut la configuration du gaz noble le plus proche : <b>8 électrons</b> sur sa couche externe (<b>2</b> pour H). Ce sont ses <b>électrons célibataires</b> (seuls dans leur case) qui servent à se lier. Deux façons de faire :</p>
       <div class="lb-kinds"><div><b>Liaison covalente</b> : entre deux non-métaux. Chaque atome met <b>1 électron célibataire en commun</b> ; les deux forment un <b>doublet partagé</b> qui compte pour les deux atomes.</div>
       <div><b>Liaison ionique</b> : entre un métal et un non-métal. Le métal <b>donne</b> ses électrons de valence au non-métal ; on obtient un cation et un anion qui s'attirent.</div></div>
+      <p class="fc-def"><b>Exemple type, NaCl :</b> le sodium (Z = 11, [Ne] 3s¹) n'a qu'<em>un</em> électron de valence ; le chlore (Z = 17, [Ne] 3s² 3p⁵) en a sept, il lui en manque un. Na <em>cède</em> son électron à Cl : Na devient Na⁺ et Cl devient Cl⁻, chacun avec la configuration d'un gaz noble (Ne et Ar). Les deux ions, de charges opposées, s'attirent par <em>interaction électrostatique</em> : c'est la liaison ionique, qui assemble les ions en un cristal.</p>
     </div>
     <div class="m-step">
       <h3><span class="m-num">2</span> Regarde les électrons bouger</h3>
@@ -2046,6 +2073,7 @@ function buildAtome(){
           <li><b>A</b> : le nombre de masse = nombre de <b>nucléons</b> (protons + neutrons)</li>
           <li><b>N = A − Z</b> : le nombre de <b>neutrons</b></li>
         </ul></div>
+      <p class="fc-def"><b>À retenir :</b> dans la notation ${nucl("X","A","Z")}, <em>X</em> est le symbole chimique de l'élément, <em>Z</em> son numéro atomique (le nombre de protons du noyau, égal au nombre d'électrons pour un atome neutre) et <em>A</em> son nombre de masse (le nombre de nucléons : protons + neutrons).</p>
     </div>
     <div class="m-step">
       <h3><span class="m-num">3</span> À toi de lire : choisis un atome</h3>
@@ -2070,6 +2098,7 @@ function buildIso(){
     <div class="m-step">
       <h3><span class="m-num">1</span> Les isotopes : même Z, pas le même nombre de neutrons</h3>
       <p class="m-lead">Un élément est défini par son <b>nombre de protons Z</b>. Ses atomes peuvent avoir plus ou moins de <b>neutrons</b> : ce sont ses <b>isotopes</b>. Comme les neutrons ne portent pas de charge, l'atome reste neutre. Certains isotopes sont instables (radioactifs).</p>
+      <p class="fc-def"><b>Définition :</b> des <em>isotopes</em> sont des atomes d'un même élément (même Z, donc même nombre de protons et d'électrons) qui n'ont pas le même nombre de neutrons, donc pas le même nombre de masse A. Pour vérifier que deux atomes sont isotopes : même Z, A différent.</p>
       ${chipsHTML("fiList", ISO, x=>x[0])}
       <div class="fc-iso" id="fiOut" aria-live="polite"></div>
     </div>
@@ -2107,6 +2136,7 @@ function buildIon(){
       </div>
       <div class="fc-iso">${bohrSVG(12,0,null,"Mg : 12 e⁻")}${bohrSVG(12,2,null,"Mg²⁺ : 10 e⁻ (2 perdus)")}${bohrSVG(9,0,null,"F : 9 e⁻")}${bohrSVG(9,-1,null,"F⁻ : 10 e⁻ (1 gagné)")}</div>
       <p class="m-lead">Le noyau ne change pas : Mg²⁺ garde ses 12 protons. Seul le nombre d'électrons varie.</p>
+      <p class="fc-def"><b>Définitions :</b> un <em>cation</em> est un ion chargé positivement, obtenu quand un atome <em>perd</em> un ou plusieurs électrons (ex. Ca → Ca²⁺ + 2 e⁻). Un <em>anion</em> est un ion chargé négativement, obtenu quand un atome <em>gagne</em> un ou plusieurs électrons (ex. N + 3 e⁻ → N³⁻). Le nombre de charges est le nombre d'électrons perdus ou gagnés.</p>
     </div>
     <div class="m-step">
       <h3><span class="m-num">2</span> Le degré d'oxydation (D.O.)</h3>
@@ -2149,6 +2179,7 @@ function buildMole(){
       <h3><span class="m-num">1</span> Pourquoi compter en moles ?</h3>
       <p class="m-lead">Un atome de <sup>12</sup>C pèse environ 6 × 1,673 × 10⁻²⁷ + 6 × 1,675 × 10⁻²⁷ ≈ <b>${frExp(mC)} kg</b>, soit environ 2 × 10⁻²³ g. Bien trop petit pour être pesé seul ! On regroupe donc les atomes par paquets.</p>
       <p class="fc-formula">1 mole = N<sub>A</sub> = 6,022 × 10²³ entités (nombre d'Avogadro)</p>
+      <p class="fc-def"><b>Définition :</b> la <em>mole</em> est l'unité de quantité de matière. Une mole contient autant d'entités (atomes, molécules ou ions) qu'il y a d'atomes dans 12 g de carbone 12, soit <em>N<sub>A</sub> = 6,022 × 10²³ mol⁻¹</em>, le nombre d'Avogadro. La quantité de matière n se mesure en moles (mol).</p>
       <p class="m-lead">La <b>masse molaire M</b> est la masse d'une mole : M(C) = N<sub>A</sub> × m(atome) ≈ 6,022 × 10²³ × ${frExp(mC*1000)} g ≈ <b>12 g/mol</b>. Pour une molécule, on additionne les masses molaires de tous ses atomes.</p>
     </div>
     <div class="m-step">
@@ -2328,6 +2359,79 @@ function buildPredict(){
     else { const qa = ION_STABLE[BY_SYM[A].Z], qb = ION_STABLE[BY_SYM[B].Z], g = gcd(qa,-qb);
       $("fpOut2").innerHTML = `<p>${BY_SYM[A].n} donne ses ${qa} électrons de valence → ${ionHTML(A,qa)} · ${BY_SYM[B].n.toLowerCase()} en gagne ${-qb} → ${ionHTML(B,qb)}.</p><p>On croise les charges : ${(-qb)/g} ${ionHTML(A,qa)} pour ${qa/g} ${ionHTML(B,qb)} ⇒ <b>${fmtF(f)}</b> (${(-qb)/g} × ${qa} = ${qa/g} × ${-qb} électrons échangés).</p>`; }
   }, 0);
+}
+
+// 12 · Schéma de Lewis : doublets liants (traits) et non liants
+// Chaque molécule : atomes [symbole, x, y, angles des doublets non liants] et liaisons [i, j, ordre] (repère SVG 340 × 200, 0° vers la droite, 90° vers le bas)
+const LEWIS = {
+  H2:  {a:[["H",120,100,[]],["H",220,100,[]]], b:[[0,1,1]]},
+  Cl2: {a:[["Cl",110,100,[90,180,270]],["Cl",230,100,[0,90,270]]], b:[[0,1,1]]},
+  O2:  {a:[["O",110,100,[90,270]],["O",230,100,[90,270]]], b:[[0,1,2]]},
+  N2:  {a:[["N",110,100,[180]],["N",230,100,[0]]], b:[[0,1,3]]},
+  HCl: {a:[["H",110,100,[]],["Cl",230,100,[0,90,270]]], b:[[0,1,1]]},
+  H2O: {a:[["O",170,85,[235,305]],["H",100,145,[]],["H",240,145,[]]], b:[[0,1,1],[0,2,1]]},
+  NH3: {a:[["N",170,90,[270]],["H",90,135,[]],["H",250,135,[]],["H",170,178,[]]], b:[[0,1,1],[0,2,1],[0,3,1]]},
+  CH4: {a:[["C",170,100,[]],["H",170,32,[]],["H",240,100,[]],["H",170,170,[]],["H",100,100,[]]], b:[[0,1,1],[0,2,1],[0,3,1],[0,4,1]]},
+  CO2: {a:[["O",70,100,[90,270]],["C",170,100,[]],["O",270,100,[90,270]]], b:[[1,0,2],[1,2,2]]},
+};
+const LEWIS_ORDER = ["H2","Cl2","O2","N2","HCl","H2O","NH3","CH4","CO2"];
+const lwRad = s => s.length>1 ? 19 : 14;
+function lewisSVG(key){
+  const M = LEWIS[key], n = M.a.length;
+  const cx0 = M.a.reduce((a,x)=>a+x[1],0)/n, cy0 = M.a.reduce((a,x)=>a+x[2],0)/n, spread = n===2 ? 1.6 : 1.45;
+  const atoms = M.a.map(([s,x,y,lp],i)=>({s,x,y,lp,i,sx:cx0+(x-cx0)*spread,sy:cy0+(y-cy0)*spread,bonds:[]}));
+  M.b.forEach(([i,j,o])=>{ atoms[i].bonds.push({to:j,o}); atoms[j].bonds.push({to:i,o}); });
+  const dir = (A,B) => { const a = Math.atan2(B.y-A.y, B.x-A.x); return [Math.cos(a), Math.sin(a)]; };
+  let dots = "", lines = "";
+  atoms.forEach(A=>{
+    const role = A.i===0 ? "A" : "B", r = lwRad(A.s);
+    let g = `<text class="lw-sym ${role}" x="${A.x}" y="${A.y+9}">${A.s}</text>`;
+    // célibataires tournés vers chaque partenaire (autant de points que l'ordre de la liaison)
+    A.bonds.forEach(b=>{ const u = dir(A, atoms[b.to]), v = [-u[1],u[0]], d = r+8;
+      for(let k=0;k<b.o;k++){ const off = (k-(b.o-1)/2)*9; g += `<circle class="lw-dot ${role}" cx="${(A.x+u[0]*d+v[0]*off).toFixed(1)}" cy="${(A.y+u[1]*d+v[1]*off).toFixed(1)}" r="3.2"/>`; } });
+    // doublets non liants : deux points côte à côte
+    A.lp.forEach(a=>{ const u = [Math.cos(rad(a)),Math.sin(rad(a))], v = [-u[1],u[0]], d = r+9;
+      [-4.5,4.5].forEach(off=>{ g += `<circle class="lw-dot ${role}" cx="${(A.x+u[0]*d+v[0]*off).toFixed(1)}" cy="${(A.y+u[1]*d+v[1]*off).toFixed(1)}" r="3.2"/>`; });
+      lines += `<line class="lw-lp" x1="${(A.x+u[0]*d-v[0]*8).toFixed(1)}" y1="${(A.y+u[1]*d-v[1]*8).toFixed(1)}" x2="${(A.x+u[0]*d+v[0]*8).toFixed(1)}" y2="${(A.y+u[1]*d+v[1]*8).toFixed(1)}"/>`; });
+    dots += `<g class="lw-atom" style="--dx:${(A.sx-A.x).toFixed(1)}px;--dy:${(A.sy-A.y).toFixed(1)}px">${g}</g>`;
+  });
+  M.b.forEach(([i,j,o])=>{ const A = atoms[i], B = atoms[j], u = dir(A,B), v = [-u[1],u[0]];
+    for(let k=0;k<o;k++){ const off = (k-(o-1)/2)*7;
+      lines += `<line class="lw-bond" x1="${(A.x+u[0]*(lwRad(A.s)+3)+v[0]*off).toFixed(1)}" y1="${(A.y+u[1]*(lwRad(A.s)+3)+v[1]*off).toFixed(1)}" x2="${(B.x-u[0]*(lwRad(B.s)+3)+v[0]*off).toFixed(1)}" y2="${(B.y-u[1]*(lwRad(B.s)+3)+v[1]*off).toFixed(1)}"/>`; } });
+  return `<svg class="lw" id="lwSvg" viewBox="0 0 340 200" role="img" aria-label="Schéma de Lewis de ${fmtF(key).replace(/<[^>]+>/g,"")}">${dots}<g class="lw-lines">${lines}</g></svg>`;
+}
+let lwKey = "CO2";
+function buildLewis(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Le schéma de Lewis : on ne dessine que les électrons de valence</h3>
+      <p class="m-lead">Autour du symbole de chaque atome, on place ses <b>électrons de valence</b> : un <b>point</b> pour un électron célibataire, un <b>trait</b> pour un doublet (deux électrons). Quand deux atomes se lient, chacun apporte un célibataire : les deux forment un <b>doublet liant</b>, dessiné par un trait entre les deux symboles. Les doublets qui restent sur un atome sont ses <b>doublets non liants</b>.</p>
+      <p class="fc-def"><b>À retenir :</b> un trait entre deux atomes = <em>une liaison covalente simple</em> = 1 doublet partagé = 2 électrons. Une <em>double liaison</em> (=) = 2 doublets partagés = 4 électrons. Une <em>triple liaison</em> (≡) = 3 doublets = 6 électrons. Chaque atome compte les électrons des doublets partagés comme les siens : il cherche à en avoir 8 autour de lui (2 pour H).</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> Choisis une molécule et regarde les doublets se former</h3>
+      <div class="m-chips" id="lwList">${LEWIS_ORDER.map(k=>`<button type="button" class="chip" data-k="${k}">${fmtF(k)}</button>`).join("")}</div>
+      <div class="lw-wrap"><div><div id="lwFig"></div><div class="lw-key"><span><i class="kb"></i>doublet liant (liaison)</span><span><i class="kl"></i>doublet non liant</span></div></div><div class="fc-calc" id="lwTxt"></div></div>
+      <div class="m-pick"><button type="button" class="btn ghost small" id="lwReplay">Rejouer</button></div>
+    </div>`;
+  $("lwList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ lwKey = b.dataset.k; playLewis(); });
+  $("lwReplay").onclick = playLewis;
+  playLewis();
+}
+function playLewis(){
+  stopMethod();
+  $("lwList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.k===lwKey));
+  const M = LEWIS[lwKey];
+  $("lwFig").innerHTML = lewisSVG(lwKey);
+  // Bilan par espèce : électrons de valence, liaisons formées, doublets non liants
+  const seen = {}, parts = [];
+  M.a.forEach(([s,,,lp],i)=>{ if(seen[s]) return; seen[s] = true;
+    const e = BY_SYM[s], vi = valenceInfo(e.Z), nb = M.b.filter(b=>b[0]===i||b[1]===i).reduce((a,b)=>a+b[2],0), need = s==="H" ? 2 : 8;
+    parts.push(`<p><b>${e.n}</b> (Z = ${e.Z}) : ${cfgColor(configOf(e.Z))} → <b>${vi.ve}</b> électron${vi.ve>1?"s":""} de valence. Il lui en manque ${need-vi.ve} pour ressembler à un gaz noble : il forme <b>${nb}</b> liaison${nb>1?"s":""}${s==="C"?" (état de valence 4 : un électron 2s monte en 2p, d'où 4 célibataires)":""}${lp.length?` et garde <b>${lp.length}</b> doublet${lp.length>1?"s":""} non liant${lp.length>1?"s":""}`:""}. Autour de lui : ${vi.ve} + ${nb} = <b>${vi.ve+nb}</b> électrons ✓</p>`); });
+  const maxO = Math.max(...M.b.map(b=>b[2]));
+  const multi = maxO===2 ? `<p class="m-rule">Les deux atomes mettent en commun <b>2 doublets</b> : c'est une <b>double liaison</b>, notée par deux traits (=). Elle représente 4 électrons partagés, 2 apportés par chaque atome.</p>` : maxO===3 ? `<p class="m-rule">Les deux atomes mettent en commun <b>3 doublets</b> : une <b>triple liaison</b> (≡), 6 électrons partagés.</p>` : "";
+  $("lwTxt").innerHTML = parts.join("") + multi + `<p class="st2"><b>${fmtF(lwKey)}</b> : ${M.b.length} liaison${M.b.length>1?"s":""} ${M.b.map(([i,j,o])=>`${M.a[i][0]}${o===1?"–":o===2?"=":"≡"}${M.a[j][0]}`).join(", ")} ; ${M.a.reduce((a,x)=>a+x[3].length,0)} doublet${M.a.reduce((a,x)=>a+x[3].length,0)>1?"s":""} non liant${M.a.reduce((a,x)=>a+x[3].length,0)>1?"s":""}.</p>`;
+  later(()=>$("lwSvg").classList.add("go"), 1200);
 }
 
 // ======================= Chapitre II : liaisons interatomiques et classes de matériaux =======================
@@ -2602,6 +2706,7 @@ function buildFamilles(){
         <div class="fc-card neg">${mini("", `<ellipse cx="30" cy="25" rx="22" ry="10" class="idip"/><text x="14" y="29" class="it">δ+</text><text x="42" y="29" class="it">δ−</text><ellipse cx="70" cy="50" rx="22" ry="10" class="idip"/><text x="54" y="54" class="it">δ+</text><text x="82" y="54" class="it">δ−</text><path d="M48 30 L56 44" class="idash"/>`)}<b>Van der Waals</b><span>Attraction entre les pôles δ+ et δ− de molécules voisines. La plus faible, mais très nombreuse dans les polymères, elle finit par assurer la cohésion.</span><small>acétone, CO₂ solide, polyéthylène</small></div>
       </div>
       <p class="m-rule"><b>Forte</b> = à l'intérieur d'une molécule ou d'un cristal (covalente, ionique, métallique). <b>Faible</b> = entre molécules (hydrogène, Van der Waals). Fondre un solide moléculaire, c'est casser des liaisons faibles ; fondre un métal ou une céramique, c'est casser des liaisons fortes : il faut bien plus de chaleur.</p>
+      <p class="fc-def"><b>À retenir :</b> cinq types de liaisons. <em>Fortes</em> (quelques eV) : covalente, ionique, métallique. <em>Faibles</em> (quelques centièmes à dixièmes d'eV) : hydrogène, Van der Waals. La plus résistante est la liaison <em>covalente</em>.</p>
     </div>`;
 }
 
@@ -2614,6 +2719,7 @@ function buildChi(){
       <p class="m-lead">Chaque élément a une <b>électronégativité</b> : sa capacité à attirer vers lui les électrons d'une liaison. Elle <b>augmente de gauche à droite</b> et <b>de bas en haut</b> dans le tableau ; le fluor est le champion (3,98), le césium et le francium les plus faibles. Les gaz nobles ne forment presque pas de liaisons : leur valeur n'a guère de sens.</p>
       <div class="fc-blocs chi-grid">${PT.map(e=>{const [r,c] = posOf(e.Z); return CHI[e.s] ? `<span style="grid-row:${r};grid-column:${c};background:${chiColor(CHI[e.s])}" title="${e.n} : χ = ${chiTxt(CHI[e.s])}">${e.s}<small>${chiTxt(CHI[e.s])}</small></span>` : `<span class="nochi" style="grid-row:${r};grid-column:${c}" title="${e.n}">${e.s}</span>`;}).join("")}</div>
       <div class="chi-scale"><span>faible (0,7)</span><i></i><span>forte (4,0)</span></div>
+      <p class="fc-def"><b>Définition :</b> l'<em>électronégativité</em> χ d'un élément est sa tendance à attirer vers lui les électrons d'une liaison dans laquelle il est engagé. C'est un nombre sans unité (échelle de Pauling, de 0,7 pour Fr à 4,0 pour F). Plus la différence <em>Δχ</em> entre deux atomes liés est grande, plus la liaison est polarisée, jusqu'à devenir ionique.</p>
     </div>
     <div class="m-step">
       <h3><span class="m-num">2</span> Δχ classe la liaison : choisis deux atomes</h3>
@@ -2908,7 +3014,7 @@ function expandPos(p){ // toutes les images d'une position dans [0,1]³
 const posKind = p => { const k = p.filter(x=>x===0||x===1).length; return k===3?"sommets":k===2?"milieu des arêtes":k===1?"centre des faces":(p.every(x=>x===.5)?"centre de la maille":"intérieur"); };
 const posWeight = p => ({sommets:1/8,"milieu des arêtes":1/4,"centre des faces":1/2,"centre de la maille":1,"intérieur":1})[posKind(p)];
 function cellSVG(o){
-  const {a=1,b=1,c=1,al=90,be=90,ga=90,atoms=[],size=170,axes=false,hl=null,rad=0.09} = o, d2r = x=>x*Math.PI/180;
+  const {a=1,b=1,c=1,al=90,be=90,ga=90,atoms=[],size=170,axes=false,hl=null,hlz=null,rad=0.09} = o, d2r = x=>x*Math.PI/180;
   const A=[a,0,0], B=[b*Math.cos(d2r(ga)), b*Math.sin(d2r(ga)), 0];
   const cxx = Math.cos(d2r(be)), cyy = (Math.cos(d2r(al)) - Math.cos(d2r(be))*Math.cos(d2r(ga)))/Math.sin(d2r(ga)), czz = Math.sqrt(Math.max(0.05,1-cxx*cxx-cyy*cyy));
   const C=[c*cxx,c*cyy,c*czz];
@@ -2924,11 +3030,41 @@ function cellSVG(o){
   const pts = [];
   atoms.forEach(([sp,list,cls,r])=>list.forEach(p=>expandPos(p).forEach(q=>pts.push({q,sp,cls,r:r||rad,kind:posKind(p)}))));
   pts.sort((u,v)=>(u.q[0]-v.q[0]) || (u.q[2]-v.q[2]));
-  const AT = pts.map(({q,sp,cls,r,kind})=>{ const [x,y] = S(pr(P3(...q))); return `<circle class="cl-at ${cls}${hl===kind?" hl":""}" data-kind="${kind}" cx="${x}" cy="${y}" r="${(r*sc).toFixed(1)}"><title>${sp} (${q.map(v=>v===.5?"½":v===.25?"¼":v===.75?"¾":v).join(" ; ")})</title></circle>`; }).join("");
+  const AT = pts.map(({q,sp,cls,r,kind})=>{ const [x,y] = S(pr(P3(...q))); const on = hl===kind || (hlz && hlz.includes(q[2]===1?0:q[2])); return `<circle class="cl-at ${cls}${on?" hl":""}" data-kind="${kind}" cx="${x}" cy="${y}" r="${(r*sc).toFixed(1)}"><title>${sp} (${q.map(v=>v===.5?"½":v===.25?"¼":v===.75?"¾":v).join(" ; ")})</title></circle>`; }).join("");
   let AX = "";
   if(axes){ const O = S(pr(P3(0,0,0))), ea = S(pr(P3(.45,0,0))), eb = S(pr(P3(0,.45,0))), ec = S(pr(P3(0,0,.45)));
     AX = `<line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${ea[0]}" y2="${ea[1]}"/><text class="cl-axt" x="${ea[0]}" y="${+ea[1]+12}">a</text><line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${eb[0]}" y2="${eb[1]}"/><text class="cl-axt" x="${+eb[0]+6}" y="${+eb[1]+4}">b</text><line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${ec[0]}" y2="${ec[1]}"/><text class="cl-axt" x="${+ec[0]-10}" y="${ec[1]}">c</text>`; }
-  return `<svg class="cl${hl?" has-hl":""}" viewBox="0 0 ${W} ${H}" style="width:${W}px" role="img" aria-label="Maille">${E}${AT}${AX}</svg>`;
+  return `<svg class="cl${hl||hlz?" has-hl":""}" viewBox="0 0 ${W} ${H}" style="width:${W}px" role="img" aria-label="Maille">${E}${AT}${AX}</svg>`;
+}
+// Projection de la maille sur le plan (001) : vue le long de c ; a vers le bas, b vers la droite ; la hauteur z devient la « cote »
+const coteTxt = z => z===0 ? "0;1" : z===.5 ? "½" : z===.25 ? "¼" : z===.75 ? "¾" : String(z);
+function projGroups(atoms){
+  const g = {};
+  atoms.forEach(([sp,list,cls])=>list.forEach(p=>expandPos(p).forEach(q=>{
+    const key = q[0].toFixed(2)+","+q[1].toFixed(2), z = q[2]===1 ? 0 : q[2];
+    g[key] = g[key] || {key, x:q[1], y:q[0], items:[]};
+    if(!g[key].items.some(it=>it.sp===sp && it.z===z)) g[key].items.push({sp,cls,z});
+  })));
+  return Object.values(g);
+}
+function projSVG(o){
+  const {atoms=[], size=160, hl=null, hlz=null, axes=true} = o;
+  const ml = 36, mt = 48, mr = 16, mb = 34, L = size, R = 13, W = ml+L+mr, H = mt+L+mb, X = v => ml+v*L, Y = v => mt+v*L;
+  const hasHl = hl!=null || hlz!=null;
+  let s = `<rect class="pj-sq" x="${ml}" y="${mt}" width="${L}" height="${L}"/>`;
+  if(axes) s += `<line class="pj-ax" x1="${ml-28}" y1="${mt}" x2="${ml-28}" y2="${mt+40}"/><text class="pj-axt" x="${ml-32}" y="${mt+54}">a</text><line class="pj-ax" x1="${ml}" y1="${mt-40}" x2="${ml+40}" y2="${mt-40}"/><text class="pj-axt" x="${ml+46}" y="${mt-36}">b</text>`;
+  projGroups(atoms).forEach(g=>{
+    const cx = X(g.x), cy = Y(g.y), n = g.items.length;
+    const on = it => (hl===g.key) || (hlz && hlz.includes(it.z));
+    if(n===1) s += `<circle class="pj-at ${g.items[0].cls}${on(g.items[0])?" hl":""}" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${R}"/>`;
+    else g.items.forEach((it,i)=>{ const a0 = -Math.PI/2 + i*2*Math.PI/n, a1 = a0 + 2*Math.PI/n;
+      s += `<path class="pj-at ${it.cls}${on(it)?" hl":""}" d="M${cx.toFixed(1)} ${cy.toFixed(1)} L${(cx+R*Math.cos(a0)).toFixed(1)} ${(cy+R*Math.sin(a0)).toFixed(1)} A${R} ${R} 0 0 1 ${(cx+R*Math.cos(a1)).toFixed(1)} ${(cy+R*Math.sin(a1)).toFixed(1)} Z"/>`; });
+    // cotes : une ligne par espèce superposée, dans la couleur de l'espèce ; au-dessus (rangée du haut), en dessous (rangée du bas) ou à côté
+    const anchor = g.x>0.75 ? "end" : "start", tx = g.x>0.75 ? cx-R-2 : cx+R+2;
+    g.items.forEach((it,i)=>{ const ty = g.y<0.25 ? cy-R-3-(n-1-i)*10 : g.y>0.75 ? cy+R+11+i*10 : cy+4+(i-(n-1)/2)*10;
+      s += `<text class="pj-cote ${it.cls}${on(it)?" hl":""}" x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${anchor}">${coteTxt(it.z)}</text>`; });
+  });
+  return `<svg class="pj${hasHl?" has-hl":""}" viewBox="0 0 ${W} ${H}" style="width:${W}px" role="img" aria-label="Projection de la maille sur le plan (001)">${s}</svg>`;
 }
 const STRUCT = {
   CS:   {n:"cubique simple (P)", ex:"polonium", sp:[["A",[[0,0,0]],"cA"]], rel:"a = 2r", relk:"cs"},
@@ -2996,6 +3132,19 @@ const CH3_GAMES = [
    show: c => ({wide:true, html:`<div class="cl-show">${cellSVG({atoms:c.sp, size:190})}<div class="cl-cap"><b>${c.n}</b><br>${c.ex}<br><small>${c.sp.map(x=>`<i class="cl-key ${x[2]}"></i>${x[0]}`).join(" · ")}</small></div></div>`}),
    fields: c => c.sp.flatMap(([sp,list],i)=>[F("p"+i,`Position de ${sp}`, selOk(kindLabel(spKinds(list))), kindLabel(spKinds(list)), "select", KIND_OPTS), F("n"+i,`Nombre de ${sp} par maille`, v=>isInt(v,spCount(list)), spCount(list))]),
    explain: c => c.sp.map(([sp,list])=>`<b>${sp}</b> : ${countDetail(list)} → <b>${spCount(list)}</b> par maille.`).join("<br>") + (c.k==="NaCl"?"<br>Formule NaCl : 4 Na pour 4 Cl, Z = 4 motifs NaCl par maille.":c.k==="perov"?"<br>1 Sr, 1 Ti, 3 O : la formule SrTiO₃ est retrouvée, Z = 1.":c.k==="CsCl"?"<br>1 Cs pour 1 Cl : Z = 1 motif CsCl. Attention, ce n'est pas un réseau centré : l'atome du centre n'est pas le même que celui des sommets.":"")},
+
+  {id:"projection", section:"maille", tab:"Projection (001)", title:"Lire une projection sur le plan (001)",
+   desc:"La maille est vue de dessus, le long de l'axe c : chaque atome est placé par ses coordonnées (x ; y) et sa hauteur z est écrite à côté, c'est sa cote. Reconnais la structure et lis les cotes.",
+   q:"Que dit cette projection ?",
+   gen(){ const k = pickFresh(Object.keys(STRUCT), x=>x), s = STRUCT[k];
+     const g = rnd(projGroups(s.sp)), it = rnd(g.items), ask = rnd(s.sp);
+     return {k, ...s, hl:g.key, cote:coteTxt(it.z), hsp:it.sp, pos:`(${g.y===.5?"½":g.y===.25?"¼":g.y===.75?"¾":g.y} ; ${g.x===.5?"½":g.x===.25?"¼":g.x===.75?"¾":g.x})`, ask}; },
+   show: c => ({wide:true, html:`<div class="cl-show">${projSVG({atoms:c.sp, size:160, hl:c.hl})}<div class="cl-cap">vue le long de [001]<br><small>${c.sp.map(x=>`<i class="cl-key ${x[2]}"></i>${x[0]}`).join(" · ")}</small></div></div>`}),
+   fields: c => [
+     F("st","Structure", selOk(c.n), c.n, "select", Object.values(STRUCT).map(s=>s.n)),
+     F("co",`Cote de l'atome entouré (${c.hsp}, en ${c.pos})`, selOk(c.cote), c.cote, "select", ["0;1","¼","½","¾"]),
+     F("n",`Nombre de ${c.ask[0]} par maille`, v=>isInt(v,spCount(c.ask[1])), spCount(c.ask[1]))],
+   explain: c => `On regarde la maille par le dessus : le carré est la face a × b, et chaque atome est repéré par (x ; y). La cote donne sa hauteur z. <b>${c.n}</b>. L'atome entouré, ${c.hsp} en ${c.pos}, a pour cote <b>${c.cote}</b>${c.cote==="0;1"?" : deux atomes sont superposés, l'un au plancher (z = 0) et l'autre au plafond (z = 1) de la maille":c.cote==="½"?" : il est à mi-hauteur":""}. ${c.ask[0]} : ${countDetail(c.ask[1])} → <b>${spCount(c.ask[1])}</b> par maille.<div class="cl-show">${cellSVG({atoms:c.sp, size:150})}</div>`},
 
   {id:"parametre", section:"maille", tab:"Paramètre et rayon", title:"Paramètre de maille et rayon atomique",
    desc:"Les atomes se touchent le long d'une direction qui dépend de la structure : arête (cubique simple), diagonale d'une face (CFC) ou grande diagonale (CC). Trouve la relation et le rayon.",
@@ -3089,6 +3238,7 @@ function buildMaille(){
         <text x="57" y="92" class="ml-lab">maille</text>
       </svg>
       <p class="m-lead" id="mlTxt">Les croix sont les nœuds du réseau ; le rectangle est une maille (ici à 2 dimensions, avec a et b).</p>
+      <p class="fc-def"><b>Définition :</b> une <em>maille</em> est le plus petit volume (un parallélépipède défini par a, b, c, α, β, γ) qui, répété par translation dans les trois directions de l'espace, reconstitue tout le cristal. Pour la décrire, il faut deux éléments : le <em>réseau</em>, l'ensemble des nœuds repérés par (a, b, c), et le <em>motif</em>, les atomes placés sur chaque nœud avec leurs coordonnées.</p>
     </div>
     <div class="m-step">
       <h3><span class="m-num">2</span> Les six paramètres de maille</h3>
@@ -3135,6 +3285,7 @@ function buildCompacite(){
       <h3><span class="m-num">1</span> Compacité : quelle fraction de la maille est vraiment remplie ?</h3>
       <p class="fc-formula big">C = <span class="fc-frac"><span>n × 4/3 π r³</span><span>V<sub>maille</sub></span></span><small>n atomes de rayon r · pour plusieurs espèces : Σ n<sub>i</sub> × 4/3 π r<sub>i</sub>³</small></p>
       <p class="m-lead">Les atomes sont vus comme des <b>sphères dures</b> qui se touchent. Le reste de la maille est du vide. C ne dépend pas de la taille de l'atome, seulement de l'arrangement.</p>
+      <p class="fc-def"><b>Définitions :</b> la <em>compacité</em> C est le rapport entre le volume occupé par les atomes d'une maille et le volume de cette maille ; c'est un nombre sans unité, compris entre 0 et 1 (ou en %). La <em>masse volumique</em> ρ est la masse de la maille (Z motifs de masse M / N<sub>A</sub>) divisée par son volume, en g/cm³ ou kg/m³.</p>
     </div>
     <div class="m-step">
       <h3><span class="m-num">2</span> Masse volumique : la masse d'une maille divisée par son volume</h3>
@@ -3178,6 +3329,50 @@ function buildSystemes(){
   $("syBtn").onclick = ()=>$("sySvg").classList.toggle("go");
 }
 
+let pjKey = "CsCl";
+function buildProj(){
+  $("slCustom").innerHTML = `
+    <div class="m-step">
+      <h3><span class="m-num">1</span> Voir la maille de dessus</h3>
+      <p class="m-lead">Dessiner une maille en perspective est long et peu précis. On préfère la <b>projeter</b> sur une face : on regarde le long de l'axe c, « par le dessus », et on dessine ce qu'on voit sur le plan <b>(001)</b>, c'est-à-dire le carré formé par a et b. Chaque atome est placé par ses coordonnées <b>(x ; y)</b>. Sa hauteur <b>z</b>, qu'on ne voit plus, est écrite à côté de lui : c'est sa <b>cote</b>.</p>
+      <p class="fc-def"><b>Règles :</b> un atome au plancher (z = 0) et un atome au plafond (z = 1) se superposent exactement : on écrit la cote <em>0;1</em>. Le centre de la maille est à la cote <em>½</em>. Quand deux atomes différents se superposent, on partage le cercle en secteurs et on écrit chaque cote. La direction de projection s'écrit entre crochets, <em>[001]</em> ; le plan de projection entre parenthèses, <em>(001)</em>.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">2</span> De la maille à sa projection</h3>
+      <div class="m-chips" id="pjList">${Object.entries(STRUCT).map(([k,s])=>`<button type="button" class="chip" data-k="${k}">${k==="perov"?"Pérovskite":k==="diam"?"Diamant":k}</button>`).join("")}</div>
+      <div class="cu-wrap"><div class="cl-show" id="pjFig"></div><div class="fc-calc" id="pjTxt"></div></div>
+      <div class="m-pick"><button type="button" class="btn small" id="pjGo">▶ Projeter niveau par niveau</button></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">3</span> Dessiner la projection à l'examen</h3>
+      <ol class="fc-list num">
+        <li>Trace un <b>carré</b> (la face a × b) et nomme les axes a et b.</li>
+        <li>Place les atomes des <b>sommets</b> : un cercle à chaque coin, cote <b>0;1</b>. Sur le dessin il n'y a que 4 cercles, mais ils représentent les 8 sommets.</li>
+        <li>Place les autres atomes à leurs coordonnées (x ; y) et écris leur cote : <b>½</b> pour le centre de la maille, <b>0;1</b> pour le centre des faces du haut et du bas, <b>½</b> pour le centre des faces latérales…</li>
+        <li>Si deux atomes différents se superposent, partage le cercle en deux.</li>
+        <li>Ajoute une <b>légende</b> : quel cercle pour quelle espèce.</li>
+      </ol>
+    </div>`;
+  $("pjList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ stopMethod(); pjKey = b.dataset.k; drawProj(); });
+  $("pjGo").onclick = playProj;
+  drawProj();
+}
+const pjLevels = sp => [...new Set(projGroups(sp).flatMap(g=>g.items.map(it=>it.z)))].sort((a,b)=>a-b);
+function drawProj(hlz=null){
+  const s = STRUCT[pjKey];
+  $("pjList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.k===pjKey));
+  $("pjFig").innerHTML = cellSVG({atoms:s.sp, size:150, hlz}) + projSVG({atoms:s.sp, size:150, hlz});
+  const groups = projGroups(s.sp);
+  $("pjTxt").innerHTML = `<p><b>${s.n}</b> · <small>${s.sp.map(x=>`<i class="cl-key ${x[2]}"></i>${x[0]}`).join(" · ")}</small></p>` + pjLevels(s.sp).map(z=>{
+    const at = groups.filter(g=>g.items.some(it=>it.z===z)); const by = {}; at.forEach(g=>g.items.filter(it=>it.z===z).forEach(it=>(by[it.sp] = by[it.sp]||[]).push(`(${g.y===.5?"½":g.y===.25?"¼":g.y===.75?"¾":g.y} ; ${g.x===.5?"½":g.x===.25?"¼":g.x===.75?"¾":g.x})`)));
+    return `<p class="pj-lv${hlz&&hlz.includes(z)?" on":""}">Cote <b>${coteTxt(z)}</b>${z===0?" (plancher et plafond)":""} : ${Object.entries(by).map(([sp,l])=>`${sp} en ${l.join(", ")}`).join(" ; ")}</p>`; }).join("");
+}
+function playProj(){
+  stopMethod(); const lv = pjLevels(STRUCT[pjKey].sp);
+  lv.forEach((z,i)=>later(()=>drawProj([z]), 200 + i*1500));
+  later(()=>drawProj(), 200 + lv.length*1500);
+}
+
 const CUSTOM = {
   methode: {title:"<b>Méthode</b> · trouver la charge des ions", label:"Méthode", thumb:"Na⁺ Cl⁻", build: buildMethod},
   poly:    {title:"<b>Charge d'un groupement d'atomes</b> · CO₃, SO₄, NO₃…", label:"Groupements", thumb:"CO₃²⁻", build: buildPoly},
@@ -3196,6 +3391,7 @@ const CUSTOM = {
   c_blocs: {title:"<b>Blocs s, p, d, f</b> · le tableau et les sous-couches", label:"Blocs", thumb:"s p d f", build: buildBlocs},
   c_stab:  {title:"<b>Stabilité et valence</b> · électrons célibataires", label:"Valence", thumb:"C*", build: buildStab},
   c_pred:  {title:"<b>Prévoir la formule</b> · apparier les célibataires", label:"Prévoir", thumb:"NH₃", build: buildPredict},
+  lewis:   {title:"<b>Schéma de Lewis</b> · doublets liants et non liants, liaisons multiples", label:"Lewis", thumb:"O=C=O", build: buildLewis},
   c2_familles:{title:"<b>Les familles de liaisons</b> · fortes et faibles", label:"Familles", thumb:"3 + 2", build: buildFamilles},
   c2_chi:    {title:"<b>Électronégativité</b> · Δχ et polarité de la liaison", label:"Électronégativité", thumb:"Δχ", build: buildChi},
   c2_metal:  {title:"<b>Liaison métallique</b> · le gaz d'électrons", label:"Métallique", thumb:"e⁻ e⁻", build: buildMetal},
@@ -3213,6 +3409,7 @@ const CUSTOM = {
   c3_cub:    {title:"<b>Mailles cubiques</b> · P, I, F et compter les atomes", label:"Cubiques", thumb:"8 × ⅛", build: buildCubiques},
   c3_compa:  {title:"<b>Compacité et masse volumique</b> · calculs pas à pas", label:"Compacité", thumb:"C · ρ", build: buildCompacite},
   c3_sys:    {title:"<b>Systèmes cristallins</b> · les 14 réseaux de Bravais", label:"Bravais", thumb:"7 · 14", build: buildSystemes},
+  c3_proj:   {title:"<b>Projection sur le plan (001)</b> · la maille vue de dessus, avec les cotes", label:"Projection", thumb:"0;1 ½", build: buildProj},
   video:   {title:"<b>Vidéo</b> · les nombres quantiques et la configuration électronique", label:"Vidéo", thumb:"▶", build: buildVideo},
 };
 
