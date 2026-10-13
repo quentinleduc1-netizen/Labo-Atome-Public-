@@ -654,7 +654,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.20.1</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.20.2</span></p>
     </div>
   </header>
 
@@ -1402,7 +1402,7 @@ const GRP_WARN = {PO4:" (dans PO₄, P donne ses 5 électrons aux O : il vaut +5
   SO4:" (dans SO₄, S donne ses 6 électrons aux O : il vaut +6, et non −2 comme S seul)",
   CO3:" (dans CO₃, C donne ses 4 électrons aux O : il vaut +4)", NH4:" (ici H vaut +1, donc N garde −3)"};
 // Valeur d'un atome dans un groupement oxygéné, affichée au clic dans le tableau
-const GRP_NOTE = {C:"+4 dans CO₃²⁻", N:"+5 dans NO₃⁻ (mais −3 dans NH₄⁺)", P:"+5 dans PO₄³⁻", S:"+6 dans SO₄²⁻"};
+const GRP_NOTE = {C:"+4 dans CO₃²⁻", Si:"+4 dans SiO₄⁴⁻ (silicates)",N:"+5 dans NO₃⁻ (mais −3 dans NH₄⁺)", P:"+5 dans PO₄³⁻", S:"+6 dans SO₄²⁻"};
 const REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 let methodTimers = [], balTimers = [];
 function stopMethod(){ methodTimers.forEach(clearTimeout); methodTimers = []; balTimers.forEach(clearTimeout); balTimers = []; if(typeof loopTimers!=="undefined"){ loopTimers.forEach(clearTimeout); loopTimers = []; } }
@@ -3239,7 +3239,7 @@ function renderBilan(){
 // ---------- Tableau périodique ----------
 // Charges usuelles des ions (les plus fréquentes), affichées dans le tableau
 const CHARGES = {H:[1,-1],Li:[1],Na:[1],K:[1],Rb:[1],Cs:[1],Fr:[1],Be:[2],Mg:[2],Ca:[2],Sr:[2],Ba:[2],Ra:[2],
-  B:[3],Al:[3],Ga:[3],In:[3],Tl:[1,3],C:[4,-4],Si:[4,-4],Ge:[4],Sn:[4,2],Pb:[2,4],N:[-3,5],P:[-3,5],As:[-3],Sb:[3,5],Bi:[3],
+  B:[3],Al:[3],Ga:[3],In:[3],Tl:[1,3],C:[-4,4],Si:[-4,4],Ge:[4],Sn:[4,2],Pb:[2,4],N:[-3,5],P:[-3,5],As:[-3],Sb:[3,5],Bi:[3],
   O:[-2],S:[-2,6],Se:[-2],Te:[-2],F:[-1],Cl:[-1],Br:[-1],I:[-1],At:[-1],He:[0],Ne:[0],Ar:[0],Kr:[0],Xe:[0],Rn:[0],
   Sc:[3],Ti:[4],V:[5,3],Cr:[3],Mn:[2],Fe:[3,2],Co:[2,3],Ni:[2],Cu:[2,1],Zn:[2],Y:[3],Zr:[4],Nb:[5],Mo:[6],Ru:[3],Rh:[3],
   Pd:[2],Ag:[1],Cd:[2],Hf:[4],Ta:[5],W:[6],Os:[4],Ir:[3],Pt:[2,4],Au:[3,1],Hg:[2,1],Ac:[3],Th:[4],Pa:[5],U:[6,4],Np:[5],Pu:[4],Am:[3]};
@@ -3269,10 +3269,10 @@ function famOf(Z){
   const c=posOf(Z)[1]; return (c>=3&&c<=12)?"tr":"post";
 }
 // Charge prise par l'atome central quand il est lié à des oxygènes (groupements du cours)
-const OXO = {C:"+4 CO₃", N:"+5 NO₃", P:"+5 PO₄", S:"+6 SO₄"};
+const OXO = {C:"+4 CO₃", Si:"+4 SiO₄", N:"+5 NO₃", P:"+5 PO₄", S:"+6 SO₄"};
 // Masse molaire affichée dans la case : 2 décimales ; [nombre de masse] pour les éléments sans isotope stable
 const massTxt = e => Number.isInteger(e.M) ? `[${e.M}]` : (Math.round(e.M*100+1e-6)/100).toFixed(2).replace(".",",");
-const mainQ = s => s==="C" ? null : CHARGES[s] ? CHARGES[s][0] : null;   // le carbone ne forme pas d'ion simple
+const mainQ = s => CHARGES[s] ? CHARGES[s][0] : null;
 function renderPT(gridId, detailId, legendId){
   $(gridId).innerHTML = PT.map(e=>{const [r,c]=posOf(e.Z);
     return `<button type="button" class="cell" data-z="${e.Z}" title="${e.n} · Z = ${e.Z} · M = ${String(e.M).replace(".",",")} g/mol${CHI[e.s]?` · χ = ${chiTxt(CHI[e.s])}`:""}" style="grid-row:${r};grid-column:${c};--fam:var(--fam-${famOf(e.Z)})"><span class="z">${e.Z}</span><span class="s">${e.s}</span><span class="nm">${e.n}</span><span class="ma">M = ${massTxt(e)}</span>${CHI[e.s]?`<span class="chi">χ = ${chiTxt(CHI[e.s])}</span>`:""}<span class="q ${mainQ(e.s)!=null?chCls([mainQ(e.s)]):""}">${mainQ(e.s)!=null?chStr([mainQ(e.s)]):""}</span>${OXO[e.s]?`<span class="og">${OXO[e.s]}</span>`:""}</button>`;}).join("")
@@ -3288,12 +3288,12 @@ function selectCell(gridId, detailId, Z){
     const b = $(gridId).querySelector(`.cell[data-z="${Z}"]`);
     $(gridId).querySelectorAll(".sel").forEach(x=>x.classList.remove("sel")); b.classList.add("sel");
     const e = PT[Z-1], f = FAMS.find(x=>x[0]===famOf(e.Z))[1];
-    const ions = (e.s==="C"||e.s==="Si") ? "pas d'ion simple, forme des liaisons covalentes" : CHARGES[e.s] ? (GRP_NOTE[e.s] ? [CHARGES[e.s][0]] : CHARGES[e.s]).map(q=> q===0 ? "ne forme pas d'ion" : ionHTML(e.s,q)).join(", ") : "–";
+    const ions = CHARGES[e.s] ? (GRP_NOTE[e.s] ? [CHARGES[e.s][0]] : CHARGES[e.s]).map(q=> q===0 ? "ne forme pas d'ion" : ionHTML(e.s,q)).join(", ") : "–";
     const c = configOf(e.Z), sh = shortCfg(c);
     const hide = detailId==="ptDetail2" && state.game==="config";
     const cfg = hide ? `<span class="pt-hide">masquée pendant le jeu « Configuration électronique », c'est à toi de la trouver</span>`
       : `${cfgColor(c)}${sh?` <span class="pt-short">soit ${sh}</span>`:""}${EXC[e.Z]?` <span class="pt-exc">exception à Klechkowski</span>`:""}`;
-    $(detailId).innerHTML = `<b>${e.s}</b> · ${e.n} · Z = ${e.Z} · M = ${String(e.M).replace(".",",")} g/mol${CHI[e.s]?` · χ = ${chiTxt(CHI[e.s])}`:""} · ${f.toLowerCase()} · ions courants : ${ions}<div class="pt-cfg">Configuration : ${cfg}</div>${GRP_NOTE[e.s] ? `<div class="pt-grp"><b>Attention :</b> ${e.s==="C" ? "le carbone ne forme pas d'ion seul, mais" : `seul, ${e.s} forme ${ionHTML(e.s,CHARGES[e.s][0])}, mais`} dans un groupement avec de l'oxygène il donne ses électrons : <b>${GRP_NOTE[e.s]}</b>.</div>` : ""}`;
+    $(detailId).innerHTML = `<b>${e.s}</b> · ${e.n} · Z = ${e.Z} · M = ${String(e.M).replace(".",",")} g/mol${CHI[e.s]?` · χ = ${chiTxt(CHI[e.s])}`:""} · ${f.toLowerCase()} · ions courants : ${ions}<div class="pt-cfg">Configuration : ${cfg}</div>${GRP_NOTE[e.s] ? `<div class="pt-grp"><b>Attention :</b> ${`seul, ${e.s} forme ${ionHTML(e.s,CHARGES[e.s][0])}${e.s==="C"?" (carbures, ex. Al₄C₃)":e.s==="Si"?" (siliciures, ex. Mg₂Si)":""}, mais`} dans un groupement avec de l'oxygène il donne ses électrons : <b>${GRP_NOTE[e.s]}</b>.</div>` : ""}`;
 }
 // Recherche : nom (sans accents), symbole ou numéro atomique
 function findElements(q){
