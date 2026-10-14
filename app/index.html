@@ -595,8 +595,9 @@ html:not(.is-app) .app-only{display:none}
 #pmMsg{font-size:.9rem;color:var(--muted)}
 /* Chapitre III */
 .cl{height:auto;max-width:100%;display:block} .cl-edge{stroke:var(--ink);stroke-width:1.4;fill:none} .cl-edge.back{stroke-dasharray:4 3;stroke:var(--muted)}
-.cl-at{stroke:var(--surface);stroke-width:1;transition:r .4s,opacity .4s} .cl-at.cA{fill:var(--accent)} .cl-at.cB{fill:var(--sub-p)} .cl-at.cC{fill:var(--accent2)} .cl-at.cN{fill:var(--accent)}
-.cl.has-hl .cl-at:not(.hl){opacity:.25} .cl-at.hl{stroke:var(--sub-f);stroke-width:3}
+.cl-at{stroke:var(--surface);stroke-width:1.2;opacity:var(--depth,1);transition:r .4s,opacity .4s} .cl-at.cA{fill:var(--accent)} .cl-at.cB{fill:var(--sub-p)} .cl-at.cC{fill:var(--accent2)} .cl-at.cN{fill:var(--accent)}
+.cl.has-hl .cl-at:not(.hl){opacity:.2} .cl-at.hl{stroke:var(--sub-f);stroke-width:3;opacity:1}
+.cl-face{fill:var(--accent);opacity:.07;stroke:none}
 .cl-ax{stroke:var(--accent2);stroke-width:2} .cl-axt{font-family:var(--f-mono);font-weight:700;font-size:12px;fill:var(--accent2)}
 .cl-show{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;justify-content:center} .cl-cap{font-size:.95rem;line-height:1.5;text-align:center}
 .cl-key{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle} .cl-key.cA{background:var(--accent)} .cl-key.cB{background:var(--sub-p)} .cl-key.cC{background:var(--accent2)}
@@ -720,7 +721,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.0</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.1</span></p>
     </div>
   </header>
 
@@ -3080,15 +3081,19 @@ function cellSVG(o){
   const sc = size/Math.max(maxx-minx, maxy-miny), S = ([x,y]) => [((x-minx)*sc).toFixed(1), ((y-miny)*sc).toFixed(1)];
   const W = ((maxx-minx)*sc).toFixed(0), H = ((maxy-miny)*sc).toFixed(0);
   const edges = [[0,1],[0,2],[0,4],[1,3],[1,5],[2,3],[2,6],[3,7],[4,5],[4,6],[5,7],[6,7]];
+  // Faces visibles (devant, droite, dessus) légèrement teintées : donnent le volume du cube
+  const face = idx => `<polygon class="cl-face" points="${idx.map(i=>S(corners[i]).join(",")).join(" ")}"/>`;
+  const FACES = face([1,3,7,5]) + face([2,3,7,6]) + face([4,5,7,6]);
   const E = edges.map(([i,j])=>{ const [x1,y1]=S(corners[i]), [x2,y2]=S(corners[j]); return `<line class="cl-edge${i===0?" back":""}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`; }).join("");
   const pts = [];
   atoms.forEach(([sp,list,cls,r])=>list.forEach(p=>expandPos(p).forEach(q=>pts.push({q,sp,cls,r:r||rad,kind:posKind(p)}))));
   pts.sort((u,v)=>(u.q[0]-v.q[0]) || (u.q[2]-v.q[2]));
-  const AT = pts.map(({q,sp,cls,r,kind})=>{ const [x,y] = S(pr(P3(...q))); const on = (Array.isArray(hl) ? hl.includes(kind) : hl===kind) || (hlz && hlz.includes(q[2]===1?0:q[2])); return `<circle class="cl-at ${cls}${on?" hl":""}" data-kind="${kind}" cx="${x}" cy="${y}" r="${(r*sc).toFixed(1)}"><title>${sp} (${q.map(v=>v===.5?"½":v===.25?"¼":v===.75?"¾":v).join(" ; ")})</title></circle>`; }).join("");
+  // Profondeur : les atomes du fond (x petit) sont dessinés plus petits et plus pâles que ceux de devant
+  const AT = pts.map(({q,sp,cls,r,kind})=>{ const [x,y] = S(pr(P3(...q))), d = q[0]; const on = (Array.isArray(hl) ? hl.includes(kind) : hl===kind) || (hlz && hlz.includes(q[2]===1?0:q[2])); return `<circle class="cl-at ${cls}${on?" hl":""}" data-kind="${kind}" cx="${x}" cy="${y}" r="${(r*sc*(0.78+0.3*d)).toFixed(1)}" style="--depth:${(0.55+0.45*d).toFixed(2)}"><title>${sp} (${q.map(v=>v===.5?"½":v===.25?"¼":v===.75?"¾":v).join(" ; ")})</title></circle>`; }).join("");
   let AX = "";
   if(axes){ const O = S(pr(P3(0,0,0))), ea = S(pr(P3(.45,0,0))), eb = S(pr(P3(0,.45,0))), ec = S(pr(P3(0,0,.45)));
     AX = `<line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${ea[0]}" y2="${ea[1]}"/><text class="cl-axt" x="${ea[0]}" y="${+ea[1]+12}">a</text><line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${eb[0]}" y2="${eb[1]}"/><text class="cl-axt" x="${+eb[0]+6}" y="${+eb[1]+4}">b</text><line class="cl-ax" x1="${O[0]}" y1="${O[1]}" x2="${ec[0]}" y2="${ec[1]}"/><text class="cl-axt" x="${+ec[0]-10}" y="${ec[1]}">c</text>`; }
-  return `<svg class="cl${hl||hlz?" has-hl":""}" viewBox="0 0 ${W} ${H}" style="width:${W}px" role="img" aria-label="Maille">${E}${AT}${AX}</svg>`;
+  return `<svg class="cl${hl||hlz?" has-hl":""}" viewBox="0 0 ${W} ${H}" style="width:${W}px" role="img" aria-label="Maille">${FACES}${E}${AT}${AX}</svg>`;
 }
 // Projection de la maille sur le plan (001) : vue le long de c ; a vers le bas, b vers la droite ; la hauteur z devient la « cote »
 const coteTxt = z => z===0 ? "0;1" : z===.5 ? "½" : z===.25 ? "¼" : z===.75 ? "¾" : String(z);
@@ -3183,7 +3188,7 @@ const CH3_GAMES = [
    desc:"Un atome aux sommets est partagé entre 8 mailles (1/8), au milieu d'une arête entre 4 (1/4), au centre d'une face entre 2 (1/2) ; à l'intérieur il compte pour 1. Pour chaque espèce, indique sa position et son nombre par maille.",
    q:"Combien d'atomes de chaque espèce dans la maille ?",
    gen(){ const k = pickFresh(Object.keys(STRUCT), x=>x); return {k, ...STRUCT[k]}; },
-   show: c => ({wide:true, html:`<div class="cl-show">${cellSVG({atoms:c.sp, size:190})}<div class="cl-cap"><b>${c.n}</b><br>${c.ex}<br><small>${c.sp.map(x=>`<i class="cl-key ${x[2]}"></i>${x[0]}`).join(" · ")}</small></div></div>`}),
+   show: c => ({wide:true, html:`<div class="cl-show">${cellSVG({atoms:c.sp, size:250})}<div class="cl-cap"><b>${c.n}</b><br>${c.ex}<br><small>${c.sp.map(x=>`<i class="cl-key ${x[2]}"></i>${x[0]}`).join(" · ")}</small><br><small>Les atomes du fond sont plus petits et plus pâles.</small></div></div>`}),
    fields: c => c.sp.flatMap(([sp,list],i)=>[F("p"+i,`Position de ${sp}`, selOk(kindLabel(spKinds(list))), kindLabel(spKinds(list)), "select", KIND_OPTS), F("n"+i,`Nombre de ${sp} par maille`, v=>isInt(v,spCount(list)), spCount(list))]),
    explain: c => c.sp.map(([sp,list])=>`<b>${sp}</b> : ${countDetail(list)} → <b>${spCount(list)}</b> par maille.`).join("<br>") + (c.k==="NaCl"?"<br>Formule NaCl : 4 Na pour 4 Cl, Z = 4 motifs NaCl par maille.":c.k==="perov"?"<br>1 Sr, 1 Ti, 3 O : la formule SrTiO₃ est retrouvée, Z = 1.":c.k==="CsCl"?"<br>1 Cs pour 1 Cl : Z = 1 motif CsCl. Attention, ce n'est pas un réseau centré : l'atome du centre n'est pas le même que celui des sommets.":"")},
 
