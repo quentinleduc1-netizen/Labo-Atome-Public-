@@ -434,7 +434,7 @@ tr.sec td{font-family:var(--f-display);font-weight:700;background:var(--bg);colo
 #printZone{display:none}
 .pt-print-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:.8rem;color:var(--muted)}
 html:not(.is-app) .app-only{display:none}
-@page{size:A4 landscape;margin:7mm}
+@page{size:A4 landscape;margin:5mm}
 @media print{
   :root,:root:not([data-theme="light"]),:root[data-theme="dark"]{
     --bg:#ffffff;--surface:#ffffff;--ink:#111111;--muted:#555555;--line:#bdbdbd;--accent:#4a2f96;--accent-soft:#ffffff;--accent2:#126b6c;
@@ -442,15 +442,20 @@ html:not(.is-app) .app-only{display:none}
   html.print-pt body{background:#fff!important;background-image:none!important;padding:0!important}
   html.print-pt body > *:not(#printZone){display:none!important}
   html.print-pt #printZone{display:block}
-  html.print-pt .ptable.printing{width:100%!important;margin:0!important;border:none;padding:0;gap:6px;display:flex!important}
+  html.print-pt .ptable.printing{width:100%!important;margin:0!important;border:none;padding:0;gap:3px;display:flex!important}
   html.print-pt .ptable.printing .pt-find, html.print-pt .ptable.printing .pt-detail, html.print-pt .ptable.printing .pt-print-bar, html.print-pt .ptable.printing .q-toggle input{display:none!important}
-  html.print-pt .ptable.printing .pt-print-title{display:flex;justify-content:space-between;align-items:baseline;margin:0;font-family:var(--f-display);font-size:16pt}
+  html.print-pt .ptable.printing .pt-print-title{display:flex;justify-content:space-between;align-items:baseline;margin:0;font-family:var(--f-display);font-size:13pt;line-height:1.1}
   html.print-pt .pt-print-title small{font-size:9pt;color:var(--muted);font-weight:400}
   html.print-pt .pt-scroll{overflow:visible}
-  html.print-pt .pt{min-width:0;gap:2px}
-  html.print-pt .cell{aspect-ratio:.86;border-left-color:#bdbdbd;border-right-color:#bdbdbd;border-bottom-color:#bdbdbd;border-top:5px solid var(--fam)!important;outline:none!important;background:#fff!important;opacity:1!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  html.print-pt .q-toggle{font-size:0} html.print-pt .q-toggle b{font-size:8pt}
-  html.print-pt .legend{font-size:8pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html.print-pt .pt{min-width:0;gap:2px;grid-auto-rows:1fr}
+  /* Hauteur automatique et polices fixes en points : la case grandit avec son contenu, rien n'est rogné */
+  html.print-pt .cell{aspect-ratio:auto;height:auto;min-height:0;padding:1px 1px 1px;gap:0;overflow:visible;line-height:1.02;border-left-color:#bdbdbd;border-right-color:#bdbdbd;border-bottom-color:#bdbdbd;border-top:3px solid var(--fam)!important;outline:none!important;background:#fff!important;opacity:1!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html.print-pt .cell .z{font-size:5.2pt} html.print-pt .cell .s{font-size:9.5pt;line-height:1} html.print-pt .cell .nm{font-size:4.4pt;line-height:1}
+  html.print-pt .cell .ma,html.print-pt .cell .chi{font-size:4.4pt} html.print-pt .cell .q{font-size:5pt;min-height:0} html.print-pt .cell .og{font-size:4.4pt}
+  html.print-pt .pt .ph{font-size:6pt} html.print-pt .pt .spacer{height:3px}
+  html.print-pt .legend{gap:2px 8px}
+  html.print-pt .q-toggle{font-size:0;margin-top:0} html.print-pt .q-toggle b{font-size:7pt}
+  html.print-pt .legend{font-size:7pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   html.print-pt .legend i{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 
@@ -721,7 +726,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.2</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.3</span></p>
     </div>
   </header>
 

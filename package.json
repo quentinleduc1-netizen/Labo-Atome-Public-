@@ -1,6 +1,6 @@
 {
   "name": "labo-atomes",
-  "version": "1.23.2",
+  "version": "1.23.3",
   "description": "Entraînement en sciences des matériaux : atomes et ions, liaisons et classes de matériaux, cristallographie",
   "main": "main.js",
   "author": "Quentin Leduc",
