@@ -721,7 +721,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.1</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.2</span></p>
     </div>
   </header>
 
@@ -3231,12 +3231,12 @@ const CH3_GAMES = [
    explain: c => { const V = c.a**3*1e-21, rho = c.Z*c.M/(NA*V); return `Z = <b>${c.Z}</b> motif${c.Z>1?"s":""} ${fmtF(c.f)} par maille. V = a³ = (${fmtN(c.a,4)} × 10⁻⁷ cm)³ = <b>${fmtN(V,3)} cm³</b>. Masse de la maille = Z M / N<sub>A</sub> = ${c.Z} × ${fmtN(c.M,5)} / 6,022 × 10²³ = ${fmtN(c.Z*c.M/NA,3)} g. ρ = ${fmtN(c.Z*c.M/NA,3)} / ${fmtN(V,3)} ≈ <b>${fmtN(rho,3)} g/cm³</b> (${fmtN(rho*1000,4)} kg/m³).`; }},
 
   {id:"reseau", section:"systemes", tab:"Systèmes et réseaux", title:"Système cristallin et réseau de Bravais",
-   desc:"À partir des paramètres de maille (a, b, c, α, β, γ) retrouve le système cristallin, et à partir de la position des nœuds le mode de réseau (P, I, F ou C).",
-   q:"Quel système, quel réseau ?",
-   gen(){ const sys = pickFresh(SYSTEMS, x=>x[0]); const mode = rnd(sys[3]); return {sys, mode}; },
-   show: c => ({wide:true, html:`<div class="cl-show">${bravaisSVG(c.sys,c.mode,170)}<div class="cl-cap"><b>${c.sys[1]}</b><br><b>${c.sys[2]}</b><br>${MODE_DESC[c.mode]}</div></div>`}),
-   fields: c => [F("sy","Système cristallin", selOk(c.sys[0]), c.sys[0], "select", SYSTEMS.map(s=>s[0])), F("mo","Réseau de Bravais", selOk(MODES[c.mode]), MODES[c.mode], "select", Object.values(MODES))],
-   explain: c => `${c.sys[1]} et ${c.sys[2]} : système <b>${c.sys[0]}</b>. ${MODE_DESC[c.mode][0].toUpperCase()+MODE_DESC[c.mode].slice(1)} : réseau <b>${MODES[c.mode]}</b>. Réseaux possibles dans ce système : ${c.sys[3].map(m=>MODES[m]).join(", ")}${c.sys[3].length<4?" (les autres seraient équivalents à l'un de ceux-là avec une maille plus petite)":""}.`},
+   desc:"Le cours se limite aux mailles cubiques : à partir des paramètres (a = b = c, angles droits) et de la position des nœuds, retrouve le système, le réseau de Bravais (P, I ou F) et le nombre de nœuds par maille. Les 7 systèmes restent décrits dans la fiche « Bravais ».",
+   q:"Quel réseau cubique ?",
+   gen(){ const sys = SYSTEMS[0]; const mode = pickFresh(sys[3], x=>x); return {sys, mode, n:MODE_POS[mode].length}; },
+   show: c => ({wide:true, html:`<div class="cl-show">${bravaisSVG(c.sys,c.mode,190)}<div class="cl-cap"><b>${c.sys[1]}</b><br><b>${c.sys[2]}</b><br>${MODE_DESC[c.mode]}</div></div>`}),
+   fields: c => [F("sy","Système cristallin", selOk(c.sys[0]), c.sys[0], "select", SYSTEMS.map(s=>s[0])), F("mo","Réseau de Bravais", selOk(MODES[c.mode]), MODES[c.mode], "select", ["P","I","F","C"].map(m=>MODES[m])), F("nn","Nombre de nœuds par maille", v=>isInt(v,c.n), c.n)],
+   explain: c => `${c.sys[1]} et ${c.sys[2]} : système <b>${c.sys[0]}</b>. ${MODE_DESC[c.mode][0].toUpperCase()+MODE_DESC[c.mode].slice(1)} : réseau <b>${MODES[c.mode]}</b>. Nœuds par maille : ${c.mode==="P"?"8 × 1/8 = <b>1</b>":c.mode==="I"?"8 × 1/8 + 1 = <b>2</b>":"8 × 1/8 + 6 × 1/2 = <b>4</b>"}. Dans le système cubique, trois réseaux existent : P, I et F ; un réseau cubique à bases centrées (C) serait équivalent à un quadratique P plus petit, il n'est donc pas retenu.`},
 ];
 GAMES.push(...CH3_GAMES);
 
