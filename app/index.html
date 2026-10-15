@@ -619,6 +619,12 @@ html:not(.is-app) .app-only{display:none}
 #sySvg{width:100%;max-width:400px;height:auto;display:block;background:var(--surface);border:1px solid var(--line);border-radius:3px}
 .sy-grid line{stroke:var(--ink);stroke-width:1.5} .sy-new polygon{fill:var(--accent-soft);stroke:var(--sub-f);stroke-width:2;opacity:0;transition:opacity 1s} #sySvg.go .sy-new polygon{opacity:.85}
 #sySvg .cN{fill:var(--accent)} #sySvg .cC{fill:var(--accent2)}
+.cp-sq{width:140px;height:140px;flex:none} .cp-box{fill:var(--surface);stroke:var(--ink);stroke-width:2} .cp-at{fill:var(--accent);opacity:.55} .cp-t{font-size:11px;fill:var(--muted);text-anchor:middle;font-family:var(--f-mono)}
+.cp-term{font:inherit;background:none;border:none;border-bottom:3px solid transparent;color:inherit;cursor:pointer;padding:0 2px} .cp-term:hover{border-bottom-color:var(--accent2)} .cp-term.on{border-bottom-color:var(--sub-f);color:var(--sub-f)}
+.cp-terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.cp-card{padding:10px 12px;border:1.5px solid var(--line);background:var(--bg);border-radius:3px;font-size:.9rem;cursor:pointer;opacity:.6;transition:opacity .3s,border-color .3s} .cp-card.on{opacity:1;border-color:var(--sub-f)}
+.cp-card>b{font-family:var(--f-display);font-size:1.05rem} .cp-card em{color:var(--accent);font-style:normal} .cp-card p{margin:6px 0 0;color:var(--ink)}
+.cp-steps{gap:4px} .cp-step{padding:6px 10px;border-left:3px solid var(--line);opacity:.15;transition:opacity .5s,border-color .5s;max-height:0;overflow:hidden;padding-top:0;padding-bottom:0} .cp-step.on{opacity:1;border-left-color:var(--accent);max-height:200px;padding:6px 10px}
 .qbx-wrap{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:var(--bg);border:1px solid var(--line);overflow-x:auto}
 .qbx-title{margin:0 0 2px;font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .qbx{display:flex;align-items:flex-end;gap:14px;min-width:max-content}
@@ -726,7 +732,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.4</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.5</span></p>
     </div>
   </header>
 
@@ -3344,30 +3350,86 @@ function buildCubiques(){
 }
 
 function buildCompacite(){
+  const sq = (fill) => `<svg class="cp-sq" viewBox="0 0 120 120"><clipPath id="cpc"><rect x="10" y="10" width="100" height="100"/></clipPath><rect x="10" y="10" width="100" height="100" class="cp-box"/><g clip-path="url(#cpc)">${[[10,10],[110,10],[10,110],[110,110]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="50" class="cp-at"/>`).join("")}</g><text x="60" y="64" class="cp-t">vide</text></svg>`;
   $("slCustom").innerHTML = `
     <div class="m-step">
-      <h3><span class="m-num">1</span> Compacité : quelle fraction de la maille est vraiment remplie ?</h3>
-      <p class="fc-formula big">C = <span class="fc-frac"><span>n × 4/3 π r³</span><span>V<sub>maille</sub></span></span><small>n atomes de rayon r · pour plusieurs espèces : Σ n<sub>i</sub> × 4/3 π r<sub>i</sub>³</small></p>
-      <p class="m-lead">Les atomes sont vus comme des <b>sphères dures</b> qui se touchent. Le reste de la maille est du vide. C ne dépend pas de la taille de l'atome, seulement de l'arrangement.</p>
-      <p class="fc-def"><b>Définitions :</b> la <em>compacité</em> C est le rapport entre le volume occupé par les atomes d'une maille et le volume de cette maille ; c'est un nombre sans unité, compris entre 0 et 1 (ou en %). La <em>masse volumique</em> ρ est la masse de la maille (Z motifs de masse M / N<sub>A</sub>) divisée par son volume, en g/cm³ ou kg/m³.</p>
+      <h3><span class="m-num">1</span> L'idée : une boîte et des balles</h3>
+      <div class="fc-row">${sq()}
+        <div class="m-story">
+          <p class="st1">La <b>maille</b> est une boîte (ici un cube d'arête a). Les atomes sont des <b>balles dures</b> de rayon r qui se touchent. Entre les balles, il reste du <b>vide</b>.</p>
+          <p class="st1">La <b>compacité C</b> répond à une seule question : <b>quelle fraction de la boîte est remplie par les balles ?</b> C'est un rapport de deux volumes, donc un nombre <b>sans unité</b> entre 0 et 1 (on l'écrit souvent en %).</p>
+          <p class="st1">Ici, dans un cube simple, les 8 morceaux de balle aux coins reforment exactement <b>1 balle</b> : C = volume d'1 balle / volume du cube = 52 %. Presque la moitié de la maille est vide !</p>
+        </div></div>
     </div>
     <div class="m-step">
-      <h3><span class="m-num">2</span> Masse volumique : la masse d'une maille divisée par son volume</h3>
-      <p class="fc-formula big">ρ = <span class="fc-frac"><span>Z × M</span><span>N<sub>A</sub> × V<sub>maille</sub></span></span><small>Z motifs par maille · M en g/mol · V en cm³ · 1 nm = 10⁻⁷ cm</small></p>
+      <h3><span class="m-num">2</span> La formule, terme par terme</h3>
+      <p class="fc-formula big cp-f">C = <span class="fc-frac"><span><button type="button" class="cp-term" data-t="n">n</button> × <button type="button" class="cp-term" data-t="v">4/3 π r³</button></span><span><button type="button" class="cp-term" data-t="V">V<sub>maille</sub></button></span></span></p>
+      <p class="fc-def"><b>Définition à retenir :</b> la <em>compacité</em> C est le rapport entre le volume occupé par les atomes d'une maille et le volume de cette maille ; c'est un nombre sans unité, compris entre 0 et 1 (ou en %). La <em>masse volumique</em> ρ est la masse de la maille (Z motifs de masse M / N<sub>A</sub>) divisée par son volume, en g/cm³ ou kg/m³.</p>
+      <p class="m-lead">Clique sur chaque terme pour savoir d'où il vient et comment l'obtenir.</p>
+      <div class="cp-terms">
+        <div class="cp-card" data-t="n"><b>n</b> · nombre d'atomes <em>dans</em> la maille<p>Ce n'est pas le nombre d'atomes dessinés ! Un atome sur un sommet est partagé entre 8 mailles (il compte 1/8), au centre d'une face entre 2 (1/2), au milieu d'une arête entre 4 (1/4), au centre il compte 1.</p><p>À retenir : cubique simple <b>n = 1</b> · cubique centré <b>n = 2</b> · cubique à faces centrées <b>n = 4</b>.</p></div>
+        <div class="cp-card" data-t="v"><b>4/3 π r³</b> · volume d'<em>une</em> balle<p>C'est la formule du volume d'une sphère de rayon r (4/3 × π ≈ 4,19). Multiplié par n, cela donne le volume de <b>tous</b> les atomes de la maille.</p><p>Le piège : <b>r est au cube</b>. Si r est en nm, le volume est en nm³. Garde la même unité que pour a.</p></div>
+        <div class="cp-card" data-t="r"><b>r</b> · rayon de l'atome<p>Souvent, l'énoncé ne donne pas r mais le paramètre de maille <b>a</b>. On déduit r en regardant <b>où les balles se touchent</b> :</p><p>· cubique simple : le long d'une arête, a = 2r → <b>r = a/2</b><br>· cubique centré : le long de la grande diagonale (longueur a√3), a√3 = 4r → <b>r = a√3/4</b><br>· faces centrées : le long de la diagonale d'une face (a√2), a√2 = 4r → <b>r = a√2/4</b></p></div>
+        <div class="cp-card" data-t="V"><b>V<sub>maille</sub></b> · volume de la boîte<p>Pour une maille cubique, c'est simplement <b>a³</b> (a × a × a). Même unité que r au cube : si a est en nm, V est en nm³.</p><p>Pour une maille non cubique, V = a × b × c (si les angles sont droits).</p></div>
+      </div>
     </div>
     <div class="m-step">
-      <h3><span class="m-num">3</span> Calcul pas à pas</h3>
+      <h3><span class="m-num">3</span> La recette en 5 étapes</h3>
+      <ol class="fc-list num">
+        <li><b>Identifier la structure</b> (CS, CC, CFC…) → en déduire <b>n</b> en comptant les atomes partagés.</li>
+        <li><b>Trouver r</b> : repérer la direction où les atomes se touchent, écrire la relation entre a et r, isoler r.</li>
+        <li><b>Volume de la maille</b> : V = a³.</li>
+        <li><b>Volume des atomes</b> : n × 4/3 π r³.</li>
+        <li><b>Diviser</b> : C = (volume des atomes) / V. Vérifier que C est entre 0 et 1 ; sinon, une unité ou un cube a été oublié.</li>
+      </ol>
+      <p class="m-rule">Astuce : si on remplace r par son expression en a, le a³ se simplifie. La compacité <b>ne dépend pas de a</b>, uniquement de l'arrangement : CS = π/6 = 52 %, CC = π√3/8 = 68 %, CFC = π√2/6 = 74 %. C'est un bon moyen de vérifier son résultat.</p>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">4</span> Exemple détaillé, étape par étape</h3>
       <div class="m-chips" id="cpList">${METALS.filter(m=>["fer α","fer γ","cuivre","aluminium","tungstène","polonium"].includes(m[0])).map(m=>`<button type="button" class="chip" data-k="${m[0]}">${m[0]}</button>`).join("")}<button type="button" class="chip" data-k="NaCl">NaCl (ionique)</button><button type="button" class="chip" data-k="SrTiO3">SrTiO₃</button></div>
-      <div class="cu-wrap"><div id="cpFig"></div><div id="cpTxt" class="fc-calc"></div></div>
+      <div class="cu-wrap"><div id="cpFig"></div><div id="cpTxt" class="fc-calc cp-steps"></div></div>
+      <div class="m-pick"><button type="button" class="btn small" id="cpNext">Étape suivante →</button><button type="button" class="btn ghost small" id="cpAll">Tout afficher</button></div>
+    </div>
+    <div class="m-step">
+      <h3><span class="m-num">5</span> Et la masse volumique ?</h3>
+      <p class="fc-formula big">ρ = <span class="fc-frac"><span>Z × M</span><span>N<sub>A</sub> × V<sub>maille</sub></span></span></p>
+      <p class="m-lead">Même logique : la masse de ce qu'il y a dans la boîte, divisée par le volume de la boîte. <b>Z</b> est le nombre de motifs (formules chimiques) par maille : pour un métal, c'est n ; pour NaCl, c'est le nombre de « NaCl » complets (4). <b>M</b> est la masse molaire du motif (g/mol) et <b>N<sub>A</sub></b> = 6,022 × 10²³ mol⁻¹ : M/N<sub>A</sub> est la masse d'<b>un seul</b> motif, en grammes.</p>
+      <p class="m-rule">Le piège des unités : ρ se donne en g/cm³, donc V doit être en <b>cm³</b>. 1 nm = 10⁻⁷ cm, donc <b>1 nm³ = 10⁻²¹ cm³</b> (et 1 Å³ = 10⁻²⁴ cm³). Pour passer en kg/m³, multiplier par 1000.</p>
     </div>`;
-  const run = k => { $("cpList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.k===k)); let html = "", fig = "";
+  const cards = $("slCustom").querySelectorAll(".cp-card");
+  const showTerm = t => { $("slCustom").querySelectorAll(".cp-term").forEach(b=>b.classList.toggle("on", b.dataset.t===t || (t==="r"&&b.dataset.t==="v"))); cards.forEach(c=>c.classList.toggle("on", c.dataset.t===t || (t==="v"&&c.dataset.t==="r"))); };
+  $("slCustom").querySelectorAll(".cp-term").forEach(b=>b.onclick=()=>showTerm(b.dataset.t)); cards.forEach(c=>c.onclick=()=>showTerm(c.dataset.t)); showTerm("n");
+  let steps = [], shown = 0;
+  const render = ()=>{ $("cpTxt").innerHTML = steps.map((h,i)=>`<div class="cp-step${i<shown?" on":""}">${h}</div>`).join(""); $("cpNext").disabled = shown>=steps.length; $("cpNext").textContent = shown>=steps.length ? "Terminé ✓" : `Étape ${shown+1} / ${steps.length} →`; };
+  const run = k => { $("cpList").querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.k===k)); let fig = "";
     if(k==="NaCl"){ const rc=0.102, ra=0.181, a=2*(rc+ra), V=a**3, vat=4*4/3*Math.PI*(rc**3+ra**3), M=58.44, Z=4; fig = cellSVG({atoms:STRUCT.NaCl.sp,size:170});
-      html = `<p><b>NaCl</b> : réseau CFC de Cl⁻ (4 par maille) avec Na⁺ au milieu des arêtes et au centre (4 par maille) : Z = 4.</p><p>Contact cation–anion le long d'une arête : a = 2 (r₊ + r₋) = 2 (0,102 + 0,181) = <b>${fmtN(a,3)} nm</b>.</p><p>C = 4 × 4/3 π (r₊³ + r₋³) / a³ = ${fmtN(vat,3)} / ${fmtN(V,3)} = <b>${fmtN(vat/V*100,3)} %</b>.</p><p>ρ = Z M / (N<sub>A</sub> a³) = 4 × 58,44 / (6,022 × 10²³ × ${fmtN(V*1e-21,3)}) = <b>${fmtN(Z*M/(NA*V*1e-21),3)} g/cm³</b>.</p>`; }
+      steps = [`<b>Données</b> : NaCl, r(Na⁺) = 0,102 nm, r(Cl⁻) = 0,181 nm. Deux sortes de balles : on additionne leurs volumes.`,
+        `<b>1 · n</b> : les Cl⁻ forment un CFC → 4 par maille ; les Na⁺ sont au milieu des 12 arêtes (12 × 1/4 = 3) et au centre (1) → 4 par maille.`,
+        `<b>2 · a</b> : le long d'une arête, un Cl⁻, un Na⁺ et un Cl⁻ se touchent : a = 2 (r₊ + r₋) = 2 × (0,102 + 0,181) = <b>${fmtN(a,3)} nm</b>.`,
+        `<b>3 · V</b> = a³ = ${fmtN(a,3)}³ = <b>${fmtN(V,3)} nm³</b>.`,
+        `<b>4 · volume des ions</b> = 4 × 4/3 π r₊³ + 4 × 4/3 π r₋³ = ${fmtN(4*4/3*Math.PI*rc**3,3)} + ${fmtN(4*4/3*Math.PI*ra**3,3)} = <b>${fmtN(vat,3)} nm³</b>.`,
+        `<b>5 · C</b> = ${fmtN(vat,3)} / ${fmtN(V,3)} = <b>${fmtN(vat/V*100,3)} %</b>.`,
+        `<b>Masse volumique</b> : Z = 4 motifs NaCl, M = 58,44 g/mol. V = ${fmtN(V,3)} nm³ = ${fmtN(V*1e-21,3)} cm³. ρ = 4 × 58,44 / (6,022 × 10²³ × ${fmtN(V*1e-21,3)}) = <b>${fmtN(Z*M/(NA*V*1e-21),3)} g/cm³</b>.`]; }
     else if(k==="SrTiO3"){ const a=0.3905, V=a**3, rs=0.144, rt=0.0605, ro=0.140, vat=4/3*Math.PI*(rs**3+rt**3+3*ro**3), M=183.49; fig = cellSVG({atoms:STRUCT.perov.sp,size:170});
-      html = `<p><b>SrTiO₃</b> (pérovskite) : Sr aux sommets (1), Ti au centre (1), O au centre des faces (3) : Z = 1. Ions Sr²⁺, Ti⁴⁺, O²⁻ : 2 + 4 − 6 = 0.</p><p>a = 0,3905 nm, V = a³ = ${fmtN(V,3)} nm³.</p><p>C = 4/3 π (r<sub>Sr</sub>³ + r<sub>Ti</sub>³ + 3 r<sub>O</sub>³) / a³ = ${fmtN(vat,3)} / ${fmtN(V,3)} = <b>${fmtN(vat/V*100,3)} %</b> (les ions ne se touchent pas tous : la maille idéale est un peu « lâche » pour Ti).</p><p>ρ = 1 × 183,49 / (6,022 × 10²³ × ${fmtN(V*1e-21,3)}) = <b>${fmtN(M/(NA*V*1e-21),3)} g/cm³</b>.</p>`; }
-    else { const [nm,s,st,a,M] = METALS.find(m=>m[0]===k), R = REL[st], r = R.r(a), V = a**3, vat = R.n*4/3*Math.PI*r**3; fig = cellSVG({atoms:STRUCT[st].sp,size:170}) + relSVG(st);
-      html = `<p><b>${nm[0].toUpperCase()+nm.slice(1)}</b> (${s}) : ${STRUCT[st].n}, a = ${fmtN(a,4)} nm, M = ${fmtN(M,4)} g/mol.</p><p>1) n = <b>${R.n}</b> atome${R.n>1?"s":""} par maille.</p><p>2) ${R.txt} → r = ${fmtN(r,3)} nm.</p><p>3) V = a³ = ${fmtN(V,3)} nm³ ; volume des atomes = ${R.n} × 4/3 π r³ = ${fmtN(vat,3)} nm³ → C = <b>${fmtN(vat/V*100,3)} %</b>.</p><p>4) ρ = ${R.n} × ${fmtN(M,4)} / (6,022 × 10²³ × ${fmtN(V*1e-21,3)} cm³) = <b>${fmtN(R.n*M/(NA*V*1e-21),3)} g/cm³</b> = ${fmtN(R.n*M/(NA*V*1e-21)*1000,4)} kg/m³.</p>`; }
-    $("cpFig").innerHTML = `<div class="cl-show">${fig}</div>`; $("cpTxt").innerHTML = html; };
+      steps = [`<b>Données</b> : SrTiO₃, a = 0,3905 nm, r(Sr) = 0,144 nm, r(Ti) = 0,0605 nm, r(O) = 0,140 nm. Trois sortes de balles.`,
+        `<b>1 · n</b> : Sr aux 8 sommets → 8 × 1/8 = 1 ; Ti au centre → 1 ; O au centre des 6 faces → 6 × 1/2 = 3. On retrouve bien SrTiO₃ : Z = 1.`,
+        `<b>2 · r</b> : les rayons sont donnés, pas besoin de les déduire de a.`,
+        `<b>3 · V</b> = a³ = <b>${fmtN(V,3)} nm³</b>.`,
+        `<b>4 · volume des ions</b> = 4/3 π (1 × r<sub>Sr</sub>³ + 1 × r<sub>Ti</sub>³ + 3 × r<sub>O</sub>³) = 4,189 × (${fmtN(rs**3,3)} + ${fmtN(rt**3,3)} + ${fmtN(3*ro**3,3)}) = <b>${fmtN(vat,3)} nm³</b>.`,
+        `<b>5 · C</b> = ${fmtN(vat,3)} / ${fmtN(V,3)} = <b>${fmtN(vat/V*100,3)} %</b> (très compact : trois tailles de balles se complètent).`,
+        `<b>Masse volumique</b> : Z = 1, M = 87,62 + 47,87 + 3 × 16,00 = 183,49 g/mol. ρ = 183,49 / (6,022 × 10²³ × ${fmtN(V*1e-21,3)} cm³) = <b>${fmtN(M/(NA*V*1e-21),3)} g/cm³</b>.`]; }
+    else { const [nm,s,st,a,M] = METALS.find(m=>m[0]===k), R = REL[st], r = R.r(a), V = a**3, v1 = 4/3*Math.PI*r**3, vat = R.n*v1; fig = cellSVG({atoms:STRUCT[st].sp,size:170}) + relSVG(st);
+      const rtxt = st==="CS" ? `a = 2r → r = a/2 = ${fmtN(a,4)} / 2` : st==="CC" ? `a√3 = 4r → r = a√3/4 = ${fmtN(a,4)} × 1,732 / 4` : `a√2 = 4r → r = a√2/4 = ${fmtN(a,4)} × 1,414 / 4`;
+      steps = [`<b>Données</b> : ${nm} (${s}), ${STRUCT[st].n}, a = ${fmtN(a,4)} nm, M = ${fmtN(M,4)} g/mol.`,
+        `<b>1 · n</b> : ${countDetail(STRUCT[st].sp[0][1])} → <b>n = ${R.n}</b>.`,
+        `<b>2 · r</b> : ${R.txt}. ${rtxt} = <b>${fmtN(r,3)} nm</b>.`,
+        `<b>3 · V</b> = a³ = ${fmtN(a,4)}³ = <b>${fmtN(V,3)} nm³</b>.`,
+        `<b>4 · volume des atomes</b> = n × 4/3 π r³ = ${R.n} × 4,189 × ${fmtN(r,3)}³ = ${R.n} × ${fmtN(v1,3)} = <b>${fmtN(vat,3)} nm³</b>.`,
+        `<b>5 · C</b> = ${fmtN(vat,3)} / ${fmtN(V,3)} = <b>${fmtN(vat/V,3)}</b>, soit <b>${fmtN(vat/V*100,3)} %</b> (bien entre 0 et 1 ✓ ; valeur attendue pour un ${st} : ${fmtN(R.C*100,3)} %).`,
+        `<b>Masse volumique</b> : Z = n = ${R.n}. V = ${fmtN(V,3)} nm³ = ${fmtN(V*1e-21,3)} cm³. ρ = ${R.n} × ${fmtN(M,4)} / (6,022 × 10²³ × ${fmtN(V*1e-21,3)}) = <b>${fmtN(R.n*M/(NA*V*1e-21),3)} g/cm³</b> = ${fmtN(R.n*M/(NA*V*1e-21)*1000,4)} kg/m³.`]; }
+    $("cpFig").innerHTML = `<div class="cl-show">${fig}</div>`; shown = 1; render(); };
+  $("cpNext").onclick = ()=>{ shown = Math.min(shown+1, steps.length); render(); };
+  $("cpAll").onclick = ()=>{ shown = steps.length; render(); };
   $("cpList").querySelectorAll(".chip").forEach(b=>b.onclick=()=>run(b.dataset.k)); run("fer α");
 }
 
