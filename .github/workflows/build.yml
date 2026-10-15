@@ -78,5 +78,6 @@ jobs:
           files: |
             dist/*.exe
             dist/*.dmg
+            dist/*-mac.zip
             dist/*.AppImage
           fail_on_unmatched_files: false
