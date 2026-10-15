@@ -732,7 +732,7 @@ html:not(.is-app) .app-only{display:none}
     <canvas id="cell" aria-hidden="true"></canvas>
     <div>
       <h1>Labo <span>Atomes</span></h1>
-      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.5</span></p>
+      <p>Sciences des matériaux · <span id="chapSub">chapitre I, atomes et ions</span> <span class="miller">· maille CFC (100)</span> <span class="app-ver" id="appVer">v1.23.6</span></p>
     </div>
   </header>
 
@@ -3157,6 +3157,13 @@ const METALS = [["polonium","Po","CS",0.335,209],["fer α","Fe","CC",0.287,55.85
   ["or","Au","CFC",0.408,196.97],["argent","Ag","CFC",0.409,107.87],["plomb","Pb","CFC",0.495,207.2],["nickel","Ni","CFC",0.352,58.69],["platine","Pt","CFC",0.392,195.08],["fer γ","Fe","CFC",0.365,55.85]];
 const REL = {CS:{n:1, r:a=>a/2, txt:"a = 2r (les atomes se touchent le long d'une arête)", C:Math.PI/6}, CC:{n:2, r:a=>a*Math.sqrt(3)/4, txt:"a√3 = 4r (contact le long de la grande diagonale du cube)", C:Math.PI*Math.sqrt(3)/8}, CFC:{n:4, r:a=>a*Math.sqrt(2)/4, txt:"a√2 = 4r (contact le long de la diagonale d'une face)", C:Math.PI*Math.sqrt(2)/6}};
 const REL_OPTS = ["a = 2r","a√3 = 4r","a√2 = 4r"];
+// Explication détaillée du passage de a à r selon la structure
+function rWhy(st, a, r){
+  if(st==="CS") return `<b>Trouver r</b> : en cubique simple, les atomes se touchent le long d'une <b>arête</b> : on y traverse deux demi-atomes, a = 2r. Donc r = a/2 = ${fmtN(a,4)} / 2 = <b>${fmtN(r,3)} nm</b>.`;
+  if(st==="CC") return `<b>Trouver r</b> : en cubique centré, l'atome du centre touche les deux sommets opposés, le long de la <b>grande diagonale</b> du cube. On y traverse un demi-atome + un atome + un demi-atome = <b>4r</b>. Cette diagonale mesure a√3 (Pythagore deux fois : a² + a² + a²). Donc a√3 = 4r, r = a√3/4 = ${fmtN(a,4)} × 1,732 / 4 = <b>${fmtN(r,3)} nm</b>.`;
+  return `<b>Trouver r</b> : en cubique à faces centrées, l'atome au centre d'une face touche les deux sommets opposés de cette face, le long de la <b>diagonale de la face</b>. On y traverse un demi-atome + un atome + un demi-atome = <b>4r</b>. Cette diagonale mesure a√2 (Pythagore : √(a² + a²)). Donc a√2 = 4r, r = a√2/4 = ${fmtN(a,4)} × 1,414 / 4 = <b>${fmtN(r,3)} nm</b>.`;
+}
+
 // Composés ioniques : [nom, formule, Z, a (nm), M]
 const IONICS = [["chlorure de sodium","NaCl",4,0.564,58.44],["chlorure de césium","CsCl",1,0.411,168.36],["oxyde de magnésium","MgO",4,0.421,40.30],["chlorure de potassium","KCl",4,0.629,74.55],["titanate de strontium","SrTiO3",1,0.3905,183.49]];
 const NA = 6.022e23;
@@ -3222,7 +3229,7 @@ const CH3_GAMES = [
    gen(){ const [nm,s,st,a,M] = pickFresh(METALS, x=>x[0]); return {nm,s,st,a,M,r:REL[st].r(a)}; },
    show: c => plate(c.s, `${c.nm} · ${STRUCT[c.st].n}`, `a = ${fmtN(c.a,4)} nm`),
    fields: c => [F("rel","Relation entre a et r", selOk(STRUCT[c.st].rel), STRUCT[c.st].rel, "select", REL_OPTS), F("r","Rayon atomique r (en nm)", v=>near(v,c.r,0.01), fmtN(c.r,3))],
-   explain: c => `${STRUCT[c.st].n} : ${REL[c.st].txt}. r = ${c.st==="CS"?"a/2":c.st==="CC"?"a√3/4":"a√2/4"} = ${fmtN(c.a,4)}${c.st==="CS"?" / 2":c.st==="CC"?" × 1,732 / 4":" × 1,414 / 4"} ≈ <b>${fmtN(c.r,3)} nm</b> (${fmtN(c.r*1000,3)} pm).<div class="cl-show">${cellSVG({atoms:STRUCT[c.st].sp, size:150})}${relSVG(c.st)}</div>`},
+   explain: c => `${STRUCT[c.st].n}. ${rWhy(c.st, c.a, c.r)} Soit ${fmtN(c.r*1000,3)} pm.<div class="cl-show">${cellSVG({atoms:STRUCT[c.st].sp, size:150})}${relSVG(c.st)}</div>`},
 
   {id:"compacite", section:"compacite", tab:"Compacité", title:"Calculer une compacité",
    desc:"C = (n × 4/3 π r³) / V_maille. Compte les atomes, déduis r de a, puis calcule la fraction du volume occupée.",
@@ -3230,7 +3237,7 @@ const CH3_GAMES = [
    gen(){ const [nm,s,st,a,M] = pickFresh(METALS, x=>x[0]); const r = REL[st].r(a); return {nm,s,st,a,M,r,n:REL[st].n,C:REL[st].C}; },
    show: c => plate(c.s, `${c.nm} · ${STRUCT[c.st].n}`, `a = ${fmtN(c.a,4)} nm`),
    fields: c => [F("n","Nombre d'atomes par maille n", v=>isInt(v,c.n), c.n), F("r","Rayon r (en nm)", v=>near(v,c.r,0.01), fmtN(c.r,3)), F("C","Compacité C (en %)", v=>near(v,c.C*100,0.015), fmtN(c.C*100,3))],
-   explain: c => `n = <b>${c.n}</b> (${countDetail(STRUCT[c.st].sp[0][1])}). r = ${fmtN(c.r,3)} nm (${REL[c.st].txt}). V<sub>maille</sub> = a³ = ${fmtN(c.a**3,3)} nm³. Volume des atomes = ${c.n} × 4/3 × π × ${fmtN(c.r,3)}³ = ${fmtN(c.n*4/3*Math.PI*c.r**3,3)} nm³. C = ${fmtN(c.n*4/3*Math.PI*c.r**3,3)} / ${fmtN(c.a**3,3)} = <b>${fmtN(c.C*100,3)} %</b>. La compacité ne dépend pas de a : elle vaut toujours ${c.st==="CS"?"52 % en cubique simple":c.st==="CC"?"68 % en cubique centré":"74 % en cubique à faces centrées (empilement le plus compact possible)"}.`},
+   explain: c => `n = <b>${c.n}</b> (${countDetail(STRUCT[c.st].sp[0][1])}). ${rWhy(c.st, c.a, c.r)} V<sub>maille</sub> = a³ = ${fmtN(c.a**3,3)} nm³. Volume des atomes = ${c.n} × 4/3 × π × ${fmtN(c.r,3)}³ = ${fmtN(c.n*4/3*Math.PI*c.r**3,3)} nm³. C = ${fmtN(c.n*4/3*Math.PI*c.r**3,3)} / ${fmtN(c.a**3,3)} = <b>${fmtN(c.C*100,3)} %</b>. La compacité ne dépend pas de a : elle vaut toujours ${c.st==="CS"?"52 % en cubique simple":c.st==="CC"?"68 % en cubique centré":"74 % en cubique à faces centrées (empilement le plus compact possible)"}.`},
 
   {id:"masse-vol", section:"compacite", tab:"Masse volumique", title:"Calculer une masse volumique",
    desc:"ρ = Z × M / (N_A × V_maille), avec Z le nombre de motifs par maille. Attention aux unités : 1 nm = 10⁻⁷ cm, donc 1 nm³ = 10⁻²¹ cm³.",
